@@ -76,12 +76,10 @@
   <ItemGroup>
     <Compile Include="mobzor.nmml" />
     <Compile Include="assets\nme.svg" />
-    <Compile Include="src\net\onthewings\mobzor\Main.hx" />
     <Compile Include=".gitignore" />
+    <Compile Include="src\mobzor\Main.hx" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="src\net\" />
-    <Folder Include="src\net\onthewings\" />
-    <Folder Include="src\net\onthewings\mobzor\" />
+    <Folder Include="src\" />
   </ItemGroup>
 </Project>

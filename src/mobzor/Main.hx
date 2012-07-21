@@ -1,4 +1,4 @@
-package net.onthewings.mobzor;
+package mobzor;
 
 import com.haxepunk.Engine;
 import com.haxepunk.HXP;
@@ -28,8 +28,6 @@ class Main extends Engine {
 			case Keyboard.ESCAPE:
 				HXP.console.enable();
 		}
-		
-		trace("Key Up: " + evt.keyCode);
 	}
 	
 	public static function main():Void {
