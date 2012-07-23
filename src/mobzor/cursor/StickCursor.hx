@@ -11,7 +11,9 @@ import nme.geom.Rectangle;
 import nme.system.Capabilities;
 import nme.ui.Multitouch;
 
-class StickCursor {
+import mobzor.event.CursorEvent;
+
+class StickCursor extends Cursor {
 	public var bezelOut:Rectangle;
 	public var bezelIn:Rectangle;
 	public var view:DisplayObjectContainer;
@@ -19,6 +21,8 @@ class StickCursor {
 	public var stick:Sprite;
 
 	public function new():Void {
+		super();
+		
 		view = Lib.current.stage;
 		stick = new Sprite();
 	}
@@ -27,12 +31,13 @@ class StickCursor {
 		bezelOut = new Rectangle(0, 0, Lib.current.stage.stageWidth, Lib.current.stage.stageHeight);
 		bezelIn = bezelOut.clone();
 		
-		var dpi = Capabilities.screenDPI;
-		var bezelWidth = dpi * 0.1;
+		var bezelWidth = Capabilities.screenDPI * 0.1;
 		bezelIn.inflate(-bezelWidth, -bezelWidth); 
 	}
 	
-	public function start():Void {
+	override public function start():Void {
+		super.start();
+		
 		onResize();
 		
 		view.addChild(stick);
@@ -49,7 +54,7 @@ class StickCursor {
 		view.addEventListener(Event.RESIZE, onResize);
 	}
 	
-	public function end():Void {
+	override public function end():Void {
 		view.removeEventListener(Event.RESIZE, onResize);
 		
 		if (Multitouch.supportsTouchEvents) {
@@ -62,6 +67,8 @@ class StickCursor {
 		view.removeEventListener(MouseEvent.MOUSE_UP, onMouseUp);
 		
 		view.removeChild(stick);
+		
+		super.end();
 	}
 	
 	var startPos:Point;
@@ -83,15 +90,13 @@ class StickCursor {
 		var pt = new Point(evt.stageX, evt.stageY);
 		onBezel = bezelOut.containsPoint(pt) && !bezelIn.containsPoint(pt);
 		
-		if (onBezel) {
-			startPos = pt;
-		}
+		startPos = pt;
 	}
 	
 	function onMouseMove(evt:MouseEvent):Void {
 		if (onBezel) {
 			var pt = new Point(evt.stageX, evt.stageY);
-			
+			pt = getStickEnd(startPos, pt);
 			stick.graphics.clear();
 			stick.graphics.beginFill(0xFF0000);
 			stick.graphics.lineStyle(2, 0xFF0000, 1);
@@ -101,8 +106,21 @@ class StickCursor {
 	}
 	
 	function onMouseUp(evt:MouseEvent):Void {
+		var pt = new Point(evt.stageX, evt.stageY);
+		if (onBezel) {
+			onClickSignaler.dispatch(getStickEnd(startPos, pt));
+		} else {
+			onClickSignaler.dispatch(pt);
+		}
+	
 		onBezel = false;
 		
 		stick.graphics.clear();
+	}
+	
+	static public function getStickEnd(down:Point, up:Point):Point {
+		var v = up.subtract(down);
+		v.normalize(v.length * 3);
+		return down.add(v);
 	}
 }

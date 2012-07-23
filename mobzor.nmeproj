@@ -80,10 +80,17 @@
     <Compile Include="src\mobzor\Main.hx" />
     <Compile Include="src\mobzor\world\TestTouchWorld.hx" />
     <Compile Include="src\mobzor\cursor\StickCursor.hx" />
+    <Compile Include="src\mobzor\event\CursorEvent.hx" />
+    <Compile Include="src\mobzor\event\CursorEventType.hx" />
+    <Compile Include="src\mobzor\entity\Target.hx" />
+    <Compile Include="src\mobzor\entity\Ruler.hx" />
+    <Compile Include="src\mobzor\cursor\Cursor.hx" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="src\" />
     <Folder Include="src\mobzor\cursor\" />
     <Folder Include="src\mobzor\world\" />
+    <Folder Include="src\mobzor\event\" />
+    <Folder Include="src\mobzor\entity\" />
   </ItemGroup>
 </Project>
