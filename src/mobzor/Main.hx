@@ -7,6 +7,8 @@ import nme.events.KeyboardEvent;
 import nme.ui.Keyboard;
 import nme.Lib;
 
+import mobzor.world.TestTouchWorld;
+
 class Main extends Engine {
 	
 	public function new():Void {
@@ -19,14 +21,18 @@ class Main extends Engine {
 		
 		Lib.current.stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
 		
-		//HXP.world = 
+		HXP.console.enable();
+		#if (!debug)
+		HXP.console.visible = false;
+		#end
 		
+		HXP.world = new TestTouchWorld();
 	}
 	
 	function onKeyUp(evt:KeyboardEvent):Void {
 		switch(evt.keyCode) {
 			case Keyboard.ESCAPE:
-				HXP.console.enable();
+				HXP.console.visible = !HXP.console.visible;
 		}
 	}
 	

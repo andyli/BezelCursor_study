@@ -78,8 +78,12 @@
     <Compile Include="assets\nme.svg" />
     <Compile Include=".gitignore" />
     <Compile Include="src\mobzor\Main.hx" />
+    <Compile Include="src\mobzor\world\TestTouchWorld.hx" />
+    <Compile Include="src\mobzor\cursor\StickCursor.hx" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="src\" />
+    <Folder Include="src\mobzor\cursor\" />
+    <Folder Include="src\mobzor\world\" />
   </ItemGroup>
 </Project>
