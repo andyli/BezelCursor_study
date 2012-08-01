@@ -10,6 +10,7 @@ import nme.geom.Point;
 import nme.geom.Rectangle;
 import nme.system.Capabilities;
 import nme.ui.Multitouch;
+import nme.ui.MultitouchInputMode;
 
 import mobzor.event.CursorEvent;
 
@@ -46,6 +47,9 @@ class StickCursor extends Cursor {
 			view.addEventListener(TouchEvent.TOUCH_BEGIN, onTouchBegin);
 			view.addEventListener(TouchEvent.TOUCH_MOVE, onTouchMove);
 			view.addEventListener(TouchEvent.TOUCH_END, onTouchEnd);
+			
+			//trace(Multitouch.inputMode);
+			Multitouch.inputMode = MultitouchInputMode.TOUCH_POINT;
 		}
 		view.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 		view.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
@@ -79,7 +83,7 @@ class StickCursor extends Cursor {
 	}
 	
 	function onTouchMove(evt:TouchEvent):Void {
-		
+		trace(evt.sizeX + " " + evt.sizeY);
 	}
 	
 	function onTouchEnd(evt:TouchEvent):Void {

@@ -85,6 +85,7 @@
     <Compile Include="src\mobzor\entity\Target.hx" />
     <Compile Include="src\mobzor\entity\Ruler.hx" />
     <Compile Include="src\mobzor\cursor\Cursor.hx" />
+    <Compile Include="env.nmml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="src\" />

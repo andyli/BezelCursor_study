@@ -29,4 +29,6 @@
 	<ndll name="zlib" />
 	<ndll name="nme" haxelib="nme" />
 	
+	<include name="env.nmml" />
+	
 </project>
