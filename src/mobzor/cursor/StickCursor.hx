@@ -56,10 +56,12 @@ class StickCursor extends Cursor {
 		view.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
 		
 		view.addEventListener(Event.RESIZE, onResize);
+		view.addEventListener(Event.ENTER_FRAME, onFrame);
 	}
 	
 	override public function end():Void {
 		view.removeEventListener(Event.RESIZE, onResize);
+		view.removeEventListener(Event.ENTER_FRAME, onFrame);
 		
 		if (Multitouch.supportsTouchEvents) {
 			view.removeEventListener(TouchEvent.TOUCH_BEGIN, onTouchBegin);
@@ -76,14 +78,32 @@ class StickCursor extends Cursor {
 	}
 	
 	var startPos:Point;
+	var lastPos:Point;
+	var targetPos:Point;
 	var onBezel:Bool = false;
+	
+	function onFrame(evt:Event = null):Void {
+		if (onBezel) {
+			var pt = targetPos.subtract(lastPos);
+			pt.x *= 0.5;
+			pt.y *= 0.5;
+			pt = lastPos.add(pt);
+			stick.graphics.clear();
+			stick.graphics.lineStyle(2, 0xFF0000, 1);
+			stick.graphics.moveTo(startPos.x, startPos.y);
+			stick.graphics.lineTo(pt.x, pt.y);
+			stick.graphics.drawCircle(pt.x, pt.y, Capabilities.screenDPI * 0.08);
+			
+			onMoveSignaler.dispatch(lastPos = pt);
+		}
+	}
 	
 	function onTouchBegin(evt:TouchEvent):Void {
 		
 	}
 	
 	function onTouchMove(evt:TouchEvent):Void {
-		trace(evt.sizeX + " " + evt.sizeY);
+		//trace(evt.sizeX + " " + evt.sizeY);
 	}
 	
 	function onTouchEnd(evt:TouchEvent):Void {
@@ -94,18 +114,12 @@ class StickCursor extends Cursor {
 		var pt = new Point(evt.stageX, evt.stageY);
 		onBezel = bezelOut.containsPoint(pt) && !bezelIn.containsPoint(pt);
 		
-		startPos = pt;
+		startPos = lastPos = targetPos = pt;
 	}
 	
 	function onMouseMove(evt:MouseEvent):Void {
 		if (onBezel) {
-			var pt = new Point(evt.stageX, evt.stageY);
-			pt = getStickEnd(startPos, pt);
-			stick.graphics.clear();
-			stick.graphics.beginFill(0xFF0000);
-			stick.graphics.lineStyle(2, 0xFF0000, 1);
-			stick.graphics.moveTo(startPos.x, startPos.y);
-			stick.graphics.lineTo(pt.x, pt.y);
+			targetPos = getStickEnd(startPos, new Point(evt.stageX, evt.stageY));
 		}
 	}
 	
