@@ -11,12 +11,12 @@ import nme.geom.Rectangle;
 import nme.system.Capabilities;
 import nme.ui.Multitouch;
 import nme.ui.MultitouchInputMode;
-import com.haxepunk.HXP;
 using org.casalib.util.NumberUtil;
+import com.haxepunk.HXP;
 
 import mobzor.event.CursorEvent;
 
-class StickCursor extends Cursor {
+class MouseCursor extends Cursor {
 	public var bezelOut:Rectangle;
 	public var bezelIn:Rectangle;
 	public var view:DisplayObjectContainer;
@@ -28,6 +28,7 @@ class StickCursor extends Cursor {
 		
 		view = Lib.current.stage;
 		stick = new Sprite();
+		velocity = new Point();
 	}
 	
 	public function onResize(evt:Event = null):Void {
@@ -79,23 +80,31 @@ class StickCursor extends Cursor {
 		super.end();
 	}
 	
-	var startPos:Point;
-	var lastPos:Point;
+	var startDownPos:Point;
+	var lastDownPos:Point;
 	var targetPos:Point;
 	var onBezel:Bool = false;
+	var velocity:Point;
 	
 	function onFrame(evt:Event = null):Void {
 		if (onBezel) {
-			var pt = targetPos.subtract(lastPos);
-			pt.normalize(pt.length * HXP.frameRate.map(0, 30, 1, 0.78));
-			pt = lastPos.add(pt);
+			var velocity = lastDownPos.subtract(startDownPos);
+			var l = velocity.length;
+			velocity.normalize(
+				l
+				* l.map(Capabilities.screenDPI * 0.01, Capabilities.screenDPI * 0.05, 1, 3).constrain(1, 3)
+				* HXP.frameRate.map(0, 30, 1, 0.75)
+			);
+			targetPos = targetPos.add(velocity);
+			var pt = targetPos;
 			stick.graphics.clear();
 			stick.graphics.lineStyle(2, 0xFF0000, 1);
-			stick.graphics.moveTo(startPos.x, startPos.y);
-			stick.graphics.lineTo(pt.x, pt.y);
+			stick.graphics.drawCircle(pt.x, pt.y, Capabilities.screenDPI * 0.001);
 			stick.graphics.drawCircle(pt.x, pt.y, Capabilities.screenDPI * 0.08);
 			
-			onMoveSignaler.dispatch(lastPos = pt);
+			onMoveSignaler.dispatch(targetPos);
+			
+			startDownPos = lastDownPos;
 		}
 	}
 	
@@ -115,31 +124,24 @@ class StickCursor extends Cursor {
 		var pt = new Point(evt.stageX, evt.stageY);
 		onBezel = bezelOut.containsPoint(pt) && !bezelIn.containsPoint(pt);
 		
-		startPos = lastPos = targetPos = pt;
+		startDownPos = lastDownPos = targetPos = pt;
 	}
 	
 	function onMouseMove(evt:MouseEvent):Void {
 		if (onBezel) {
-			targetPos = getStickEnd(startPos, new Point(evt.stageX, evt.stageY));
+			lastDownPos = new Point(evt.stageX, evt.stageY);
 		}
 	}
 	
 	function onMouseUp(evt:MouseEvent):Void {
-		var pt = new Point(evt.stageX, evt.stageY);
 		if (onBezel) {
-			onClickSignaler.dispatch(getStickEnd(startPos, pt));
+			onClickSignaler.dispatch(targetPos);
 		} else {
-			onClickSignaler.dispatch(pt);
+			onClickSignaler.dispatch(new Point(evt.stageX, evt.stageY));
 		}
 	
 		onBezel = false;
 		
 		stick.graphics.clear();
-	}
-	
-	static public function getStickEnd(down:Point, up:Point):Point {
-		var v = up.subtract(down);
-		v.normalize(v.length * 3);
-		return down.add(v);
 	}
 }

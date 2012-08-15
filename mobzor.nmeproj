@@ -87,6 +87,7 @@
     <Compile Include="src\mobzor\cursor\Cursor.hx" />
     <Compile Include="env.nmml" />
     <Compile Include="src\mobzor\entity\RandomMovingTarget.hx" />
+    <Compile Include="src\mobzor\cursor\MouseCursor.hx" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="src\" />

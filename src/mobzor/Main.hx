@@ -12,7 +12,7 @@ import mobzor.world.TestTouchWorld;
 class Main extends Engine {
 	
 	public function new():Void {
-		super(Lib.current.stage.stageWidth, Lib.current.stage.stageHeight, 30, false);
+		super(Lib.current.stage.stageWidth, Lib.current.stage.stageHeight, 30, true);
 	}
 
 	override public function init():Void {		
@@ -26,7 +26,7 @@ class Main extends Engine {
 		HXP.console.visible = false;
 		#end
 		
-		HXP.world = new TestTouchWorld();
+		HXP.world = new TestTouchWorld(new mobzor.cursor.StickCursor());
 	}
 	
 	function onKeyUp(evt:KeyboardEvent):Void {
