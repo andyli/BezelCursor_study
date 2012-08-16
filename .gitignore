@@ -23,3 +23,9 @@ env.nmml
 *.pidb
 *.resources
 test-results/
+
+##### TextMate #####
+
+*.tmproj
+*.tmproject
+tmtags
