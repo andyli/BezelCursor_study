@@ -29,3 +29,10 @@ test-results/
 *.tmproj
 *.tmproject
 tmtags
+
+##### IntelliJ #####
+
+*.iml
+*.ipr
+*.iws
+.idea/
