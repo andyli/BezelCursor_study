@@ -25,7 +25,7 @@ class Main extends Engine {
 		#if (!debug)
 		HXP.console.visible = false;
 		#end
-		
+
 		HXP.world = new TestTouchWorld(new mobzor.cursor.StickCursor());
 	}
 	

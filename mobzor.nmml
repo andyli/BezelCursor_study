@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project>
-	
-	<meta title="mobzor" package="net.onthewings.mobzor" version="1.0.0" company="onthewings" />
-	
 	<app 
+		title="mobzor" package="net.onthewings.mobzor" version="1.0.0" company="onthewings"
 		main="mobzor.Main" file="Mobzor" path="bin" 
 		preloader="com.haxepunk.Preloader" />
 	
@@ -23,6 +21,8 @@
 	<assets path="assets/font" rename="font" type="font" include="*.ttf" />
 	
 	<!--<icon path="assets/nme.svg" />-->
+	
+	<haxedef name="spod_macro" />
 	
 	<include name="env.nmml" />
 	
