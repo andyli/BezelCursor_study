@@ -10,8 +10,6 @@ import nme.system.Capabilities;
 import mobzor.cursor.Cursor;
 import mobzor.entity.Target;
 import mobzor.entity.RandomMovingTarget;
-import mobzor.event.CursorEvent;
-using mobzor.event.CursorEventType;
 
 class TestTouchWorld extends World {
 	public var cursor:Cursor;

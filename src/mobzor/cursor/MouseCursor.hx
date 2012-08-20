@@ -14,8 +14,6 @@ import nme.ui.MultitouchInputMode;
 using org.casalib.util.NumberUtil;
 import com.haxepunk.HXP;
 
-import mobzor.event.CursorEvent;
-
 class MouseCursor extends Cursor {
 	public var bezelOut:Rectangle;
 	public var bezelIn:Rectangle;
