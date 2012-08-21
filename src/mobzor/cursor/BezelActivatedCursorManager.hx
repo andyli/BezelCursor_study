@@ -20,7 +20,7 @@ class BezelActivatedCursorManager {
 	public var onClickSignaler(default, null):Signaler<Point>;
 	public var onEndSignaler(default, null):Signaler<Void>;
 	
-	dynamic public function createCursor(evt:TouchEvent):BezelActivatedCursor {
+	dynamic public function createCursor(evt:TouchEvent):PointActivatedCursor {
 		return new mobzor.cursor.MouseCursor(evt.touchPointID);
 	}
 	
@@ -36,7 +36,7 @@ class BezelActivatedCursorManager {
 	var bezelOut:Rectangle;
 	var bezelIn:Rectangle;
 	
-	var bezelActivatedCursors:IntHash<BezelActivatedCursor>;
+	var pointActivatedCursors:IntHash<PointActivatedCursor>;
 	
 	public function new():Void {
 		this.stage = Lib.stage;
@@ -46,7 +46,7 @@ class BezelActivatedCursorManager {
 		onClickSignaler = new DirectSignaler<Point>(this);
 		onEndSignaler = new DirectSignaler<Void>(this);
 		
-		bezelActivatedCursors = new IntHash<BezelActivatedCursor>();
+		pointActivatedCursors = new IntHash<PointActivatedCursor>();
 	}
 	
 	public function onResize(evt:Event = null):Void {
@@ -93,7 +93,7 @@ class BezelActivatedCursorManager {
 		var pt = new Point(evt.localX, evt.localY);
 		if (bezelOut.containsPoint(pt) && !bezelIn.containsPoint(pt)) {
 			var cursor = createCursor(evt);
-			bezelActivatedCursors.set(evt.touchPointID, cursor);
+			pointActivatedCursors.set(evt.touchPointID, cursor);
 			//trace(evt.touchPointID);
 			cursor.start();
 			cursor.onTouchBegin(evt);
@@ -104,26 +104,26 @@ class BezelActivatedCursorManager {
 			cursor.onEndSignaler.addBubblingTarget(onEndSignaler);
 		
 			cursor.onEndSignaler.bindAdvanced(function(signal:Signal<Void>):Void {
-				var cursor:BezelActivatedCursor = cast signal.origin;
+				var cursor:PointActivatedCursor = cast signal.origin;
 				cursor.onActivateSignaler.removeBubblingTarget(onActivateSignaler);
 				cursor.onMoveSignaler.removeBubblingTarget(onMoveSignaler);
 				cursor.onClickSignaler.removeBubblingTarget(onClickSignaler);
 				cursor.onEndSignaler.removeBubblingTarget(onEndSignaler);
-				bezelActivatedCursors.remove(cursor.touchPointID);
+				pointActivatedCursors.remove(cursor.touchPointID);
 			}).destroyOnUse();
 		}
 	}
 	
 	function onTouchMove(evt:TouchEvent):Void {
-		if (bezelActivatedCursors.exists(evt.touchPointID)) {
-			var cursor = bezelActivatedCursors.get(evt.touchPointID);
+		if (pointActivatedCursors.exists(evt.touchPointID)) {
+			var cursor = pointActivatedCursors.get(evt.touchPointID);
 			cursor.onTouchMove(evt);
 		}
 	}
 	
 	function onTouchEnd(evt:TouchEvent):Void {
-		if (bezelActivatedCursors.exists(evt.touchPointID)) {
-			var cursor = bezelActivatedCursors.get(evt.touchPointID);
+		if (pointActivatedCursors.exists(evt.touchPointID)) {
+			var cursor = pointActivatedCursors.get(evt.touchPointID);
 			cursor.onTouchEnd(evt);
 		}
 	}

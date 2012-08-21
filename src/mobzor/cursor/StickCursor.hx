@@ -7,7 +7,7 @@ import nme.geom.Rectangle;
 import nme.system.Capabilities;
 using org.casalib.util.NumberUtil;
 
-class StickCursor extends BezelActivatedCursor {
+class StickCursor extends PointActivatedCursor {
 	override function start():Void {
 		super.start();
 		

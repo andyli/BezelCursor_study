@@ -14,7 +14,7 @@ import nme.ui.MultitouchInputMode;
 using org.casalib.util.NumberUtil;
 import com.haxepunk.HXP;
 
-class MouseCursor extends BezelActivatedCursor {	
+class MouseCursor extends PointActivatedCursor {	
 	var startDownPos:Point;
 	var lastDownPos:Point;
 	var targetPos:Point;
