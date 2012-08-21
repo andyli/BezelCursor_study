@@ -14,15 +14,15 @@ class EventRecord {
 
 enum EventRecordType {
 	EStart;
-	ETouchDown(x:Float, y:Float, size:Float);
-	ETouchMove(x:Float, y:Float, size:Float);
-	ETouchUp(x:Float, y:Float, size:Float);
-	ETapped(x:Float, y:Float, ?targetId:Int);
-	ECursorAdded(x:Float, y:Float);
-	ECursorHover(x:Float, y:Float);
-	ECursorClicked(x:Float, y:Float, ?targetId:Int);
-	ECursorRemoved(x:Float, y:Float);
-	ETargetAdded(id:Int, type:String, x:Float, y:Float, w:Float, h:Float);
-	ETargetRemoved(id:Int);
+	ETouchDown(touchId:Int, x:Float, y:Float, size:Float);
+	ETouchMove(touchId:Int, x:Float, y:Float, size:Float);
+	ETouchUp(touchId:Int, x:Float, y:Float, size:Float);
+	ETapped(touchId:Int, x:Float, y:Float, ?targetId:Int);
+	ECursorAdded(cursorId:Int, x:Float, y:Float);
+	ECursorHover(cursorId:Int, x:Float, y:Float);
+	ECursorClicked(cursorId:Int, x:Float, y:Float, ?targetId:Int);
+	ECursorRemoved(cursorId:Int, x:Float, y:Float);
+	ETargetAdded(targetId:Int, type:String, x:Float, y:Float, w:Float, h:Float);
+	ETargetRemoved(targetId:Int);
 	EEnd;
 }

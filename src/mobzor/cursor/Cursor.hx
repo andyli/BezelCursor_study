@@ -5,12 +5,19 @@ import hsl.haxe.Signaler;
 import hsl.haxe.DirectSignaler;
 
 class Cursor {
-	public var onClickSignaler:Signaler<Point>;
-	public var onMoveSignaler:Signaler<Point>;
+	static var nextId = 0;
+	
+	public var onActivateSignaler(default, null):Signaler<Point>;
+	public var onMoveSignaler(default, null):Signaler<Point>;
+	public var onClickSignaler(default, null):Signaler<Point>;
+	public var id(default, null):Int;
 	
 	public function new():Void {
-		onClickSignaler = new DirectSignaler<Point>(this);
+		id = nextId++;
+		
+		onActivateSignaler = new DirectSignaler<Point>(this);
 		onMoveSignaler = new DirectSignaler<Point>(this);
+		onClickSignaler = new DirectSignaler<Point>(this);
 	}
 	
 	public function start():Void {

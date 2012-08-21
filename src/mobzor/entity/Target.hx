@@ -3,7 +3,6 @@ package mobzor.entity;
 import hsl.haxe.Signaler;
 import hsl.haxe.DirectSignaler;
 import nme.geom.Point;
-import nme.system.Capabilities;
 import com.haxepunk.HXP;
 import com.haxepunk.Entity;
 import com.haxepunk.graphics.Image;
@@ -12,21 +11,26 @@ using Std;
 import mobzor.cursor.Cursor;
 
 class Target extends Entity {
-
-	public var onClickSignaler:Signaler<Point>;
-	public var onCursorInSignaler:Signaler<Point>;
-	public var onCursorOutSignaler:Signaler<Point>;
+	static var nextId = 0;
+	
+	public var onClickSignaler(default, null):Signaler<Point>;
+	public var onCursorInSignaler(default, null):Signaler<Point>;
+	public var onCursorOutSignaler(default, null):Signaler<Point>;
 	
 	var cursor:Cursor;
 	var image:Image;
 	var image_hover:Image;
 	
+	public var id(default, null):Int;
 	public var color(default, set_color):Int = 0xFFFFFF;
 	public var color_hover(default, set_color_hover):Int = 0xFF6666;
 	public var isHover(default, null):Bool = false;
 	
 	public function new(c:Cursor, w:Int = 100, h:Int = 100):Void {
 		super();
+		
+		id = nextId++;
+		type = "Target";
 		
 		onClickSignaler = new DirectSignaler<Point>(this);
 		onCursorInSignaler = new DirectSignaler<Point>(this);

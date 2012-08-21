@@ -26,7 +26,7 @@ class Main extends Engine {
 		HXP.console.visible = false;
 		#end
 
-		HXP.world = new TestTouchWorld(new mobzor.cursor.StickCursor());
+		HXP.world = new TestTouchWorld(new mobzor.cursor.StickCursor(0));
 	}
 	
 	function onKeyUp(evt:KeyboardEvent):Void {
