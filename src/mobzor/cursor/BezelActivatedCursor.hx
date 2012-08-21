@@ -18,7 +18,7 @@ class BezelActivatedCursor extends Cursor {
 	/**
 	* The touch that is controlling this cursor.
 	*/
-	public var touchId(default, null):Int;
+	public var touchPointID(default, null):Int;
 	
 	/**
 	* Where this cursor is triggered (on bezel).
@@ -45,71 +45,25 @@ class BezelActivatedCursor extends Cursor {
 	* Basically Lib.stage.
 	*/
 	public var stage(default, null):Stage;
-
-	/**
-	* Width in inches to be considered as bezel.
-	*/
-	public var bezelWidth(default, null):Float = 0.1;
-	var bezelOut:Rectangle;
-	var bezelIn:Rectangle;
 	
-	public function new(touchId:Int, ?activatedPoint:Point):Void {
+	public function new(?touchPointID:Int = 0):Void {
 		super();
 		
-		this.touchId = touchId;
+		this.touchPointID = touchPointID;
 		this.stage = Lib.stage;
 		this.view = new Sprite();
-		this.activatedPoint = activatedPoint;
-	}
-	
-	public function onResize(evt:Event = null):Void {
-		bezelOut = new Rectangle(0, 0, stage.stageWidth, stage.stageHeight);
-		bezelIn = bezelOut.clone();
-		
-		var bezelWidthPx = Capabilities.screenDPI * bezelWidth;
-		bezelIn.inflate(-bezelWidthPx, -bezelWidthPx); 
+		//this.activatedPoint = activatedPoint;
 	}
 	
 	override public function start():Void {
 		super.start();
-		
-		onResize();
-		
 		stage.addChild(view);
-		
-		if (Multitouch.supportsTouchEvents) {
-			stage.addEventListener(TouchEvent.TOUCH_BEGIN, onTouchBegin);
-			stage.addEventListener(TouchEvent.TOUCH_MOVE, onTouchMove);
-			stage.addEventListener(TouchEvent.TOUCH_END, onTouchEnd);
-			
-			//trace(Multitouch.inputMode);
-			Multitouch.inputMode = MultitouchInputMode.TOUCH_POINT;
-		} else {
-			stage.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
-			stage.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
-			stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
-		}
-		
-		stage.addEventListener(Event.RESIZE, onResize);
 		stage.addEventListener(Event.ENTER_FRAME, onFrame);
 	}
 	
 	override public function end():Void {
-		stage.removeEventListener(Event.RESIZE, onResize);
 		stage.removeEventListener(Event.ENTER_FRAME, onFrame);
-		
-		if (Multitouch.supportsTouchEvents) {
-			stage.removeEventListener(TouchEvent.TOUCH_BEGIN, onTouchBegin);
-			stage.removeEventListener(TouchEvent.TOUCH_MOVE, onTouchMove);
-			stage.removeEventListener(TouchEvent.TOUCH_END, onTouchEnd);
-		} else {
-			stage.removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
-			stage.removeEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
-			stage.removeEventListener(MouseEvent.MOUSE_UP, onMouseUp);
-		}
-		
 		stage.removeChild(view);
-		
 		super.end();
 	}
 	
@@ -129,80 +83,20 @@ class BezelActivatedCursor extends Cursor {
 		}
 	}
 	
-	function onTouchBegin(evt:TouchEvent):Void {
-		var pt = new Point(evt.localX, evt.localY);
-		if (bezelOut.containsPoint(pt) && !bezelIn.containsPoint(pt)) {
-			this.activatedPoint = pt;
-		} else {
-			this.activatedPoint = null;
-		}
-	}
-	
-	function onTouchMove(evt:TouchEvent):Void {
+	public function onTouchBegin(evt:TouchEvent):Void {
+		if (evt.touchPointID != touchPointID) return;
 		
+		var pt = new Point(evt.localX, evt.localY);
+		this.activatedPoint = pt;
 	}
 	
-	function onTouchEnd(evt:TouchEvent):Void {	
+	public function onTouchMove(evt:TouchEvent):Void {
+		if (evt.touchPointID != touchPointID) return;
+	}
+	
+	public function onTouchEnd(evt:TouchEvent):Void {
+		if (evt.touchPointID != touchPointID) return;
+		
 		this.activatedPoint = null;
-	}
-	
-	function onMouseDown(evt:MouseEvent):Void {
-		onTouchBegin(new TouchEvent(
-			TouchEvent.TOUCH_BEGIN, 
-			evt.bubbles, 
-			evt.cancelable,
-			evt.localX, 
-			evt.localY, 
-			1, 
-			1, 
-			evt.relatedObject, 
-			evt.ctrlKey, 
-			evt.altKey, 
-			evt.shiftKey, 
-			evt.buttonDown, 
-			evt.delta, 
-			evt.commandKey, 
-			evt.clickCount
-		));
-	}
-	
-	function onMouseMove(evt:MouseEvent):Void {
-		onTouchMove(new TouchEvent(
-			TouchEvent.TOUCH_BEGIN, 
-			evt.bubbles, 
-			evt.cancelable,
-			evt.localX, 
-			evt.localY, 
-			1, 
-			1, 
-			evt.relatedObject, 
-			evt.ctrlKey, 
-			evt.altKey, 
-			evt.shiftKey, 
-			evt.buttonDown, 
-			evt.delta, 
-			evt.commandKey, 
-			evt.clickCount
-		));
-	}
-	
-	function onMouseUp(evt:MouseEvent):Void {
-		onTouchEnd(new TouchEvent(
-			TouchEvent.TOUCH_BEGIN, 
-			evt.bubbles, 
-			evt.cancelable,
-			evt.localX, 
-			evt.localY, 
-			1, 
-			1, 
-			evt.relatedObject, 
-			evt.ctrlKey, 
-			evt.altKey, 
-			evt.shiftKey, 
-			evt.buttonDown, 
-			evt.delta, 
-			evt.commandKey, 
-			evt.clickCount
-		));
 	}
 }

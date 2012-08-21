@@ -41,6 +41,8 @@ class StickCursor extends BezelActivatedCursor {
 	}
 	
 	override function onTouchEnd(evt:TouchEvent):Void {
+		if (evt.touchPointID != touchPointID) return;
+		
 		var pt = new Point(evt.localX, evt.localY);
 		if (currentPoint != null) {
 			onClickSignaler.dispatch(currentPoint);
@@ -53,6 +55,8 @@ class StickCursor extends BezelActivatedCursor {
 		this.targetPoint = this.currentPoint = null;
 		
 		super.onTouchEnd(evt);
+		
+		end();
 	}
 	
 	static public function getStickEnd(down:Point, up:Point):Point {

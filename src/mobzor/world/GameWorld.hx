@@ -9,20 +9,20 @@ import nme.display.Sprite;
 import nme.geom.Point;
 import nme.system.Capabilities;
 
+using mobzor.Main;
 import mobzor.cursor.Cursor;
+import mobzor.cursor.BezelActivatedCursorManager;
 import mobzor.entity.Target;
 import mobzor.model.EventRecord;
 
 class GameWorld extends World {
-	public var cursor:Cursor;
 	public var currentTarget(default, set_currentTarget):Target;
 	public var targets(default, null):Array<Target>;
 	
 	public var eventRecords(default, null):Array<EventRecord>;
 	
-	override public function new(c:Cursor):Void {
+	override public function new():Void {
 		super();
-		cursor = c;
 	}
 
 	override public function begin():Void {
@@ -30,11 +30,9 @@ class GameWorld extends World {
 		
 		targets = [];
 		eventRecords = [];
-		cursor.start();
 	}
 	
 	override public function end():Void {
-		cursor.end();
 		super.end();
 	}
 	

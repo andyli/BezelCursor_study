@@ -7,9 +7,11 @@ import nme.events.KeyboardEvent;
 import nme.ui.Keyboard;
 import nme.Lib;
 
+import mobzor.cursor.BezelActivatedCursorManager;
 import mobzor.world.TestTouchWorld;
 
 class Main extends Engine {
+	public var bezelActivatedCursorManager:BezelActivatedCursorManager;
 	
 	public function new():Void {
 		super(Lib.current.stage.stageWidth, Lib.current.stage.stageHeight, 30, true);
@@ -26,7 +28,10 @@ class Main extends Engine {
 		HXP.console.visible = false;
 		#end
 
-		HXP.world = new TestTouchWorld(new mobzor.cursor.StickCursor(0));
+		bezelActivatedCursorManager = new BezelActivatedCursorManager();
+		bezelActivatedCursorManager.start();
+
+		HXP.world = new TestTouchWorld();
 	}
 	
 	function onKeyUp(evt:KeyboardEvent):Void {
@@ -36,7 +41,11 @@ class Main extends Engine {
 		}
 	}
 	
-	public static function main():Void {
+	static public function main():Void {
 		Lib.current.addChild(new Main());
+	}
+	
+	static public function asMain(e:Engine):Main {
+		return cast e;
 	}
 }

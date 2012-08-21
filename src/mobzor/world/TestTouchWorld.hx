@@ -9,10 +9,11 @@ import nme.system.Capabilities;
 import mobzor.cursor.Cursor;
 import mobzor.entity.Target;
 import mobzor.entity.RandomMovingTarget;
+using mobzor.Main;
 
 class TestTouchWorld extends GameWorld {
-	override public function new(c:Cursor):Void {
-		super(c);
+	override public function new():Void {
+		super();
 	}
 	
 	override public function begin():Void {
@@ -28,7 +29,7 @@ class TestTouchWorld extends GameWorld {
 			var _y = 0.5 * (HXP.stage.stageHeight - Math.floor(HXP.stage.stageHeight / _h) * _h);
 			while (_y + _h < HXP.stage.stageHeight) {
 			
-				var target = new Target(cursor, _w - margin, _h - margin);
+				var target = new Target(_w - margin, _h - margin);
 				target.moveTo(_x + margin*0.5, _y + margin*0.5);
 				add(target);
 				
@@ -37,12 +38,17 @@ class TestTouchWorld extends GameWorld {
 			_x += _w;
 		}
 		
+		
 		targets[0].onClickSignaler.bindVoid(function() {
-			HXP.world = new TestTouchWorld(new mobzor.cursor.StickCursor(0));
+			HXP.engine.asMain().bezelActivatedCursorManager.createCursor = function() {
+				return new mobzor.cursor.StickCursor();
+			}
 		});
 		
 		targets[1].onClickSignaler.bindVoid(function() {
-			HXP.world = new TestTouchWorld(new mobzor.cursor.MouseCursor(0));
+			HXP.engine.asMain().bezelActivatedCursorManager.createCursor = function() {
+				return new mobzor.cursor.MouseCursor();
+			}
 		});
 		
 		currentTarget = targets[Std.int(Math.random() * targets.length)];

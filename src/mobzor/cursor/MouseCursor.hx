@@ -61,6 +61,8 @@ class MouseCursor extends BezelActivatedCursor {
 	}
 	
 	override function onTouchEnd(evt:TouchEvent):Void {
+		if (evt.touchPointID != touchPointID) return;
+		
 		var pt = new Point(evt.localX, evt.localY);
 		if (currentPoint != null) {
 			onClickSignaler.dispatch(currentPoint);
@@ -73,5 +75,7 @@ class MouseCursor extends BezelActivatedCursor {
 		startDownPos = lastDownPos = targetPoint = currentPoint = null;
 		
 		super.onTouchEnd(evt);
+		
+		end();
 	}
 }

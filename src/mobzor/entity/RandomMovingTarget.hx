@@ -12,8 +12,8 @@ import mobzor.cursor.Cursor;
 
 class RandomMovingTarget extends Target {
 	
-	public function new(c:Cursor):Void {
-		super(c);
+	public function new():Void {
+		super();
 		
 		color = (Math.random() * 0xFFFFFF).int();
 		rndSize();

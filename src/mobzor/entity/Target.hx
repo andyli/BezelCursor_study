@@ -8,7 +8,8 @@ import com.haxepunk.Entity;
 import com.haxepunk.graphics.Image;
 using Std;
 
-import mobzor.cursor.Cursor;
+using mobzor.Main;
+import mobzor.cursor.BezelActivatedCursorManager;
 
 class Target extends Entity {
 	static var nextId = 0;
@@ -17,7 +18,7 @@ class Target extends Entity {
 	public var onCursorInSignaler(default, null):Signaler<Point>;
 	public var onCursorOutSignaler(default, null):Signaler<Point>;
 	
-	var cursor:Cursor;
+	var bezelActivatedCursorManager:BezelActivatedCursorManager;
 	var image:Image;
 	var image_hover:Image;
 	
@@ -26,7 +27,7 @@ class Target extends Entity {
 	public var color_hover(default, set_color_hover):Int = 0xFF6666;
 	public var isHover(default, null):Bool = false;
 	
-	public function new(c:Cursor, w:Int = 100, h:Int = 100):Void {
+	public function new(w:Int = 100, h:Int = 100):Void {
 		super();
 		
 		id = nextId++;
@@ -36,11 +37,22 @@ class Target extends Entity {
 		onCursorInSignaler = new DirectSignaler<Point>(this);
 		onCursorOutSignaler = new DirectSignaler<Point>(this);
 		
-		cursor = c;
+		bezelActivatedCursorManager = HXP.engine.asMain().bezelActivatedCursorManager;
 		resize(w, h);
+	}
+	
+	override public function added():Void {
+		super.added();
 		
-		cursor.onClickSignaler.bind(onClick);
-		cursor.onMoveSignaler.bind(onCursorMove);
+		bezelActivatedCursorManager.onClickSignaler.bind(onClick);
+		bezelActivatedCursorManager.onMoveSignaler.bind(onCursorMove);
+	}
+	
+	override public function removed():Void {
+		bezelActivatedCursorManager.onClickSignaler.unbind(onClick);
+		bezelActivatedCursorManager.onMoveSignaler.unbind(onCursorMove);
+		
+		super.removed();
 	}
 	
 	function set_color(c:Int):Int {
