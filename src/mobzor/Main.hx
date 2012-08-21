@@ -25,7 +25,7 @@ class Main extends Engine {
 		
 		HXP.console.enable();
 		#if (!debug)
-		HXP.console.visible = false;
+		//HXP.console.visible = false;
 		#end
 
 		bezelActivatedCursorManager = new BezelActivatedCursorManager();

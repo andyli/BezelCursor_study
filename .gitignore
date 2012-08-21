@@ -29,6 +29,7 @@ test-results/
 *.tmproj
 *.tmproject
 tmtags
+.tm*
 
 ##### IntelliJ #####
 

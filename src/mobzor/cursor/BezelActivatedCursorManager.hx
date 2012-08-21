@@ -20,8 +20,8 @@ class BezelActivatedCursorManager {
 	public var onClickSignaler(default, null):Signaler<Point>;
 	public var onEndSignaler(default, null):Signaler<Void>;
 	
-	dynamic public function createCursor():BezelActivatedCursor {
-		return new mobzor.cursor.MouseCursor();
+	dynamic public function createCursor(evt:TouchEvent):BezelActivatedCursor {
+		return new mobzor.cursor.MouseCursor(evt.touchPointID);
 	}
 	
 	/**
@@ -92,8 +92,9 @@ class BezelActivatedCursorManager {
 	function onTouchBegin(evt:TouchEvent):Void {
 		var pt = new Point(evt.localX, evt.localY);
 		if (bezelOut.containsPoint(pt) && !bezelIn.containsPoint(pt)) {
-			var cursor = createCursor();
+			var cursor = createCursor(evt);
 			bezelActivatedCursors.set(evt.touchPointID, cursor);
+			//trace(evt.touchPointID);
 			cursor.start();
 			cursor.onTouchBegin(evt);
 		

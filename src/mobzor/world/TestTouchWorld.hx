@@ -3,6 +3,7 @@ package mobzor.world;
 import hsl.haxe.Signal;
 import com.haxepunk.HXP;
 import nme.display.Sprite;
+import nme.events.TouchEvent;
 import nme.geom.Point;
 import nme.system.Capabilities;
 
@@ -40,14 +41,14 @@ class TestTouchWorld extends GameWorld {
 		
 		
 		targets[0].onClickSignaler.bindVoid(function() {
-			HXP.engine.asMain().bezelActivatedCursorManager.createCursor = function() {
-				return new mobzor.cursor.StickCursor();
+			HXP.engine.asMain().bezelActivatedCursorManager.createCursor = function(evt:TouchEvent) {
+				return new mobzor.cursor.StickCursor(evt.touchPointID);
 			}
 		});
 		
 		targets[1].onClickSignaler.bindVoid(function() {
-			HXP.engine.asMain().bezelActivatedCursorManager.createCursor = function() {
-				return new mobzor.cursor.MouseCursor();
+			HXP.engine.asMain().bezelActivatedCursorManager.createCursor = function(evt:TouchEvent) {
+				return new mobzor.cursor.MouseCursor(evt.touchPointID);
 			}
 		});
 		

@@ -1,5 +1,6 @@
 package mobzor.entity;
 
+import hsl.haxe.Signal;
 import nme.geom.Point;
 import nme.system.Capabilities;
 import com.haxepunk.HXP;
@@ -33,8 +34,12 @@ class RandomMovingTarget extends Target {
 		y = NumberUtil.randomIntegerWithinRange(0, HXP.stage.stageHeight - height);
 	}
 	
-	override function onClick(pt:Point):Void {
-		super.onClick(pt);
+	override function onClick(signal:Signal<Point>):Void {
+		super.onClick(signal);
+		
+		var cursor:Cursor = cast signal.origin;
+		var pt = cursor.currentPoint;
+		
 		if (collidePoint(x, y, pt.x, pt.y)) {
 			color = (Math.random() * 0xFFFFFF).int();
 			rndSize();

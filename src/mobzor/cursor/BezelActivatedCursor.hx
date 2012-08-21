@@ -31,11 +31,6 @@ class BezelActivatedCursor extends Cursor {
 	public var targetPoint(default, null):Point;
 	
 	/**
-	* Current pointing position.
-	*/
-	public var currentPoint(default, null):Point;
-	
-	/**
 	* The visual graphics of the cursor.
 	* It is automatically added to the stage on `start` and removed on `end`.
 	*/
@@ -46,7 +41,7 @@ class BezelActivatedCursor extends Cursor {
 	*/
 	public var stage(default, null):Stage;
 	
-	public function new(?touchPointID:Int = 0):Void {
+	public function new(touchPointID:Int):Void {
 		super();
 		
 		this.touchPointID = touchPointID;

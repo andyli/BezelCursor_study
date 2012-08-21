@@ -11,7 +11,13 @@ class Cursor {
 	public var onMoveSignaler(default, null):Signaler<Point>;
 	public var onClickSignaler(default, null):Signaler<Point>;
 	public var onEndSignaler(default, null):Signaler<Void>;
+	
 	public var id(default, null):Int;
+	
+	/**
+	* Current pointing position.
+	*/
+	public var currentPoint(default, null):Point;
 	
 	public function new():Void {
 		id = nextId++;
