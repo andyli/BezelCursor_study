@@ -52,6 +52,12 @@ class TestTouchWorld extends GameWorld {
 			}
 		});
 		
+		targets[2].onClickSignaler.bindVoid(function() {
+			HXP.engine.asMain().bezelActivatedCursorManager.createCursor = function(evt:TouchEvent) {
+				return new mobzor.cursor.DynaStickCursor(evt.touchPointID);
+			}
+		});
+		
 		currentTarget = targets[Std.int(Math.random() * targets.length)];
 	}
 	

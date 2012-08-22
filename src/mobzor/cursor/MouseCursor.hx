@@ -14,7 +14,7 @@ import nme.ui.MultitouchInputMode;
 using org.casalib.util.NumberUtil;
 import com.haxepunk.HXP;
 
-class MouseCursor extends PointActivatedCursor {	
+class MouseCursor extends PointActivatedCursor {
 	var startDownPos:Point;
 	var lastDownPos:Point;
 	var targetPos:Point;
@@ -27,7 +27,7 @@ class MouseCursor extends PointActivatedCursor {
 				velocity.normalize(
 					l
 					* l.map(Capabilities.screenDPI * 0.01, Capabilities.screenDPI * 0.05, 1, 3).constrain(1, 3)
-					* HXP.frameRate.map(0, 30, 1, 0.75)
+					* stage.frameRate.map(30, 60, 1, 0.5)
 				);
 				targetPoint = targetPoint.add(velocity);
 			} else {
