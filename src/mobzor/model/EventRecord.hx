@@ -17,7 +17,7 @@ enum EventRecordType {
 	ETouchDown(touchId:Int, x:Float, y:Float, size:Float);
 	ETouchMove(touchId:Int, x:Float, y:Float, size:Float);
 	ETouchUp(touchId:Int, x:Float, y:Float, size:Float);
-	ETapped(touchId:Int, x:Float, y:Float, ?targetId:Int);
+	ETapped(touchId:Int, x:Float, y:Float, size:Float, ?targetId:Int);
 	ECursorAdded(cursorId:Int, x:Float, y:Float);
 	ECursorHover(cursorId:Int, x:Float, y:Float);
 	ECursorClicked(cursorId:Int, x:Float, y:Float, ?targetId:Int);

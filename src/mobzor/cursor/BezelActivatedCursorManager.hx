@@ -1,5 +1,6 @@
 package mobzor.cursor;
 
+using Std;
 import nme.Lib;
 import nme.display.Stage;
 import nme.events.Event;
@@ -89,12 +90,18 @@ class BezelActivatedCursorManager {
 		}
 	}
 	
-	function onTouchBegin(evt:TouchEvent):Void {
+	function insideBezel(evt:TouchEvent):Bool {
 		var pt = new Point(evt.localX, evt.localY);
-		if (bezelOut.containsPoint(pt) && !bezelIn.containsPoint(pt)) {
+		return bezelOut.containsPoint(pt) && !bezelIn.containsPoint(pt);
+	}
+	
+	function onTouchBegin(evt:TouchEvent):Void {
+		if (insideBezel(evt)) {
 			var cursor = createCursor(evt);
-			pointActivatedCursors.set(evt.touchPointID, cursor);
-			//trace(evt.touchPointID);
+			
+			if (cursor.is(PointActivatedCursor))
+				pointActivatedCursors.set(evt.touchPointID, cast cursor);
+			
 			cursor.start();
 			cursor.onTouchBegin(evt);
 		
@@ -104,12 +111,15 @@ class BezelActivatedCursorManager {
 			cursor.onEndSignaler.addBubblingTarget(onEndSignaler);
 		
 			cursor.onEndSignaler.bindAdvanced(function(signal:Signal<Void>):Void {
-				var cursor:PointActivatedCursor = cast signal.origin;
+				var cursor:Cursor = cast signal.origin;
+				
 				cursor.onActivateSignaler.removeBubblingTarget(onActivateSignaler);
 				cursor.onMoveSignaler.removeBubblingTarget(onMoveSignaler);
 				cursor.onClickSignaler.removeBubblingTarget(onClickSignaler);
 				cursor.onEndSignaler.removeBubblingTarget(onEndSignaler);
-				pointActivatedCursors.remove(cursor.touchPointID);
+				
+				if (cursor.is(PointActivatedCursor))
+					pointActivatedCursors.remove(untyped cursor.touchPointID);
 			}).destroyOnUse();
 		}
 	}

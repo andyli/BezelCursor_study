@@ -4,6 +4,7 @@ import nme.Lib;
 import nme.display.Stage;
 import nme.display.Sprite;
 import nme.events.Event;
+import nme.events.TouchEvent;
 import nme.geom.Point;
 import hsl.haxe.Signaler;
 import hsl.haxe.DirectSignaler;
@@ -51,7 +52,7 @@ class Cursor {
 		onEndSignaler = new DirectSignaler<Void>(this);
 	}
 	
-	function onFrame(evt:Event = null):Void {
+	function onFrame(evt:Event = null):Void {		
 		if (targetPoint != null) {
 			if (currentPoint == null) {
 				currentPoint = targetPoint;
@@ -66,6 +67,18 @@ class Cursor {
 		}
 	}
 	
+	public function onTouchBegin(evt:TouchEvent):Void {
+		
+	}
+	
+	public function onTouchMove(evt:TouchEvent):Void {
+		
+	}
+	
+	public function onTouchEnd(evt:TouchEvent):Void {
+		
+	}
+	
 	public function start():Void {
 		stage.addChild(view);
 		stage.addEventListener(Event.ENTER_FRAME, onFrame);
@@ -77,4 +90,23 @@ class Cursor {
 		currentPoint = targetPoint = null;
 		onEndSignaler.dispatch();
 	}
+	
+	public function clone():Cursor {
+		var cursor = new Cursor();
+		cursor.id = id;
+		cursor.currentPoint = currentPoint;
+		cursor.targetPoint = targetPoint;
+		return cursor;
+	}
+	
+    function hxSerialize( s : haxe.Serializer ) {
+		s.serialize(id);
+        s.serialize(currentPoint);
+        s.serialize(targetPoint);
+    }
+    function hxUnserialize( s : haxe.Unserializer ) {
+		id = s.unserialize();
+        currentPoint = s.unserialize();
+        targetPoint = s.unserialize();
+    }
 }

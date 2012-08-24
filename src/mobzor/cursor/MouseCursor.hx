@@ -15,27 +15,8 @@ using org.casalib.util.NumberUtil;
 import com.haxepunk.HXP;
 
 class MouseCursor extends PointActivatedCursor {
-	var startDownPos:Point;
-	var lastDownPos:Point;
-	var targetPos:Point;
 	
-	override function onFrame(evt:Event = null):Void {
-		if (lastDownPos != null) {
-			if (startDownPos != null) {
-				var velocity = lastDownPos.subtract(startDownPos);
-				var l = velocity.length;
-				velocity.normalize(
-					l
-					* l.map(Capabilities.screenDPI * 0.01, Capabilities.screenDPI * 0.05, 1, 3).constrain(1, 3)
-					* stage.frameRate.map(30, 60, 1, 0.5)
-				);
-				targetPoint = targetPoint.add(velocity);
-			} else {
-				targetPoint = lastDownPos;
-			}
-			startDownPos = lastDownPos;
-		}
-		
+	override function onFrame(evt:Event = null):Void {		
 		super.onFrame(evt);
 		
 		if (currentPoint != null) {
@@ -44,20 +25,25 @@ class MouseCursor extends PointActivatedCursor {
 			view.graphics.drawCircle(currentPoint.x, currentPoint.y, Capabilities.screenDPI * 0.001);
 			view.graphics.drawCircle(currentPoint.x, currentPoint.y, Capabilities.screenDPI * 0.08);
 		}
+		
+		if (activatedPoint != null) {
+			var v = touchVelocity.clone();
+			var l = touchVelocity.length;
+			v.normalize(
+				l
+				* l.map(Capabilities.screenDPI * 0.01, Capabilities.screenDPI * 0.05, 1, 3).constrain(1, 3)
+				* stage.frameRate.map(30, 60, 1, 0.5)
+			);
+			targetPoint = targetPoint.add(v);
+		} else {
+			targetPoint = currentTouchPoint;
+		}
 	}
 	
 	override function onTouchBegin(evt:TouchEvent):Void {
 		super.onTouchBegin(evt);
 		
-		startDownPos = lastDownPos = targetPoint = currentPoint = activatedPoint;
-	}
-	
-	override function onTouchMove(evt:TouchEvent):Void {
-		super.onTouchMove(evt);
-		
-		if (activatedPoint != null) {
-			lastDownPos = new Point(evt.localX, evt.localY);
-		}
+		targetPoint = currentPoint = activatedPoint;
 	}
 	
 	override function onTouchEnd(evt:TouchEvent):Void {
@@ -72,10 +58,20 @@ class MouseCursor extends PointActivatedCursor {
 		
 		view.graphics.clear();
 		
-		startDownPos = lastDownPos = targetPoint = currentPoint = null;
+		targetPoint = currentPoint = null;
 		
 		super.onTouchEnd(evt);
 		
 		end();
+	}
+	
+	override public function clone():MouseCursor {
+		var cursor = new MouseCursor(touchPointID);
+		cursor.id = id;
+		cursor.currentPoint = currentPoint;
+		cursor.targetPoint = targetPoint;
+		cursor.pFrameTouchPoint = pFrameTouchPoint;
+		cursor.currentTouchPoint = currentTouchPoint;
+		return cursor;
 	}
 }
