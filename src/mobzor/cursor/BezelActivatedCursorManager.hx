@@ -139,6 +139,7 @@ class BezelActivatedCursorManager {
 	}
 	
 	function onMouseDown(evt:MouseEvent):Void {
+		#if !flash
 		onTouchBegin(new TouchEvent(
 			TouchEvent.TOUCH_BEGIN, 
 			evt.bubbles, 
@@ -156,11 +157,30 @@ class BezelActivatedCursorManager {
 			evt.commandKey, 
 			evt.clickCount
 		));
+		#else
+		onTouchBegin(new TouchEvent(
+			TouchEvent.TOUCH_BEGIN,
+			evt.bubbles, 
+			evt.cancelable,
+			0,
+			true,
+			evt.localX, 
+			evt.localY, 
+			1, 
+			1,
+			Math.NaN,
+			evt.relatedObject, 
+			evt.ctrlKey, 
+			evt.altKey, 
+			evt.shiftKey
+		));
+		#end
 	}
 	
 	function onMouseMove(evt:MouseEvent):Void {
+		#if !flash
 		onTouchMove(new TouchEvent(
-			TouchEvent.TOUCH_BEGIN, 
+			TouchEvent.TOUCH_MOVE, 
 			evt.bubbles, 
 			evt.cancelable,
 			evt.localX, 
@@ -176,11 +196,30 @@ class BezelActivatedCursorManager {
 			evt.commandKey, 
 			evt.clickCount
 		));
+		#else
+		onTouchMove(new TouchEvent(
+			TouchEvent.TOUCH_MOVE,
+			evt.bubbles, 
+			evt.cancelable,
+			0,
+			true,
+			evt.localX, 
+			evt.localY, 
+			1, 
+			1,
+			Math.NaN,
+			evt.relatedObject, 
+			evt.ctrlKey, 
+			evt.altKey, 
+			evt.shiftKey
+		));
+		#end
 	}
 	
 	function onMouseUp(evt:MouseEvent):Void {
+		#if !flash
 		onTouchEnd(new TouchEvent(
-			TouchEvent.TOUCH_BEGIN, 
+			TouchEvent.TOUCH_END, 
 			evt.bubbles, 
 			evt.cancelable,
 			evt.localX, 
@@ -196,5 +235,23 @@ class BezelActivatedCursorManager {
 			evt.commandKey, 
 			evt.clickCount
 		));
+		#else
+		onTouchEnd(new TouchEvent(
+			TouchEvent.TOUCH_END,
+			evt.bubbles, 
+			evt.cancelable,
+			0,
+			true,
+			evt.localX, 
+			evt.localY, 
+			1, 
+			1,
+			Math.NaN,
+			evt.relatedObject, 
+			evt.ctrlKey, 
+			evt.altKey, 
+			evt.shiftKey
+		));
+		#end
 	}
 }

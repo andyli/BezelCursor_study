@@ -12,7 +12,6 @@ import nme.system.Capabilities;
 import nme.ui.Multitouch;
 import nme.ui.MultitouchInputMode;
 using org.casalib.util.NumberUtil;
-import com.haxepunk.HXP;
 
 import mobzor.cursor.behavior.Behavior;
 import mobzor.cursor.behavior.DynaScale;
@@ -51,12 +50,8 @@ class MouseCursor extends PointActivatedCursor {
 	override function onTouchEnd(evt:TouchEvent):Void {
 		if (evt.touchPointID != touchPointID) return;
 		
-		var pt = new Point(evt.localX, evt.localY);
-		if (currentPoint != null) {
-			onClickSignaler.dispatch(currentPoint);
-		} else {
-			onClickSignaler.dispatch(pt);
-		}
+
+		dispatch(onClickSignaler);
 		
 		view.graphics.clear();
 		

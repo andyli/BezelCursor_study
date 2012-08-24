@@ -1,10 +1,8 @@
 package mobzor.model;
 
-import sys.db.Types;
-
 class EventRecord {
 	public function new(type:EventRecordType):Void {
-		this.timestamp = Sys.cpuTime();
+		this.timestamp = haxe.Timer.stamp();
 		this.type = type;
 	}
 	

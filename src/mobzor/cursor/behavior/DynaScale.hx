@@ -3,13 +3,17 @@ package mobzor.cursor.behavior;
 import nme.system.Capabilities;
 using org.casalib.util.NumberUtil;
 
-class DynaScale extends Behavior<PointActivatedCursor> {	
-	var expended:Bool = false;
-	var expendedTime:Float = 0;
-	
+/**
+* Scale the cursor area like a DynaSpot cursor.
+*/
+class DynaScale extends Behavior<PointActivatedCursor> {
+	var expended:Bool;
+	var expendedTime:Float;
 	
 	override function start():Void {
 		super.start();
+		expended = false;
+		expendedTime = 0;
 		cursor.targetSize = cursor.currentSize = 0;
 	}
 	
@@ -18,7 +22,7 @@ class DynaScale extends Behavior<PointActivatedCursor> {
 		
 		var l = cursor.touchVelocity.length;
 				
-		var curTime = Sys.cpuTime();
+		var curTime = haxe.Timer.stamp();
 				
 		if (l > Capabilities.screenDPI * 0.02) {
 			expendedTime = curTime;

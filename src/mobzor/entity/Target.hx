@@ -1,5 +1,7 @@
 package mobzor.entity;
 
+using Std;
+using Lambda;
 import hsl.haxe.Signal;
 import hsl.haxe.Signaler;
 import hsl.haxe.DirectSignaler;
@@ -7,14 +9,14 @@ import nme.geom.Point;
 import com.haxepunk.HXP;
 import com.haxepunk.Entity;
 import com.haxepunk.graphics.Image;
-using Std;
-using Lambda;
+import de.polygonal.motor.geom.primitive.AABB2;
 
 using mobzor.Main;
 import mobzor.cursor.Cursor;
 import mobzor.cursor.BezelActivatedCursorManager;
 
 class Target extends Entity {
+	inline static public var TYPE = "Target";
 	static var nextId = 0;
 	
 	public var onClickSignaler(default, null):Signaler<Point>;
@@ -30,12 +32,13 @@ class Target extends Entity {
 	public var color(default, set_color):Int = 0xFFFFFF;
 	public var color_hover(default, set_color_hover):Int = 0xFF6666;
 	public var isHoverBy(default, null):IntHash<Cursor>;
+	public var collisionShape(get_collisionShape, null):Dynamic;
 	
 	public function new(w:Int = 100, h:Int = 100):Void {
 		super();
 		
 		id = nextId++;
-		type = "Target";
+		type = Target.TYPE;
 		isHoverBy = new IntHash<Cursor>();
 		needUpdate = false;
 		
@@ -89,10 +92,14 @@ class Target extends Entity {
 		graphic = isHoverBy.empty() ? image : image_hover;
 	}
 	
+	function get_collisionShape():Dynamic {
+		return AABB2.ofMinAndDiameter(x, y, width, height);
+	}
+	
 	function onClick(signal:Signal<Point>):Void {
 		var cursor:Cursor = cast signal.origin;
-		var pt = cursor.currentPoint;
-		//trace(cursor.currentPoint);
+		var pt = signal.data;
+		
 		if (collidePoint(x, y, pt.x, pt.y)) {
 			//trace("clicked");
 			onClickSignaler.dispatch(pt);
@@ -102,7 +109,7 @@ class Target extends Entity {
 	
 	function onCursorMove(signal:Signal<Point>):Void {
 		var cursor:Cursor = cast signal.origin;
-		var pt = cursor.currentPoint;
+		var pt = signal.data;
 		
 		if (collidePoint(x, y, pt.x, pt.y)) {
 			if (!isHoverBy.exists(cursor.id)) {
