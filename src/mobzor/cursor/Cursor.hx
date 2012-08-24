@@ -10,6 +10,8 @@ import hsl.haxe.Signaler;
 import hsl.haxe.DirectSignaler;
 using org.casalib.util.NumberUtil;
 
+import mobzor.cursor.behavior.Behavior;
+
 class Cursor {
 	static var nextId = 0;
 	
@@ -30,6 +32,14 @@ class Cursor {
 	*/
 	public var targetPoint(default, null):Point;
 	
+	public var currentSize:Float; //in inch
+	public var targetSize:Float; //in inch
+	
+	/**
+	* The Behavior instances that define how the cursor behaves.
+	*/
+	public var behaviors(default, null):Array<Behavior<Dynamic>>;
+	
 	/**
 	* The visual graphics of the cursor.
 	* It is automatically added to the stage on `start` and removed on `end`.
@@ -45,6 +55,8 @@ class Cursor {
 		id = nextId++;
 		stage = Lib.stage;
 		view = new Sprite();
+		behaviors = [];
+		targetSize = currentSize = 0.001;
 		
 		onActivateSignaler = new DirectSignaler<Point>(this);
 		onMoveSignaler = new DirectSignaler<Point>(this);
@@ -65,26 +77,47 @@ class Cursor {
 				onMoveSignaler.dispatch(currentPoint);
 			}
 		}
+		
+		currentSize += (targetSize - currentSize) * stage.frameRate.map(0, 30, 1, 0.3);
+		
+		for (behavior in behaviors) {
+			behavior.onFrame();
+		}
 	}
 	
 	public function onTouchBegin(evt:TouchEvent):Void {
+		targetSize = currentSize = 0;
 		
+		for (behavior in behaviors) {
+			behavior.onTouchBegin(evt);
+		}
 	}
 	
 	public function onTouchMove(evt:TouchEvent):Void {
-		
+		for (behavior in behaviors) {
+			behavior.onTouchMove(evt);
+		}
 	}
 	
 	public function onTouchEnd(evt:TouchEvent):Void {
-		
+		for (behavior in behaviors) {
+			behavior.onTouchEnd(evt);
+		}
 	}
 	
 	public function start():Void {
 		stage.addChild(view);
 		stage.addEventListener(Event.ENTER_FRAME, onFrame);
+		
+		for (behavior in behaviors) {
+			behavior.start();
+		}
 	}
 	
 	public function end():Void {
+		for (behavior in behaviors) {
+			behavior.end();
+		}
 		stage.removeEventListener(Event.ENTER_FRAME, onFrame);
 		stage.removeChild(view);
 		currentPoint = targetPoint = null;
@@ -96,6 +129,7 @@ class Cursor {
 		cursor.id = id;
 		cursor.currentPoint = currentPoint;
 		cursor.targetPoint = targetPoint;
+		cursor.behaviors = behaviors.copy();
 		return cursor;
 	}
 	
@@ -103,10 +137,12 @@ class Cursor {
 		s.serialize(id);
         s.serialize(currentPoint);
         s.serialize(targetPoint);
+		s.serialize(behaviors);
     }
     function hxUnserialize( s : haxe.Unserializer ) {
 		id = s.unserialize();
         currentPoint = s.unserialize();
         targetPoint = s.unserialize();
+		behaviors = s.unserialize();
     }
 }

@@ -14,17 +14,19 @@ import nme.ui.MultitouchInputMode;
 using org.casalib.util.NumberUtil;
 import com.haxepunk.HXP;
 
+import mobzor.cursor.behavior.Behavior;
+import mobzor.cursor.behavior.DynaScale;
+import mobzor.cursor.behavior.SimpleDraw;
+
 class MouseCursor extends PointActivatedCursor {
+	public function new(touchPointID:Int):Void {
+		super(touchPointID);
+		behaviors.push(new DynaScale(this));
+		behaviors.push(new SimpleDraw(this));
+	}
 	
 	override function onFrame(evt:Event = null):Void {		
 		super.onFrame(evt);
-		
-		if (currentPoint != null) {
-			view.graphics.clear();
-			view.graphics.lineStyle(2, 0xFF0000, 1);
-			view.graphics.drawCircle(currentPoint.x, currentPoint.y, Capabilities.screenDPI * 0.001);
-			view.graphics.drawCircle(currentPoint.x, currentPoint.y, Capabilities.screenDPI * 0.08);
-		}
 		
 		if (activatedPoint != null) {
 			var v = touchVelocity.clone();

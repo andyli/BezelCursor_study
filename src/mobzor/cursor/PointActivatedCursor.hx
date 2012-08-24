@@ -21,9 +21,20 @@ class PointActivatedCursor extends Cursor {
 	*/
 	public var activatedPoint(default, null):Point;
 
-	var pFrameTouchPoint:Point;
-	var currentTouchPoint:Point;
-	var touchVelocity:Point;
+	/**
+	* Touch point of the previous frame.
+	*/
+	public var pFrameTouchPoint(default, null):Point;
+	
+	/**
+	* The last touch point recorded.
+	*/
+	public var currentTouchPoint(default, null):Point;
+	
+	/**
+	* Velocity of the touch movement.
+	*/
+	public var touchVelocity(default, null):Point;
 	
 	public function new(touchPointID:Int):Void {
 		super();
@@ -49,7 +60,8 @@ class PointActivatedCursor extends Cursor {
 		super.onTouchBegin(evt);
 		
 		var pt = new Point(evt.localX, evt.localY);
-		pFrameTouchPoint = currentTouchPoint = activatedPoint = pt;
+		currentTouchPoint = activatedPoint = pt;
+		touchVelocity.x = touchVelocity.y = 0;
 	}
 	
 	override public function onTouchMove(evt:TouchEvent):Void {
@@ -66,6 +78,7 @@ class PointActivatedCursor extends Cursor {
 		if (evt.touchPointID != touchPointID) return;
 		
 		pFrameTouchPoint = currentTouchPoint = activatedPoint = null;
+		touchVelocity.x = touchVelocity.y = 0;
 		
 		super.onTouchEnd(evt);
 	}
