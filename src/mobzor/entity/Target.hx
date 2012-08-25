@@ -9,7 +9,6 @@ import nme.geom.Point;
 import com.haxepunk.HXP;
 import com.haxepunk.Entity;
 import com.haxepunk.graphics.Image;
-import de.polygonal.motor.geom.primitive.AABB2;
 
 using mobzor.Main;
 import mobzor.cursor.Cursor;
@@ -32,7 +31,6 @@ class Target extends Entity {
 	public var color(default, set_color):Int = 0xFFFFFF;
 	public var color_hover(default, set_color_hover):Int = 0xFF6666;
 	public var isHoverBy(default, null):IntHash<Cursor>;
-	public var collisionShape(get_collisionShape, null):Dynamic;
 	
 	public function new(w:Int = 100, h:Int = 100):Void {
 		super();
@@ -90,10 +88,6 @@ class Target extends Entity {
 		image = Image.createRect(width = w == -1 ? width : w, height = h == -1 ? height : h, color);
 		image_hover = Image.createRect(width = w == -1 ? width : w, height = h == -1 ? height : h, color_hover);
 		graphic = isHoverBy.empty() ? image : image_hover;
-	}
-	
-	function get_collisionShape():Dynamic {
-		return AABB2.ofMinAndDiameter(x, y, width, height);
 	}
 	
 	function onClick(signal:Signal<Point>):Void {

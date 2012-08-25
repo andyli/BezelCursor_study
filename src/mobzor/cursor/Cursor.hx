@@ -7,15 +7,13 @@ import nme.display.Sprite;
 import nme.events.Event;
 import nme.events.TouchEvent;
 import nme.geom.Point;
-import nme.system.Capabilities;
 import hsl.haxe.Signaler;
 import hsl.haxe.DirectSignaler;
 using org.casalib.util.NumberUtil;
-import com.haxepunk.HXP;
-import de.polygonal.core.math.Vec2;
-import de.polygonal.motor.geom.primitive.Sphere2;
 
 import mobzor.cursor.behavior.Behavior;
+import mobzor.cursor.snapper.Snapper;
+import mobzor.cursor.snapper.SimpleSnapper;
 import mobzor.entity.Target;
 
 class Cursor {
@@ -46,6 +44,8 @@ class Cursor {
 	*/
 	public var behaviors(default, null):Array<Behavior<Dynamic>>;
 	
+	public var snapper(default, null):Snapper<Dynamic>;
+	
 	/**
 	* The visual graphics of the cursor.
 	* It is automatically added to the stage on `start` and removed on `end`.
@@ -62,6 +62,7 @@ class Cursor {
 		stage = Lib.stage;
 		view = new Sprite();
 		behaviors = [];
+		snapper = new SimpleSnapper(this);
 		targetSize = currentSize = 0.001;
 		
 		onActivateSignaler = new DirectSignaler<Point>(this);
@@ -70,45 +71,12 @@ class Cursor {
 		onEndSignaler = new DirectSignaler<Void>(this);
 	}
 	
-	function dispatch(signaler:Signaler<Point>, snapToClosestInsideTarget:Bool = true):Void {
-		if (!snapToClosestInsideTarget) {
-			signaler.dispatch(currentPoint);
-			return;
-		}
-		
-		var entities = [];
-		HXP.world.getType(Target.TYPE, entities);
-		var targets:Array<Target> = cast entities;
-		
-		var minDistance = Math.POSITIVE_INFINITY;
-		var closestTarget = null;
-		var tempPt = new Vec2();
-		var currentVec2 = new Vec2(currentPoint.x, currentPoint.y);
-		var currentSphere = new Sphere2(currentPoint.x, currentPoint.y, Capabilities.screenDPI * currentSize);
-		for (target in targets) {
-			if (target.collisionShape.is(de.polygonal.motor.geom.primitive.AABB2)) {
-				if (de.polygonal.motor.geom.inside.PointInsideAABB.test2(currentVec2, target.collisionShape)) {
-					closestTarget = target;
-					break;
-				} else {
-					if (!de.polygonal.motor.geom.intersect.IntersectSphereAABB.test2(currentSphere, target.collisionShape))
-						continue;
-					
-					var distance = de.polygonal.motor.geom.distance.DistancePoint.find2(currentVec2, new Vec2(target.centerX, target.centerY));
-					if (distance < minDistance) {
-						minDistance = distance;
-						closestTarget = target;
-					}
-				}
-			} else {
-				throw target.collisionShape;
-			}
-		}
-		
-		if (closestTarget != null) {
-			signaler.dispatch(new Point(closestTarget.centerX, closestTarget.centerY));
+	function dispatch(signaler:Signaler<Point>):Void {
+		var snapTarget = snapper.getSnapTarget();
+		if (snapTarget != null) {
+			signaler.dispatch(new Point(snapTarget.centerX, snapTarget.centerY));
 		} else {
-			dispatch(signaler, false);
+			signaler.dispatch(currentPoint);
 		}
 	}
 	
