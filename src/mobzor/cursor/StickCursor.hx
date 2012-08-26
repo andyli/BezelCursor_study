@@ -12,6 +12,8 @@ import mobzor.cursor.behavior.DynaScale;
 import mobzor.cursor.behavior.SimpleDraw;
 
 class StickCursor extends PointActivatedCursor {
+	public var joint:Null<Point>;
+	
 	public function new(touchPointID:Int):Void {
 		super(touchPointID);
 		behaviors.push(new DynaScale(this));
@@ -22,6 +24,7 @@ class StickCursor extends PointActivatedCursor {
 		super.start();
 		
 		this.targetPoint = this.currentPoint = this.activatedPoint;
+		joint = null;
 	}
 	
 	override function onFrame(evt:Event = null):Void {		
@@ -30,7 +33,12 @@ class StickCursor extends PointActivatedCursor {
 		if (currentPoint != null) {
 			view.graphics.lineStyle(2, 0xFF0000, 1);
 			view.graphics.moveTo(activatedPoint.x, activatedPoint.y);
-			view.graphics.lineTo(currentPoint.x, currentPoint.y);
+			if (joint != null) {
+				view.graphics.drawCircle(joint.x, joint.y, 2);
+				view.graphics.curveTo(joint.x, joint.y, currentPoint.x, currentPoint.y);
+			} else {
+				view.graphics.lineTo(currentPoint.x, currentPoint.y);
+			}
 		}
 	}
 	
@@ -44,19 +52,23 @@ class StickCursor extends PointActivatedCursor {
 		super.onTouchMove(evt);
 		
 		if (activatedPoint != null) {
-			targetPoint = getStickEnd(activatedPoint, new Point(evt.localX, evt.localY));
+			if (joint != null) {
+				targetPoint = getStickEnd(joint, new Point(evt.localX, evt.localY));
+			} else {
+				var pt = new Point(evt.localX, evt.localY);
+				if (Point.distance(pt, activatedPoint) > Capabilities.screenDPI * 0.5) {
+					joint = pt;
+				} else {
+					targetPoint = pt;
+				}
+			}
 		}
 	}
 	
 	override function onTouchEnd(evt:TouchEvent):Void {
 		if (evt.touchPointID != touchPointID) return;
 		
-		var pt = new Point(evt.localX, evt.localY);
-		if (currentPoint != null) {
-			onClickSignaler.dispatch(currentPoint);
-		} else {
-			onClickSignaler.dispatch(pt);
-		}
+		dispatch(onClickSignaler);
 		
 		view.graphics.clear();
 		

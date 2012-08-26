@@ -10,6 +10,22 @@ class DynaScale extends Behavior<PointActivatedCursor> {
 	var expended:Bool;
 	var expendedTime:Float;
 	
+	public var expendedSize:Float;
+	public var collapsedSize:Float;
+	public var expendVelocity:Float;
+	public var collapseVelocity:Float;
+	public var collapseLag:Float;
+	
+	public function new(c:PointActivatedCursor):Void {
+		super(c);
+		
+		collapseVelocity = Capabilities.screenDPI * 0.015;
+		expendVelocity = Capabilities.screenDPI * 0.035;
+		collapseLag = 0.6;
+		expendedSize = 0.15;
+		collapsedSize = 0.01;
+	}
+	
 	override function start():Void {
 		super.start();
 		expended = false;
@@ -24,15 +40,15 @@ class DynaScale extends Behavior<PointActivatedCursor> {
 				
 		var curTime = haxe.Timer.stamp();
 				
-		if (l > Capabilities.screenDPI * 0.02) {
+		if (l > collapseVelocity) {
 			expendedTime = curTime;
-		} else if (expended && (curTime - expendedTime > 0.4)) {
-			cursor.targetSize = 0.01;
+		} else if (expended && (curTime - expendedTime > collapseLag)) {
+			cursor.targetSize = collapsedSize;
 			expended = false;
 		}
 				
-		if (l > Capabilities.screenDPI * 0.035) {
-			cursor.targetSize = 0.15;
+		if (l > expendVelocity) {
+			cursor.targetSize = expendedSize;
 			expended = true;
 		}
 		
