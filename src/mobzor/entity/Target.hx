@@ -9,6 +9,7 @@ import nme.geom.Point;
 import com.haxepunk.HXP;
 import com.haxepunk.Entity;
 import com.haxepunk.graphics.Image;
+import com.haxepunk.utils.Input;
 
 using mobzor.Main;
 import mobzor.cursor.Cursor;
@@ -69,6 +70,10 @@ class Target extends Entity {
 			graphic = image;
 		} else {
 			graphic = image_hover;
+		}
+		
+		if (Input.mouseReleased && this.collidePoint(x, y, Input.mouseX, Input.mouseY)) {
+			onClickSignaler.dispatch(new Point(Input.mouseX, Input.mouseY));
 		}
 	}
 	

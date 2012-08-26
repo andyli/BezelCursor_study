@@ -86,7 +86,7 @@ class StickCursor extends PointActivatedCursor {
 		end();
 	}
 	
-	static public function getStickEnd(down:Point, up:Point):Point {
+	public function getStickEnd(down:Point, up:Point):Point {
 		var v = up.subtract(down);
 		v.normalize(v.length * scaleFactor);
 		return down.add(v);
