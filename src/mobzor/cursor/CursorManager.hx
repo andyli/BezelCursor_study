@@ -15,7 +15,7 @@ import hsl.haxe.Signal;
 import hsl.haxe.Signaler;
 import hsl.haxe.DirectSignaler;
 
-class BezelActivatedCursorManager {
+class CursorManager {
 	public var onActivateSignaler(default, null):Signaler<Point>;
 	public var onMoveSignaler(default, null):Signaler<Point>;
 	public var onClickSignaler(default, null):Signaler<Point>;

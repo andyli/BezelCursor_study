@@ -7,11 +7,11 @@ import nme.events.KeyboardEvent;
 import nme.ui.Keyboard;
 import nme.Lib;
 
-import mobzor.cursor.BezelActivatedCursorManager;
+import mobzor.cursor.CursorManager;
 import mobzor.world.TestTouchWorld;
 
 class Main extends Engine {
-	public var bezelActivatedCursorManager:BezelActivatedCursorManager;
+	public var cursorManager:CursorManager;
 	
 	public function new():Void {
 		super(Lib.current.stage.stageWidth, Lib.current.stage.stageHeight, 30, true);
@@ -28,8 +28,8 @@ class Main extends Engine {
 		//HXP.console.visible = false;
 		#end
 
-		bezelActivatedCursorManager = new BezelActivatedCursorManager();
-		bezelActivatedCursorManager.start();
+		cursorManager = new CursorManager();
+		cursorManager.start();
 
 		HXP.world = new TestTouchWorld();
 	}

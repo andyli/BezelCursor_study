@@ -11,7 +11,7 @@ import nme.system.Capabilities;
 
 using mobzor.Main;
 import mobzor.cursor.Cursor;
-import mobzor.cursor.BezelActivatedCursorManager;
+import mobzor.cursor.CursorManager;
 import mobzor.entity.Target;
 import mobzor.model.EventRecord;
 

@@ -41,13 +41,13 @@ class TestTouchWorld extends GameWorld {
 		
 		
 		targets[0].onClickSignaler.bindVoid(function() {
-			HXP.engine.asMain().bezelActivatedCursorManager.createCursor = function(evt:TouchEvent) {
+			HXP.engine.asMain().cursorManager.createCursor = function(evt:TouchEvent) {
 				return new mobzor.cursor.StickCursor(evt.touchPointID);
 			}
 		});
 		
 		targets[1].onClickSignaler.bindVoid(function() {
-			HXP.engine.asMain().bezelActivatedCursorManager.createCursor = function(evt:TouchEvent) {
+			HXP.engine.asMain().cursorManager.createCursor = function(evt:TouchEvent) {
 				return new mobzor.cursor.MouseCursor(evt.touchPointID);
 			}
 		});

@@ -9,11 +9,11 @@ import nme.geom.Point;
 import com.haxepunk.HXP;
 import com.haxepunk.Entity;
 import com.haxepunk.graphics.Image;
-import com.haxepunk.utils.Input;
+//import com.haxepunk.utils.Input;
 
 using mobzor.Main;
 import mobzor.cursor.Cursor;
-import mobzor.cursor.BezelActivatedCursorManager;
+import mobzor.cursor.CursorManager;
 
 class Target extends Entity {
 	inline static public var TYPE = "Target";
@@ -23,7 +23,7 @@ class Target extends Entity {
 	public var onCursorInSignaler(default, null):Signaler<Point>;
 	public var onCursorOutSignaler(default, null):Signaler<Point>;
 	
-	var bezelActivatedCursorManager:BezelActivatedCursorManager;
+	var cursorManager:CursorManager;
 	var image:Image;
 	var image_hover:Image;
 	var needUpdate:Bool;
@@ -45,20 +45,20 @@ class Target extends Entity {
 		onCursorInSignaler = new DirectSignaler<Point>(this);
 		onCursorOutSignaler = new DirectSignaler<Point>(this);
 		
-		bezelActivatedCursorManager = HXP.engine.asMain().bezelActivatedCursorManager;
+		cursorManager = HXP.engine.asMain().cursorManager;
 		resize(w, h);
 	}
 	
 	override public function added():Void {
 		super.added();
 		
-		bezelActivatedCursorManager.onClickSignaler.bindAdvanced(onClick);
-		bezelActivatedCursorManager.onMoveSignaler.bindAdvanced(onCursorMove);
+		cursorManager.onClickSignaler.bindAdvanced(onClick);
+		cursorManager.onMoveSignaler.bindAdvanced(onCursorMove);
 	}
 	
 	override public function removed():Void {
-		bezelActivatedCursorManager.onClickSignaler.unbindAdvanced(onClick);
-		bezelActivatedCursorManager.onMoveSignaler.unbindAdvanced(onCursorMove);
+		cursorManager.onClickSignaler.unbindAdvanced(onClick);
+		cursorManager.onMoveSignaler.unbindAdvanced(onCursorMove);
 		
 		super.removed();
 	}
@@ -72,9 +72,10 @@ class Target extends Entity {
 			graphic = image_hover;
 		}
 		
+		/*
 		if (Input.mouseReleased && this.collidePoint(x, y, Input.mouseX, Input.mouseY)) {
 			onClickSignaler.dispatch(new Point(Input.mouseX, Input.mouseY));
-		}
+		}*/
 	}
 	
 	function set_color(c:Int):Int {
