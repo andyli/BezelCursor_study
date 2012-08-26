@@ -13,9 +13,15 @@ import mobzor.cursor.behavior.SimpleDraw;
 
 class StickCursor extends PointActivatedCursor {
 	public var joint:Null<Point>;
+	public var jointActivateDistance:Float;
+	public var scaleFactor:Float;
 	
 	public function new(touchPointID:Int):Void {
 		super(touchPointID);
+		
+		jointActivateDistance = Capabilities.screenDPI * 0.5;
+		scaleFactor = 3;
+		
 		behaviors.push(new DynaScale(this));
 		behaviors.push(new SimpleDraw(this));
 	}
@@ -50,13 +56,13 @@ class StickCursor extends PointActivatedCursor {
 	
 	override function onTouchMove(evt:TouchEvent):Void {
 		super.onTouchMove(evt);
-		
+
+		var pt = new Point(evt.localX, evt.localY);
 		if (activatedPoint != null) {
 			if (joint != null) {
-				targetPoint = getStickEnd(joint, new Point(evt.localX, evt.localY));
+				targetPoint = getStickEnd(joint, pt);
 			} else {
-				var pt = new Point(evt.localX, evt.localY);
-				if (Point.distance(pt, activatedPoint) > Capabilities.screenDPI * 0.5) {
+				if (Point.distance(pt, activatedPoint) > jointActivateDistance) {
 					joint = pt;
 				} else {
 					targetPoint = pt;
@@ -73,6 +79,7 @@ class StickCursor extends PointActivatedCursor {
 		view.graphics.clear();
 		
 		this.targetPoint = this.currentPoint = null;
+		joint = null;
 		
 		super.onTouchEnd(evt);
 		
@@ -81,7 +88,7 @@ class StickCursor extends PointActivatedCursor {
 	
 	static public function getStickEnd(down:Point, up:Point):Point {
 		var v = up.subtract(down);
-		v.normalize(v.length * 3);
+		v.normalize(v.length * scaleFactor);
 		return down.add(v);
 	}
 }

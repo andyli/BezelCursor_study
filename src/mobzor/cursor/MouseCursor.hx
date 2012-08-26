@@ -18,8 +18,19 @@ import mobzor.cursor.behavior.DynaScale;
 import mobzor.cursor.behavior.SimpleDraw;
 
 class MouseCursor extends PointActivatedCursor {
+	public var minVelocityFactor:Float;
+	public var maxVelocityFactor:Float;
+	public var minVelocityFactorTouchVelocity:Float;
+	public var maxVelocityFactorTouchVelocity:Float;
+	
 	public function new(touchPointID:Int):Void {
 		super(touchPointID);
+		
+		minVelocityFactor = 1;
+		maxVelocityFactor = 3;
+		minVelocityFactorTouchVelocity = Capabilities.screenDPI * 0.01;
+		maxVelocityFactorTouchVelocity = Capabilities.screenDPI * 0.05;
+		
 		behaviors.push(new DynaScale(this));
 		behaviors.push(new SimpleDraw(this));
 	}
@@ -32,7 +43,7 @@ class MouseCursor extends PointActivatedCursor {
 			var l = touchVelocity.length;
 			v.normalize(
 				l
-				* l.map(Capabilities.screenDPI * 0.01, Capabilities.screenDPI * 0.05, 1, 3).constrain(1, 3)
+				* l.map(minVelocityFactorTouchVelocity, maxVelocityFactorTouchVelocity, minVelocityFactor, maxVelocityFactor).constrain(minVelocityFactor, maxVelocityFactor)
 				* stage.frameRate.map(30, 60, 1, 0.5)
 			);
 			targetPoint = targetPoint.add(v);
@@ -49,7 +60,6 @@ class MouseCursor extends PointActivatedCursor {
 	
 	override function onTouchEnd(evt:TouchEvent):Void {
 		if (evt.touchPointID != touchPointID) return;
-		
 
 		dispatch(onClickSignaler);
 		
