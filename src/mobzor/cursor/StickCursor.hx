@@ -10,6 +10,7 @@ using org.casalib.util.NumberUtil;
 import mobzor.cursor.behavior.Behavior;
 import mobzor.cursor.behavior.DynaScale;
 import mobzor.cursor.behavior.SimpleDraw;
+import mobzor.cursor.snapper.DirectionalSnapper;
 
 class StickCursor extends PointActivatedCursor {
 	public var joint:Null<Point>;
@@ -19,8 +20,10 @@ class StickCursor extends PointActivatedCursor {
 	public function new(touchPointID:Int):Void {
 		super(touchPointID);
 		
-		jointActivateDistance = Capabilities.screenDPI * 0.5;
+		jointActivateDistance = Capabilities.screenDPI * 0.2;
 		scaleFactor = 3;
+		
+		snapper = new DirectionalSnapper(this);
 		
 		behaviors.push(new DynaScale(this));
 		behaviors.push(new SimpleDraw(this));
@@ -60,13 +63,17 @@ class StickCursor extends PointActivatedCursor {
 		var pt = new Point(evt.localX, evt.localY);
 		if (activatedPoint != null) {
 			if (joint != null) {
-				targetPoint = getStickEnd(joint, pt);
+				var v = pt.subtract(joint);
+				v.normalize((v.length + jointActivateDistance) * scaleFactor - jointActivateDistance);
+				targetPoint = joint.add(v);
 			} else {
 				if (Point.distance(pt, activatedPoint) > jointActivateDistance) {
 					joint = pt;
-				} else {
-					targetPoint = pt;
 				}
+				
+				var v = pt.subtract(activatedPoint);
+				v.normalize(v.length * scaleFactor);
+				targetPoint = activatedPoint.add(v);
 			}
 		}
 	}
@@ -84,11 +91,5 @@ class StickCursor extends PointActivatedCursor {
 		super.onTouchEnd(evt);
 		
 		end();
-	}
-	
-	public function getStickEnd(down:Point, up:Point):Point {
-		var v = up.subtract(down);
-		v.normalize(v.length * scaleFactor);
-		return down.add(v);
 	}
 }
