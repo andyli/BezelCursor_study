@@ -135,6 +135,8 @@ class CursorManager {
 		if (pointActivatedCursors.exists(evt.touchPointID)) {
 			var cursor = pointActivatedCursors.get(evt.touchPointID);
 			cursor.onTouchEnd(evt);
+		} else {
+			onClickSignaler.dispatch(new Point(evt.localX, evt.localY));
 		}
 	}
 	

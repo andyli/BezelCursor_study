@@ -9,7 +9,6 @@ import nme.geom.Point;
 import com.haxepunk.HXP;
 import com.haxepunk.Entity;
 import com.haxepunk.graphics.Image;
-//import com.haxepunk.utils.Input;
 
 using mobzor.Main;
 import mobzor.cursor.Cursor;
@@ -71,11 +70,6 @@ class Target extends Entity {
 		} else {
 			graphic = image_hover;
 		}
-		
-		/*
-		if (Input.mouseReleased && this.collidePoint(x, y, Input.mouseX, Input.mouseY)) {
-			onClickSignaler.dispatch(new Point(Input.mouseX, Input.mouseY));
-		}*/
 	}
 	
 	function set_color(c:Int):Int {
@@ -97,13 +91,16 @@ class Target extends Entity {
 	}
 	
 	function onClick(signal:Signal<Point>):Void {
-		var cursor:Cursor = cast signal.origin;
+		
 		var pt = signal.data;
 		
 		if (collidePoint(x, y, pt.x, pt.y)) {
 			//trace("clicked");
 			onClickSignaler.dispatch(pt);
-			isHoverBy.remove(cursor.id);
+			
+			var cursor:Cursor = cast signal.origin;
+			if (cursor != null)
+				isHoverBy.remove(cursor.id);
 		}
 	}
 	
