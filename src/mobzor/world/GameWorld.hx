@@ -48,6 +48,16 @@ class GameWorld extends World {
 		return e;
 	}
 	
+	override public function remove(e:Entity):Entity {
+		if (e.is(Target)) {
+			var target:Target = untyped e;
+			target.onClickSignaler.unbindAdvanced(onTargetClick);
+			targets.remove(target);
+		}
+		
+		return super.remove(e);
+	}
+	
 	function onTargetClick(signal:Signal<Point>):Void {
 		var target:Target = untyped signal.origin;
 		if (target == currentTarget) {

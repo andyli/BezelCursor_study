@@ -13,54 +13,80 @@ import mobzor.entity.RandomMovingTarget;
 using mobzor.Main;
 
 class TestTouchWorld extends GameWorld {
+	var _w:Int;
+	var _h:Int;
+	var margin:Int;
+	
 	override public function new():Void {
 		super();
-	}
-	
-	override public function begin():Void {
-		super.begin();
 		
 		var dpi = Capabilities.screenDPI;
-		var _w = Std.int(0.4 * dpi);
-		var _h = Std.int(0.3 * dpi);
-		var margin = Std.int(dpi*0.1);
+		_w = Std.int(0.4 * dpi);
+		_h = Std.int(0.3 * dpi);
+		margin = Std.int(dpi*0.1);
+	}
+	
+	public function replaceTargets():Void {
+		while (targets.length > 0) remove(targets.pop());
+
 		
 		var _x = 0.5 * (HXP.stage.stageWidth - Math.floor(HXP.stage.stageWidth / _w) * _w);
 		while (_x + _w < HXP.stage.stageWidth) {
 			var _y = 0.5 * (HXP.stage.stageHeight - Math.floor(HXP.stage.stageHeight / _h) * _h);
-			while (_y + _h < HXP.stage.stageHeight) {
-			
-				var target = new Target(_w - margin, _h - margin);
-				target.moveTo(_x + margin*0.5, _y + margin*0.5);
-				add(target);
+			while (_y + _h < HXP.stage.stageHeight - 100) {
+				
+				if (Math.random() < 0.25) {
+					var target = new Target(_w - margin, _h - margin);
+					target.moveTo(_x + margin*0.5, _y + margin*0.5);
+					add(target);
+				}
 				
 				_y += _h;
 			}
 			_x += _w;
 		}
 		
+		currentTarget = targets[Std.int(Math.random() * targets.length)];
+	}
+	
+	override public function begin():Void {
+		super.begin();
 		
-		targets[0].onClickSignaler.bindVoid(function() {
-			HXP.engine.asMain().cursorManager.createCursor = function(evt:TouchEvent) {
-				return new mobzor.cursor.StickCursor(evt.touchPointID);
-			}
-		});
+		replaceTargets();
 		
-		targets[1].onClickSignaler.bindVoid(function() {
+		var target = new Target(_w - margin, _h - margin);
+		target.color = 0x0000FF;
+		target.color_hover = 0x3333FF;
+		target.moveTo(margin, HXP.stage.stageHeight - _h - margin * 0.5);
+		add(target);
+		targets.remove(target);
+		
+		target.onClickSignaler.bindVoid(function() {
 			HXP.engine.asMain().cursorManager.createCursor = function(evt:TouchEvent) {
 				return new mobzor.cursor.MouseCursor(evt.touchPointID);
 			}
 		});
 		
-		currentTarget = targets[Std.int(Math.random() * targets.length)];
+		var target = new Target(_w - margin, _h - margin);
+		target.color = 0x0000FF;
+		target.color_hover = 0x3333FF;
+		target.moveTo(_w + margin, HXP.stage.stageHeight - _h - margin * 0.5);
+		add(target);
+		targets.remove(target);
+		
+		target.onClickSignaler.bindVoid(function() {
+			HXP.engine.asMain().cursorManager.createCursor = function(evt:TouchEvent) {
+				return new mobzor.cursor.StickCursor(evt.touchPointID);
+			}
+		});
 	}
 	
 	override function onTargetClick(signal:Signal<Point>):Void {
 		super.onTargetClick(signal);
 		
 		var target:Target = untyped signal.origin;
-		while (target == currentTarget) {
-			currentTarget = targets[Std.int(Math.random() * targets.length)];
+		if (target == currentTarget) {
+			replaceTargets();
 		}
 	}
 }
