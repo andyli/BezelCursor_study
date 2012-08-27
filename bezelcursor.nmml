@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+	<app 
+		title="BezelCursor" package="net.onthewings.bezelcursor" version="1.0.0" company="onthewings"
+		main="bezelcursor.Main" file="BezelCursor" path="bin" 
+		preloader="com.haxepunk.Preloader" />
+	
+	<window width="480" height="800" resizable="false" unless="mobile" />
+	<window fps="30" orientation="portrait" />
+
+	<source path="src" />
+	
+	<haxelib name="nme" />
+	<haxelib name="HaxePunk" />
+	<haxelib name="casalib" />
+	<haxelib name="hsl-1" />
+	<haxelib name="polygonal-motor" />
+	
+	<assets path="assets/gfx" rename="gfx" type="image" include="*.png" />
+	<assets path="assets/sfx" rename="sfx" type="sound" include="*.wav" />
+	<assets path="assets/music" rename="music" type="music" include="*.mp3" />
+	<assets path="assets/font" rename="font" type="font" include="*.ttf" />
+	
+	<!--<icon path="assets/nme.svg" />-->
+	
+	<haxedef name="spod_macro" />
+	
+	<include name="env.nmml" />
+	
+</project>

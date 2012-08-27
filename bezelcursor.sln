@@ -1,0 +1,68 @@
+﻿
+Microsoft Vibezelcursortudio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{319CB2C6-23BD-43E1-85B5-2AAFA3577041}") = "mobzor", "mobzor.nmeproj", "{DCD47978-9272-486A-B653-6878F2931767}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSbezelcursorn
+	bezelcursor|Android = Debug|Android
+		Debug|BlackBerry = Debug|BlackBerry
+		Debug|Flash = Debug|Flash
+		Debug|HTML5 = Debug|HTML5
+		Debug|iOS = Debug|iOS
+		Debug|Linux = Debug|Linux
+		Debug|Mac = Debug|Mac
+		Debug|webOS = Debug|webOS
+		Debug|Windows = Debug|Windows
+		Release|Android = Release|Android
+		Release|BlackBerry = Release|BlackBerry
+		Release|Flash = Release|Flash
+		Release|HTML5 = Release|HTML5
+		Release|iOS = Release|iOS
+		Release|Linux = Release|Linux
+		Release|Mac = Release|Mac
+		Release|webOS = Release|webOS
+		Release|Windows = Release|Windows
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DCD47978-9272-486A-B653-6878F2931767}.Debug|Android.ActiveCfg = Debug|Android
+		{DCD47978-9272-486A-B653-6878F2931767}.Debug|Android.Build.0 = Debug|Android
+		{DCD47978-9272-486A-B653-6878F2931767}.Debug|BlackBerry.ActiveCfg = Debug|BlackBerry
+		{DCD47978-9272-486A-B653-6878F2931767}.Debug|BlackBerry.Build.0 = Debug|BlackBerry
+		{DCD47978-9272-486A-B653-6878F2931767}.Debug|Flash.ActiveCfg = Debug|Flash
+		{DCD47978-9272-486A-B653-6878F2931767}.Debug|Flash.Build.0 = Debug|Flash
+		{DCD47978-9272-486A-B653-6878F2931767}.Debug|HTML5.ActiveCfg = Debug|HTML5
+		{DCD47978-9272-486A-B653-6878F2931767}.Debug|HTML5.Build.0 = Debug|HTML5
+		{DCD47978-9272-486A-B653-6878F2931767}.Debug|iOS.ActiveCfg = Debug|iOS
+		{DCD47978-9272-486A-B653-6878F2931767}.Debug|iOS.Build.0 = Debug|iOS
+		{DCD47978-9272-486A-B653-6878F2931767}.Debug|Linux.ActiveCfg = Debug|Linux
+		{DCD47978-9272-486A-B653-6878F2931767}.Debug|Linux.Build.0 = Debug|Linux
+		{DCD47978-9272-486A-B653-6878F2931767}.Debug|Mac.ActiveCfg = Debug|Mac
+		{DCD47978-9272-486A-B653-6878F2931767}.Debug|Mac.Build.0 = Debug|Mac
+		{DCD47978-9272-486A-B653-6878F2931767}.Debug|webOS.ActiveCfg = Debug|webOS
+		{DCD47978-9272-486A-B653-6878F2931767}.Debug|webOS.Build.0 = Debug|webOS
+		{DCD47978-9272-486A-B653-6878F2931767}.Debug|Windows.ActiveCfg = Debug|Windows
+		{DCD47978-9272-486A-B653-6878F2931767}.Debug|Windows.Build.0 = Debug|Windows
+		{DCD47978-9272-486A-B653-6878F2931767}.Release|Android.ActiveCfg = Release|Android
+		{DCD47978-9272-486A-B653-6878F2931767}.Release|Android.Build.0 = Release|Android
+		{DCD47978-9272-486A-B653-6878F2931767}.Release|BlackBerry.ActiveCfg = Release|BlackBerry
+		{DCD47978-9272-486A-B653-6878F2931767}.Release|BlackBerry.Build.0 = Release|BlackBerry
+		{DCD47978-9272-486A-B653-6878F2931767}.Release|Flash.ActiveCfg = Release|Flash
+		{DCD47978-9272-486A-B653-6878F2931767}.Release|Flash.Build.0 = Release|Flash
+		{DCD47978-9272-486A-B653-6878F2931767}.Release|HTML5.ActiveCfg = Release|HTML5
+		{DCD47978-9272-486A-B653-6878F2931767}.Release|HTML5.Build.0 = Release|HTML5
+		{DCD47978-9272-486A-B653-6878F2931767}.Release|iOS.ActiveCfg = Release|iOS
+		{DCD47978-9272-486A-B653-6878F2931767}.Release|iOS.Build.0 = Release|iOS
+		{DCD47978-9272-486A-B653-6878F2931767}.Release|Linux.ActiveCfg = Release|Linux
+		{DCD47978-9272-486A-B653-6878F2931767}.Release|Linux.Build.0 = Release|Linux
+		{DCD47978-9272-486A-B653-6878F2931767}.Release|Mac.ActiveCfg = Release|Mac
+		{DCD47978-9272-486A-B653-6878F2931767}.Release|Mac.Build.0 = Release|Mac
+		{DCD47978-9272-486A-B653-6878F2931767}.Release|webOS.ActiveCfg = Release|webOS
+		{DCD47978-9272-486A-B653-6878F2931767}.Release|webOS.Build.0 = Release|webOS
+		{DCD47978-9272-486A-B653-6878F2931767}.Release|Windows.ActiveCfg = Release|Windows
+		{DCD47978-9272-486A-B653-6878F2931767}.Release|Windows.Build.0 = Release|Windows
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = mobzor.nmeproj
+	EndGlobalSection
+EndGlobal
