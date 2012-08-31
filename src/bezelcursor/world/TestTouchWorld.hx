@@ -1,5 +1,6 @@
 package bezelcursor.world;
 
+using Lambda;
 import hsl.haxe.Signal;
 import com.haxepunk.HXP;
 import nme.display.Sprite;
@@ -8,6 +9,8 @@ import nme.geom.Point;
 import nme.system.Capabilities;
 
 import bezelcursor.cursor.Cursor;
+import bezelcursor.cursor.CursorManager;
+import bezelcursor.cursor.behavior.MouseMove;
 import bezelcursor.entity.Target;
 import bezelcursor.entity.RandomMovingTarget;
 using bezelcursor.Main;
@@ -62,8 +65,16 @@ class TestTouchWorld extends GameWorld {
 		targets.remove(target);
 		
 		target.onClickSignaler.bindVoid(function() {
-			HXP.engine.asMain().cursorManager.createCursor = function(evt:TouchEvent) {
-				return new bezelcursor.cursor.MouseCursor(evt.touchPointID);
+			HXP.engine.asMain().cursorManager.createCursor = function(evt:TouchEvent, _for:CreateCursorFor):Cursor {
+				switch(_for) {
+					case ForBezel: 
+						return new bezelcursor.cursor.MouseCursor(evt.touchPointID);
+					case ForScreen:
+						var cursor = new bezelcursor.cursor.StickCursor(evt.touchPointID);
+						cursor.scaleFactor *= -1;
+						cursor.jointActivateDistance = Math.POSITIVE_INFINITY;
+						return cursor;
+				}
 			}
 		});
 		
@@ -75,8 +86,16 @@ class TestTouchWorld extends GameWorld {
 		targets.remove(target);
 		
 		target.onClickSignaler.bindVoid(function() {
-			HXP.engine.asMain().cursorManager.createCursor = function(evt:TouchEvent) {
-				return new bezelcursor.cursor.StickCursor(evt.touchPointID);
+			HXP.engine.asMain().cursorManager.createCursor = function(evt:TouchEvent, _for:CreateCursorFor):Cursor {
+				switch(_for) {
+					case ForBezel: 
+						return new bezelcursor.cursor.StickCursor(evt.touchPointID);
+					case ForScreen:
+						var cursor = new bezelcursor.cursor.StickCursor(evt.touchPointID);
+						cursor.scaleFactor *= -1;
+						cursor.jointActivateDistance = Math.POSITIVE_INFINITY;
+						return cursor;
+				}
 			}
 		});
 		
@@ -88,8 +107,16 @@ class TestTouchWorld extends GameWorld {
 		targets.remove(target);
 		
 		target.onClickSignaler.bindVoid(function() {
-			HXP.engine.asMain().cursorManager.createCursor = function(evt:TouchEvent) {
-				return new bezelcursor.cursor.BubbleCursor(evt.touchPointID);
+			HXP.engine.asMain().cursorManager.createCursor = function(evt:TouchEvent, _for:CreateCursorFor):Cursor {
+				switch(_for) {
+					case ForBezel: 
+						return new bezelcursor.cursor.StickCursor(evt.touchPointID);
+					case ForScreen:
+						var cursor = new bezelcursor.cursor.BubbleCursor(evt.touchPointID);
+						var mouseMove:MouseMove = cast cursor.behaviors.filter(function(b) return Std.is(b,MouseMove)).first();
+						mouseMove.minVelocityFactor = mouseMove.maxVelocityFactor = 1;
+						return cursor;
+				}
 			}
 		});
 	}

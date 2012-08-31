@@ -15,6 +15,11 @@ import hsl.haxe.Signal;
 import hsl.haxe.Signaler;
 import hsl.haxe.DirectSignaler;
 
+enum CreateCursorFor {
+	ForBezel;
+	ForScreen;
+}
+
 class CursorManager {
 	public var onActivateSignaler(default, null):Signaler<Point>;
 	public var onMoveSignaler(default, null):Signaler<Point>;
@@ -23,10 +28,18 @@ class CursorManager {
 	
 	public var tapEnabled(default, null):Bool;
 	public var bezelCursorEnabled(default, null):Bool;
-	public var magStickEnabled(default, null):Bool;
+	public var screenCursorEnabled(default, null):Bool;
 	
-	dynamic public function createCursor(evt:TouchEvent):PointActivatedCursor {
-		return new bezelcursor.cursor.MouseCursor(evt.touchPointID);
+	dynamic public function createCursor(evt:TouchEvent, _for:CreateCursorFor):Cursor {
+		switch(_for) {
+			case ForBezel: 
+				return new bezelcursor.cursor.MouseCursor(evt.touchPointID);
+			case ForScreen:
+				var cursor = new bezelcursor.cursor.StickCursor(evt.touchPointID);
+				cursor.scaleFactor *= -1;
+				cursor.jointActivateDistance = Math.POSITIVE_INFINITY;
+				return cursor;
+		}
 	}
 	
 	/**
@@ -47,7 +60,7 @@ class CursorManager {
 		stage = Lib.stage;
 		tapEnabled = true;
 		bezelCursorEnabled = true;
-		magStickEnabled = true;
+		screenCursorEnabled = true;
 		
 		onActivateSignaler = new DirectSignaler<Point>(this);
 		onMoveSignaler = new DirectSignaler<Point>(this);
@@ -102,59 +115,38 @@ class CursorManager {
 		return bezelOut.containsPoint(pt) && !bezelIn.containsPoint(pt);
 	}
 	
+	function addCursor(evt:TouchEvent, cursor:Cursor):Void {
+		if (cursor.is(PointActivatedCursor)) {
+			var pCursor = cast(cursor,PointActivatedCursor);
+			pointActivatedCursors.set(pCursor.touchPointID, pCursor);
+		}
+			
+		cursor.start();
+		cursor.onTouchBegin(evt);
+		
+		cursor.onActivateSignaler.addBubblingTarget(onActivateSignaler);
+		cursor.onMoveSignaler.addBubblingTarget(onMoveSignaler);
+		cursor.onClickSignaler.addBubblingTarget(onClickSignaler);
+		cursor.onEndSignaler.addBubblingTarget(onEndSignaler);
+		
+		cursor.onEndSignaler.bindAdvanced(function(signal:Signal<Void>):Void {
+			var cursor:Cursor = cast signal.origin;
+				
+			cursor.onActivateSignaler.removeBubblingTarget(onActivateSignaler);
+			cursor.onMoveSignaler.removeBubblingTarget(onMoveSignaler);
+			cursor.onClickSignaler.removeBubblingTarget(onClickSignaler);
+			cursor.onEndSignaler.removeBubblingTarget(onEndSignaler);
+				
+			if (cursor.is(PointActivatedCursor))
+				pointActivatedCursors.remove(untyped cursor.touchPointID);
+		}).destroyOnUse();
+	}
+	
 	function onTouchBegin(evt:TouchEvent):Void {
 		if (bezelCursorEnabled && insideBezel(evt)) {
-			var cursor = createCursor(evt);
-			
-			if (cursor.is(PointActivatedCursor))
-				pointActivatedCursors.set(evt.touchPointID, cast cursor);
-			
-			cursor.start();
-			cursor.onTouchBegin(evt);
-		
-			cursor.onActivateSignaler.addBubblingTarget(onActivateSignaler);
-			cursor.onMoveSignaler.addBubblingTarget(onMoveSignaler);
-			cursor.onClickSignaler.addBubblingTarget(onClickSignaler);
-			cursor.onEndSignaler.addBubblingTarget(onEndSignaler);
-		
-			cursor.onEndSignaler.bindAdvanced(function(signal:Signal<Void>):Void {
-				var cursor:Cursor = cast signal.origin;
-				
-				cursor.onActivateSignaler.removeBubblingTarget(onActivateSignaler);
-				cursor.onMoveSignaler.removeBubblingTarget(onMoveSignaler);
-				cursor.onClickSignaler.removeBubblingTarget(onClickSignaler);
-				cursor.onEndSignaler.removeBubblingTarget(onEndSignaler);
-				
-				if (cursor.is(PointActivatedCursor))
-					pointActivatedCursors.remove(untyped cursor.touchPointID);
-			}).destroyOnUse();
-		} else if (magStickEnabled) {
-			var cursor = new StickCursor(evt.touchPointID);
-			cursor.scaleFactor *= -1;
-			cursor.jointActivateDistance = Math.POSITIVE_INFINITY;
-			
-			if (cursor.is(PointActivatedCursor))
-				pointActivatedCursors.set(evt.touchPointID, cast cursor);
-			
-			cursor.start();
-			cursor.onTouchBegin(evt);
-		
-			cursor.onActivateSignaler.addBubblingTarget(onActivateSignaler);
-			cursor.onMoveSignaler.addBubblingTarget(onMoveSignaler);
-			cursor.onClickSignaler.addBubblingTarget(onClickSignaler);
-			cursor.onEndSignaler.addBubblingTarget(onEndSignaler);
-		
-			cursor.onEndSignaler.bindAdvanced(function(signal:Signal<Void>):Void {
-				var cursor:Cursor = cast signal.origin;
-				
-				cursor.onActivateSignaler.removeBubblingTarget(onActivateSignaler);
-				cursor.onMoveSignaler.removeBubblingTarget(onMoveSignaler);
-				cursor.onClickSignaler.removeBubblingTarget(onClickSignaler);
-				cursor.onEndSignaler.removeBubblingTarget(onEndSignaler);
-				
-				if (cursor.is(PointActivatedCursor))
-					pointActivatedCursors.remove(untyped cursor.touchPointID);
-			}).destroyOnUse();
+			addCursor(evt, createCursor(evt, ForBezel));
+		} else if (screenCursorEnabled) {
+			addCursor(evt, createCursor(evt, ForScreen));
 		}
 	}
 	

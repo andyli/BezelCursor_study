@@ -64,6 +64,7 @@ class Cursor {
 		id = nextId++;
 		stage = Lib.stage;
 		view = new Sprite();
+		view.mouseEnabled = false;
 		behaviors = [];
 		snapper = new SimpleSnapper(this);
 		targetSize = currentSize = startSize = 0.001;
