@@ -8,6 +8,7 @@ import nme.system.Capabilities;
 using org.casalib.util.NumberUtil;
 
 import bezelcursor.cursor.behavior.Behavior;
+import bezelcursor.cursor.behavior.ClickWhenTouchEnd;
 import bezelcursor.cursor.behavior.DynaScale;
 import bezelcursor.cursor.behavior.SimpleDraw;
 import bezelcursor.cursor.snapper.DirectionalSnapper;
@@ -27,6 +28,7 @@ class StickCursor extends PointActivatedCursor {
 		
 		behaviors.push(new DynaScale(this));
 		behaviors.push(new SimpleDraw(this));
+		behaviors.push(new ClickWhenTouchEnd(this));
 	}
 	
 	override function start():Void {
@@ -80,16 +82,7 @@ class StickCursor extends PointActivatedCursor {
 	
 	override function onTouchEnd(evt:TouchEvent):Void {
 		if (evt.touchPointID != touchPointID) return;
-		
-		dispatch(onClickSignaler);
-		
-		view.graphics.clear();
-		
-		this.targetPoint = this.currentPoint = null;
 		joint = null;
-		
 		super.onTouchEnd(evt);
-		
-		end();
 	}
 }

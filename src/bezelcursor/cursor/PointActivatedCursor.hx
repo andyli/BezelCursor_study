@@ -77,10 +77,10 @@ class PointActivatedCursor extends Cursor {
 	override public function onTouchEnd(evt:TouchEvent):Void {
 		if (evt.touchPointID != touchPointID) return;
 		
+		super.onTouchEnd(evt);
+		
 		pFrameTouchPoint = currentTouchPoint = activatedPoint = null;
 		touchVelocity.x = touchVelocity.y = 0;
-		
-		super.onTouchEnd(evt);
 	}
 	
 	override public function clone():PointActivatedCursor {

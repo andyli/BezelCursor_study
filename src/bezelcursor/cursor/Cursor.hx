@@ -29,12 +29,12 @@ class Cursor {
 	/**
 	* Current pointing position.
 	*/
-	public var currentPoint(default, null):Point;
+	public var currentPoint:Point;
 	
 	/**
 	* Where this cursor is heading to.
 	*/
-	public var targetPoint(default, null):Point;
+	public var targetPoint:Point;
 	
 	public var currentSize:Float; //in inch
 	public var targetSize:Float; //in inch
@@ -71,7 +71,7 @@ class Cursor {
 		onEndSignaler = new DirectSignaler<Void>(this);
 	}
 	
-	function dispatch(signaler:Signaler<Point>):Void {
+	public function dispatch(signaler:Signaler<Point>):Void {
 		var snapTarget = snapper.getSnapTarget();
 		if (snapTarget != null) {
 			signaler.dispatch(new Point(snapTarget.centerX, snapTarget.centerY));
