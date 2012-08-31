@@ -9,7 +9,9 @@ import nme.system.Capabilities;
 import nme.ui.Multitouch;
 import nme.ui.MultitouchInputMode;
 
-
+/**
+* Cursor that is activated and controlled by a single touch.
+*/
 class PointActivatedCursor extends Cursor {
 	/**
 	* The touch that is controlling this cursor.
