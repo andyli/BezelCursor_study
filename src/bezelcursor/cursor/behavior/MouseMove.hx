@@ -1,6 +1,7 @@
 package bezelcursor.cursor.behavior;
 
 import nme.system.Capabilities;
+import nme.geom.Rectangle;
 using org.casalib.util.NumberUtil;
 
 import bezelcursor.cursor.PointActivatedCursor;
@@ -11,6 +12,8 @@ class MouseMove extends Behavior<PointActivatedCursor> {
 	public var minVelocityFactorTouchVelocity:Float;
 	public var maxVelocityFactorTouchVelocity:Float;
 	
+	public var constraint:Rectangle;
+	
 	public function new(c:PointActivatedCursor):Void {
 		super(c);
 		
@@ -18,6 +21,8 @@ class MouseMove extends Behavior<PointActivatedCursor> {
 		maxVelocityFactor = 3;
 		minVelocityFactorTouchVelocity = Capabilities.screenDPI * 0.01;
 		maxVelocityFactorTouchVelocity = Capabilities.screenDPI * 0.05;
+		
+		constraint = new Rectangle(0, 0, c.stage.stageWidth, c.stage.stageHeight);
 	}
 	
 	override public function onFrame():Void {
@@ -34,6 +39,11 @@ class MouseMove extends Behavior<PointActivatedCursor> {
 			cursor.targetPoint = cursor.targetPoint.add(v);
 		} else {
 			cursor.targetPoint = cursor.currentTouchPoint;
+		}
+		
+		if (!constraint.containsPoint(cursor.targetPoint)) {
+			cursor.targetPoint.x = cursor.targetPoint.x.constrain(constraint.left, constraint.right);
+			cursor.targetPoint.y = cursor.targetPoint.y.constrain(constraint.top, constraint.bottom);
 		}
 	}
 }
