@@ -18,7 +18,7 @@ class SimpleSnapper extends Snapper<Cursor> {
 			if (target.collidePoint(target.x, target.y, cursor.currentPoint.x, cursor.currentPoint.y)) {
 				closestTarget = target;
 				break;
-			} else {
+			} else if (cursor.currentSize > 0) {
 				var distance = target.distanceToPoint(cursor.currentPoint.x, cursor.currentPoint.y, true);
 				if (distance > Capabilities.screenDPI * cursor.currentSize)
 					continue;

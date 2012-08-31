@@ -23,7 +23,7 @@ class DynaScale extends Behavior<PointActivatedCursor> {
 		expendVelocity = Capabilities.screenDPI * 0.035;
 		collapseLag = 0.6;
 		expendedSize = 0.15;
-		collapsedSize = 0.01;
+		collapsedSize = 0.0;
 	}
 	
 	override function start():Void {
