@@ -21,6 +21,10 @@ class CursorManager {
 	public var onClickSignaler(default, null):Signaler<Point>;
 	public var onEndSignaler(default, null):Signaler<Void>;
 	
+	public var tapEnabled(default, null):Bool;
+	public var bezelCursorEnabled(default, null):Bool;
+	public var magStickEnabled(default, null):Bool;
+	
 	dynamic public function createCursor(evt:TouchEvent):PointActivatedCursor {
 		return new bezelcursor.cursor.MouseCursor(evt.touchPointID);
 	}
@@ -40,7 +44,10 @@ class CursorManager {
 	var pointActivatedCursors:IntHash<PointActivatedCursor>;
 	
 	public function new():Void {
-		this.stage = Lib.stage;
+		stage = Lib.stage;
+		tapEnabled = true;
+		bezelCursorEnabled = true;
+		magStickEnabled = true;
 		
 		onActivateSignaler = new DirectSignaler<Point>(this);
 		onMoveSignaler = new DirectSignaler<Point>(this);
@@ -96,8 +103,35 @@ class CursorManager {
 	}
 	
 	function onTouchBegin(evt:TouchEvent):Void {
-		if (insideBezel(evt)) {
+		if (bezelCursorEnabled && insideBezel(evt)) {
 			var cursor = createCursor(evt);
+			
+			if (cursor.is(PointActivatedCursor))
+				pointActivatedCursors.set(evt.touchPointID, cast cursor);
+			
+			cursor.start();
+			cursor.onTouchBegin(evt);
+		
+			cursor.onActivateSignaler.addBubblingTarget(onActivateSignaler);
+			cursor.onMoveSignaler.addBubblingTarget(onMoveSignaler);
+			cursor.onClickSignaler.addBubblingTarget(onClickSignaler);
+			cursor.onEndSignaler.addBubblingTarget(onEndSignaler);
+		
+			cursor.onEndSignaler.bindAdvanced(function(signal:Signal<Void>):Void {
+				var cursor:Cursor = cast signal.origin;
+				
+				cursor.onActivateSignaler.removeBubblingTarget(onActivateSignaler);
+				cursor.onMoveSignaler.removeBubblingTarget(onMoveSignaler);
+				cursor.onClickSignaler.removeBubblingTarget(onClickSignaler);
+				cursor.onEndSignaler.removeBubblingTarget(onEndSignaler);
+				
+				if (cursor.is(PointActivatedCursor))
+					pointActivatedCursors.remove(untyped cursor.touchPointID);
+			}).destroyOnUse();
+		} else if (magStickEnabled) {
+			var cursor = new StickCursor(evt.touchPointID);
+			cursor.scaleFactor *= -1;
+			cursor.jointActivateDistance = Math.POSITIVE_INFINITY;
 			
 			if (cursor.is(PointActivatedCursor))
 				pointActivatedCursors.set(evt.touchPointID, cast cursor);
@@ -135,7 +169,7 @@ class CursorManager {
 		if (pointActivatedCursors.exists(evt.touchPointID)) {
 			var cursor = pointActivatedCursors.get(evt.touchPointID);
 			cursor.onTouchEnd(evt);
-		} else {
+		} else if (tapEnabled) {
 			onClickSignaler.dispatch(new Point(evt.localX, evt.localY));
 		}
 	}
