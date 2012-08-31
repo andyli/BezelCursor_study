@@ -79,6 +79,19 @@ class TestTouchWorld extends GameWorld {
 				return new bezelcursor.cursor.StickCursor(evt.touchPointID);
 			}
 		});
+		
+		var target = new Target(_w - margin, _h - margin);
+		target.color = 0x0000FF;
+		target.color_hover = 0x3333FF;
+		target.moveTo(_w * 2 + margin, HXP.stage.stageHeight - _h - margin * 0.5);
+		add(target);
+		targets.remove(target);
+		
+		target.onClickSignaler.bindVoid(function() {
+			HXP.engine.asMain().cursorManager.createCursor = function(evt:TouchEvent) {
+				return new bezelcursor.cursor.BubbleCursor(evt.touchPointID);
+			}
+		});
 	}
 	
 	override function onTargetClick(signal:Signal<Point>):Void {

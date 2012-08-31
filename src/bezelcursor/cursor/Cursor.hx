@@ -36,8 +36,11 @@ class Cursor {
 	*/
 	public var targetPoint:Point;
 	
-	public var currentSize:Float; //in inch
-	public var targetSize:Float; //in inch
+	
+	//in inch
+	public var currentSize:Float;
+	public var targetSize:Float;
+	public var startSize:Float;
 	
 	/**
 	* The Behavior instances that define how the cursor behaves.
@@ -63,7 +66,7 @@ class Cursor {
 		view = new Sprite();
 		behaviors = [];
 		snapper = new SimpleSnapper(this);
-		targetSize = currentSize = 0.001;
+		targetSize = currentSize = startSize = 0.001;
 		
 		onActivateSignaler = new DirectSignaler<Point>(this);
 		onMoveSignaler = new DirectSignaler<Point>(this);
@@ -102,7 +105,7 @@ class Cursor {
 	}
 	
 	public function onTouchBegin(evt:TouchEvent):Void {
-		targetSize = currentSize = 0;
+		targetSize = currentSize = startSize;
 		
 		for (behavior in behaviors) {
 			behavior.onTouchBegin(evt);

@@ -112,9 +112,11 @@ class Target extends Entity {
 			//trace("clicked");
 			onClickSignaler.dispatch(pt);
 			
-			var cursor:Cursor = cast signal.origin;
-			if (cursor != null)
-				isHoverBy.remove(cursor.id);
+			try {
+				var cursor:Cursor = cast signal.origin;
+				if (cursor != null)
+					isHoverBy.remove(cursor.id);
+			} catch(e:Dynamic){}
 		}
 	}
 	
