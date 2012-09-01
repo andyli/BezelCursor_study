@@ -11,9 +11,8 @@ import bezelcursor.entity.Target;
 
 class DirectionalSnapper extends Snapper<PointActivatedCursor> {
 	override public function getSnapTarget():Null<Target> {
-		var entities = [];
-		HXP.world.getType(Target.TYPE, entities);
-		var targets:Array<Target> = cast entities;
+		var targets:Array<Target> = [];
+		HXP.world.getType(Target.TYPE, targets);
 		
 		var minDistance = Math.POSITIVE_INFINITY;
 		var closestTarget = null;
