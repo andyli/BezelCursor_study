@@ -25,7 +25,7 @@ class DirectionalSnapper extends Snapper<PointActivatedCursor> {
 				if (distance > Capabilities.screenDPI * cursor.currentSize)
 					continue;
 				
-				var distance = de.polygonal.motor.geom.distance.DistancePoint.find4(cursor.currentPoint.x, cursor.currentPoint.y, target.centerX, target.centerY);
+				var distance = Point.distance(cursor.currentPoint, new Point(target.centerX, target.centerY));
 				var cursorAngle = GeomUtil.angle(cursor.activatedPoint, cursor.currentPoint);
 				var targetAngle = GeomUtil.angle(cursor.activatedPoint, new Point(target.centerX, target.centerY));
 				var panalty = Math.abs(GeomUtil.distanceBetweenDegrees(cursorAngle, targetAngle)).map(0, 90, 1, 10).constrain(1, 10);

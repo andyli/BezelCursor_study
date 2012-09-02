@@ -1,14 +1,89 @@
 package bezelcursor.model;
 
-import sys.db.Types;
+import nme.system.Capabilities;
+#if android
+import nme.JNI;
+#end
 
-class DeviceInfo extends sys.db.Object {
-	public var id:SUId;
-	public var systemName:STinyText;
-	public var screenResolutionX:SFloat;
-	public var screenResolutionY:SFloat;
-	public var screenDPI:SFloat;
-	public var pixelAspectRatio:SFloat;
+class DeviceInfo {
+	/**
+	* uuid of length 36
+	*/
+	public var id(default,null):String;
+	public var systemName(default,null):String;
+	public var systemVersion(default,null):Null<String>;
+	public var hardwareModel(default,null):Null<String>;
+	public var screenResolutionX(default,null):Float;
+	public var screenResolutionY(default,null):Float;
+	public var screenDPI(default,null):Float;
+	public var lastRemoteSyncTime(default,null):Null<Float>;
+	public var lastLocalSyncTime(default,null):Float;
 	
-	public static var manager = new sys.db.Manager(DeviceInfo);
+	private function new():Void {
+		id = org.casalib.util.StringUtil.uuid();
+	}
+	
+	public static var current(get_current, null):DeviceInfo;
+	static function get_current():DeviceInfo {
+		if (current != null) return current;
+		
+		var storageData = SharedObjectStorage.data;
+		if ((current = storageData.currentDevice) == null) {
+			current = new DeviceInfo();
+			
+			current.systemName = if (BuildInfo.current.isAndroid) {
+				"Android";
+			} else if (BuildInfo.current.isIos) {
+				"iOS";
+			} else {
+				Sys.systemName();
+			}
+			
+			#if !ios
+			current.systemVersion = getSystemVersion();
+			#end
+			
+			#if android
+			current.hardwareModel = getHardwareModel();
+			#end
+			
+			current.screenResolutionX = Capabilities.screenResolutionX;
+			current.screenResolutionY = Capabilities.screenResolutionY;
+			current.screenDPI = Capabilities.screenDPI;
+			current.lastLocalSyncTime = Date.now().getTime();
+			storageData.currentDevice = current;
+			SharedObjectStorage.instance.flush();
+		}
+		
+		return current;
+	}
+	
+	#if android
+	
+		static var _getSystemVersion:Dynamic;
+		static public function getSystemVersion():String {
+			if (_getSystemVersion == null) _getSystemVersion = JNI.createStaticMethod("net.onthewings.bezelcursor.MainActivity", "getSystemVersion", "()Ljava/lang/String;");
+			return _getSystemVersion();
+		}
+
+		static var _getHardwareModel:Dynamic;
+		static public function getHardwareModel():String {
+			if (_getHardwareModel == null) _getHardwareModel = JNI.createStaticMethod("net.onthewings.bezelcursor.MainActivity", "getHardwareModel", "()Ljava/lang/String;");
+			return _getHardwareModel();
+		}
+	
+	#else
+	
+		static public function getSystemVersion():String {
+			return switch (Sys.systemName()){
+				case "Mac", "Linux":
+					new sys.io.Process("uname", ["-mrsn"]).stdout.readAll().toString();
+				case "Windows":
+					new sys.io.Process("ver", []).stdout.readAll().toString();
+				default:
+					throw "unknown system: " + Sys.systemName();
+			}
+		}
+	
+	#end
 }

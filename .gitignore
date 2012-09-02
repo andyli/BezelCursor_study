@@ -1,6 +1,7 @@
 bin
 *.keystore
 env.nmml
+env.json
 
 ##### Mac OSX #####
 

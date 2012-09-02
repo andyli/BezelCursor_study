@@ -1,5 +1,6 @@
 package bezelcursor.cursor.snapper;
 
+import nme.geom.Point;
 import nme.system.Capabilities;
 import com.haxepunk.HXP;
 
@@ -22,7 +23,7 @@ class SimpleSnapper extends Snapper<Cursor> {
 				if (distance > Capabilities.screenDPI * cursor.currentSize)
 					continue;
 				
-				var distance = de.polygonal.motor.geom.distance.DistancePoint.find4(cursor.currentPoint.x, cursor.currentPoint.y, target.centerX, target.centerY);
+				var distance = Point.distance(cursor.currentPoint, new Point(target.centerX, target.centerY));
 				//var distance = target.distanceToPoint(cursor.currentPoint.x, cursor.currentPoint.y, false);
 				if (distance < minDistance) {
 					minDistance = distance;
