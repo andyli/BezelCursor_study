@@ -1,6 +1,6 @@
 package bezelcursor.model;
 
-class UserInfo {
+class UserInfo extends Struct {
 	/**
 	* uuid of length 36
 	*/
@@ -12,20 +12,37 @@ class UserInfo {
 		id = org.casalib.util.StringUtil.uuid();
 	}
 	
+
+	public static var sharedObject(get_sharedObject, null):nme.net.SharedObject;
+	static function get_sharedObject():nme.net.SharedObject {
+		if (sharedObject != null) 
+			return sharedObject;
+		else
+			return sharedObject = nme.net.SharedObject.getLocal("UserInfo");
+	}
+	
+	
 	public static var current(get_current, null):UserInfo;
 	static function get_current():UserInfo {
 		if (current != null) return current;
 		
-		var storageData = SharedObjectStorage.data;
-		if ((current = storageData.currentUser) == null) {
+		try {
+			#if !flash
+			current = storageData.current;
+			#else
+			current = new UserInfo();
+			current.fromObj(sharedObject.data.current);
+			#end
+		}catch(e:Dynamic){}
+		
+		if (current == null) {
 			current = new UserInfo();
 			
 			current.userName = "User";
 			
-			storageData.currentUser = current;
-			SharedObjectStorage.instance.flush();
+			sharedObject.data.current = current;
+			sharedObject.flush();
 		}
-		
 		return current;
 	}
 }

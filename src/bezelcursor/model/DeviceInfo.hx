@@ -5,7 +5,7 @@ import nme.system.Capabilities;
 import nme.JNI;
 #end
 
-class DeviceInfo {
+class DeviceInfo extends Struct {
 	/**
 	* uuid of length 36
 	*/
@@ -19,16 +19,34 @@ class DeviceInfo {
 	public var lastRemoteSyncTime(default,null):Null<Float>;
 	public var lastLocalSyncTime(default,null):Float;
 	
-	private function new():Void {
+	public function new():Void {
 		id = org.casalib.util.StringUtil.uuid();
 	}
+	
+
+	public static var sharedObject(get_sharedObject, null):nme.net.SharedObject;
+	static function get_sharedObject():nme.net.SharedObject {
+		if (sharedObject != null) 
+			return sharedObject;
+		else
+			return sharedObject = nme.net.SharedObject.getLocal("DeviceInfo");
+	}
+	
 	
 	public static var current(get_current, null):DeviceInfo;
 	static function get_current():DeviceInfo {
 		if (current != null) return current;
 		
-		var storageData = SharedObjectStorage.data;
-		if ((current = storageData.currentDevice) == null) {
+		try {
+			#if !flash
+			current = storageData.current;
+			#else
+			current = new DeviceInfo();
+			current.fromObj(sharedObject.data.current);
+			#end
+		}catch(e:Dynamic){}
+		
+		if (current == null) {
 			current = new DeviceInfo();
 			
 			current.systemName = if (BuildInfo.current.isAndroid) {
@@ -36,10 +54,14 @@ class DeviceInfo {
 			} else if (BuildInfo.current.isIos) {
 				"iOS";
 			} else {
+				#if sys
 				Sys.systemName();
+				#else
+				"";
+				#end
 			}
 			
-			#if !ios
+			#if (sys && !ios)
 			current.systemVersion = getSystemVersion();
 			#end
 			
@@ -51,8 +73,8 @@ class DeviceInfo {
 			current.screenResolutionY = Capabilities.screenResolutionY;
 			current.screenDPI = Capabilities.screenDPI;
 			current.lastLocalSyncTime = Date.now().getTime();
-			storageData.currentDevice = current;
-			SharedObjectStorage.instance.flush();
+			sharedObject.data.current = current;
+			sharedObject.flush();
 		}
 		
 		return current;
@@ -72,7 +94,7 @@ class DeviceInfo {
 			return _getHardwareModel();
 		}
 	
-	#else
+	#elseif sys
 	
 		static public function getSystemVersion():String {
 			return switch (Sys.systemName()){

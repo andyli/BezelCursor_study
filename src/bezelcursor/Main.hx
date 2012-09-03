@@ -11,7 +11,6 @@ import bezelcursor.cursor.CursorManager;
 import bezelcursor.model.BuildInfo;
 import bezelcursor.model.DeviceInfo;
 import bezelcursor.model.Env;
-import bezelcursor.model.SharedObjectStorage;
 import bezelcursor.model.UserInfo;
 import bezelcursor.world.TestTouchWorld;
 
@@ -44,11 +43,13 @@ class Main extends Engine {
 	
 	function initStorage():Void {
 		try {
-			isFirstRun = SharedObjectStorage.data.currentDevice == null;
+			isFirstRun = DeviceInfo.sharedObject.data.current == null;
 		}catch(e:Dynamic){
 			isFirstRun = true;
 		}
 		
+		trace(new DeviceInfo());
+		trace(isFirstRun ? "isFirstRun" : "not isFirstRun");
 		trace(DeviceInfo.current.id);
 		trace(UserInfo.current.id);
 		/*
