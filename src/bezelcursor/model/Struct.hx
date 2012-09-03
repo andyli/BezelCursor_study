@@ -1,5 +1,6 @@
 package bezelcursor.model;
 
+@:keep
 class Struct {
     function hxSerialize(s:haxe.Serializer) {
 		s.serialize(toObj());

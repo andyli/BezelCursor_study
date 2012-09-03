@@ -1,0 +1,8 @@
+-main bezelcursor.Server
+-php web
+-cp src
+-cp ../ufront/src
+-lib hxevents
+-lib erazor
+-lib thx
+-lib casalib

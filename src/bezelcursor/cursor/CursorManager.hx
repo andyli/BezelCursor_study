@@ -167,7 +167,7 @@ class CursorManager {
 	}
 	
 	function onMouseDown(evt:MouseEvent):Void {
-		#if !flash
+		#if cpp
 		onTouchBegin(new TouchEvent(
 			TouchEvent.TOUCH_BEGIN, 
 			evt.bubbles, 
@@ -176,6 +176,22 @@ class CursorManager {
 			evt.localY, 
 			1, 
 			1, 
+			evt.relatedObject, 
+			evt.ctrlKey, 
+			evt.altKey, 
+			evt.shiftKey, 
+			evt.buttonDown, 
+			evt.delta, 
+			evt.commandKey, 
+			evt.clickCount
+		));
+		#elseif js
+		onTouchBegin(new TouchEvent(
+			TouchEvent.TOUCH_BEGIN, 
+			evt.bubbles, 
+			evt.cancelable,
+			evt.localX, 
+			evt.localY,
 			evt.relatedObject, 
 			evt.ctrlKey, 
 			evt.altKey, 
@@ -206,7 +222,7 @@ class CursorManager {
 	}
 	
 	function onMouseMove(evt:MouseEvent):Void {
-		#if !flash
+		#if cpp
 		onTouchMove(new TouchEvent(
 			TouchEvent.TOUCH_MOVE, 
 			evt.bubbles, 
@@ -215,6 +231,22 @@ class CursorManager {
 			evt.localY, 
 			1, 
 			1, 
+			evt.relatedObject, 
+			evt.ctrlKey, 
+			evt.altKey, 
+			evt.shiftKey, 
+			evt.buttonDown, 
+			evt.delta, 
+			evt.commandKey, 
+			evt.clickCount
+		));
+		#elseif js
+		onTouchMove(new TouchEvent(
+			TouchEvent.TOUCH_MOVE, 
+			evt.bubbles, 
+			evt.cancelable,
+			evt.localX, 
+			evt.localY,
 			evt.relatedObject, 
 			evt.ctrlKey, 
 			evt.altKey, 
@@ -245,7 +277,7 @@ class CursorManager {
 	}
 	
 	function onMouseUp(evt:MouseEvent):Void {
-		#if !flash
+		#if cpp
 		onTouchEnd(new TouchEvent(
 			TouchEvent.TOUCH_END, 
 			evt.bubbles, 
@@ -254,6 +286,22 @@ class CursorManager {
 			evt.localY, 
 			1, 
 			1, 
+			evt.relatedObject, 
+			evt.ctrlKey, 
+			evt.altKey, 
+			evt.shiftKey, 
+			evt.buttonDown, 
+			evt.delta, 
+			evt.commandKey, 
+			evt.clickCount
+		));
+		#elseif js
+		onTouchEnd(new TouchEvent(
+			TouchEvent.TOUCH_END, 
+			evt.bubbles, 
+			evt.cancelable,
+			evt.localX, 
+			evt.localY,
 			evt.relatedObject, 
 			evt.ctrlKey, 
 			evt.altKey, 

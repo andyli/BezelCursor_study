@@ -57,7 +57,7 @@ class DeviceInfo extends Struct {
 				#if sys
 				Sys.systemName();
 				#elseif flash
-				"Flash"
+				"Flash";
 				#else
 				"";
 				#end

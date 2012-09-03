@@ -28,10 +28,10 @@ class Main extends Engine {
 		
 		Lib.current.stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
 		
+		#if !js
 		HXP.console.enable();
-		#if (!debug)
-		//HXP.console.visible = false;
 		#end
+		//HXP.console.visible = false;
 		
 		initStorage();
 

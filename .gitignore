@@ -2,6 +2,9 @@ bin
 *.keystore
 env.nmml
 env.json
+web/lib
+web/*.php
+*.hash
 
 ##### Mac OSX #####
 
