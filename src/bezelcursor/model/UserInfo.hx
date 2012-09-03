@@ -28,7 +28,7 @@ class UserInfo extends Struct {
 		
 		try {
 			#if !flash
-			current = storageData.current;
+			current = sharedObject.data.current;
 			#else
 			current = new UserInfo();
 			current.fromObj(sharedObject.data.current);

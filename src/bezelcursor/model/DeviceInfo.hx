@@ -39,7 +39,7 @@ class DeviceInfo extends Struct {
 		
 		try {
 			#if !flash
-			current = storageData.current;
+			current = sharedObject.data.current;
 			#else
 			current = new DeviceInfo();
 			current.fromObj(sharedObject.data.current);
@@ -56,6 +56,8 @@ class DeviceInfo extends Struct {
 			} else {
 				#if sys
 				Sys.systemName();
+				#elseif flash
+				"Flash"
 				#else
 				"";
 				#end
@@ -63,6 +65,8 @@ class DeviceInfo extends Struct {
 			
 			#if (sys && !ios)
 			current.systemVersion = getSystemVersion();
+			#elseif flash
+			current.systemVersion = Capabilities.os;
 			#end
 			
 			#if android
