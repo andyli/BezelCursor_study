@@ -1,7 +1,8 @@
 package bezelcursor.cursor.behavior;
 
-import nme.system.Capabilities;
 using org.casalib.util.NumberUtil;
+
+import bezelcursor.model.DeviceInfo;
 
 /**
 * Scale the cursor area like a DynaSpot cursor.
@@ -19,8 +20,8 @@ class DynaScale extends Behavior<PointActivatedCursor> {
 	public function new(c:PointActivatedCursor):Void {
 		super(c);
 		
-		collapseVelocity = Capabilities.screenDPI * 0.015;
-		expendVelocity = Capabilities.screenDPI * 0.035;
+		collapseVelocity = DeviceInfo.current.screenDPI * 0.015;
+		expendVelocity = DeviceInfo.current.screenDPI * 0.035;
 		collapseLag = 0.6;
 		expendedSize = 0.15;
 		collapsedSize = 0.0;

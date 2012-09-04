@@ -2,7 +2,6 @@ package bezelcursor.entity;
 
 import hsl.haxe.Signal;
 import nme.geom.Point;
-import nme.system.Capabilities;
 import com.haxepunk.HXP;
 import com.haxepunk.Entity;
 import com.haxepunk.graphics.Image;
@@ -10,6 +9,7 @@ using org.casalib.util.NumberUtil;
 using Std;
 
 import bezelcursor.cursor.Cursor;
+import bezelcursor.model.DeviceInfo;
 
 class RandomMovingTarget extends Target {
 	
@@ -22,7 +22,7 @@ class RandomMovingTarget extends Target {
 	}
 	
 	function rndSize():Void {
-		var toInch = Capabilities.screenDPI;
+		var toInch = DeviceInfo.current.screenDPI;
 		resize(
 			NumberUtil.randomIntegerWithinRange((0.5 * toInch).int(), (1 * toInch).int()),
 			NumberUtil.randomIntegerWithinRange((0.5 * toInch).int(), (1 * toInch).int())

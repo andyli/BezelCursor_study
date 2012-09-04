@@ -1,13 +1,13 @@
 package bezelcursor.cursor.snapper;
 
 import nme.geom.Point;
-import nme.system.Capabilities;
 import com.haxepunk.HXP;
 import org.casalib.util.GeomUtil;
 using org.casalib.util.NumberUtil;
 
 import bezelcursor.cursor.PointActivatedCursor;
 import bezelcursor.entity.Target;
+import bezelcursor.model.DeviceInfo;
 
 class DirectionalSnapper extends Snapper<PointActivatedCursor> {
 	override public function getSnapTarget():Null<Target> {
@@ -22,7 +22,7 @@ class DirectionalSnapper extends Snapper<PointActivatedCursor> {
 				break;
 			} else if (cursor.currentSize > 0) {
 				var distance = target.distanceToPoint(cursor.currentPoint.x, cursor.currentPoint.y, true);
-				if (distance > Capabilities.screenDPI * cursor.currentSize)
+				if (distance > DeviceInfo.current.screenDPI * cursor.currentSize)
 					continue;
 				
 				var distance = Point.distance(cursor.currentPoint, new Point(target.centerX, target.centerY));

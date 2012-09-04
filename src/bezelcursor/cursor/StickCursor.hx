@@ -4,7 +4,6 @@ import nme.events.Event;
 import nme.events.TouchEvent;
 import nme.geom.Point;
 import nme.geom.Rectangle;
-import nme.system.Capabilities;
 using org.casalib.util.NumberUtil;
 
 import bezelcursor.cursor.behavior.Behavior;
@@ -12,6 +11,7 @@ import bezelcursor.cursor.behavior.ClickWhenTouchEnd;
 import bezelcursor.cursor.behavior.DynaScale;
 import bezelcursor.cursor.behavior.SimpleDraw;
 import bezelcursor.cursor.snapper.DirectionalSnapper;
+import bezelcursor.model.DeviceInfo;
 
 class StickCursor extends PointActivatedCursor {
 	public var joint:Null<Point>;
@@ -21,7 +21,7 @@ class StickCursor extends PointActivatedCursor {
 	public function new(touchPointID:Int):Void {
 		super(touchPointID);
 		
-		jointActivateDistance = Capabilities.screenDPI * 0.2;
+		jointActivateDistance = DeviceInfo.current.screenDPI * 0.2;
 		scaleFactor = 3;
 		
 		snapper = new DirectionalSnapper(this);

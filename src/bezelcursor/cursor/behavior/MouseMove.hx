@@ -1,10 +1,10 @@
 package bezelcursor.cursor.behavior;
 
-import nme.system.Capabilities;
 import nme.geom.Rectangle;
 using org.casalib.util.NumberUtil;
 
 import bezelcursor.cursor.PointActivatedCursor;
+import bezelcursor.model.DeviceInfo;
 
 class MouseMove extends Behavior<PointActivatedCursor> {
 	public var minVelocityFactor:Float;
@@ -19,8 +19,8 @@ class MouseMove extends Behavior<PointActivatedCursor> {
 		
 		minVelocityFactor = 1;
 		maxVelocityFactor = 3;
-		minVelocityFactorTouchVelocity = Capabilities.screenDPI * 0.01;
-		maxVelocityFactorTouchVelocity = Capabilities.screenDPI * 0.05;
+		minVelocityFactorTouchVelocity = DeviceInfo.current.screenDPI * 0.01;
+		maxVelocityFactorTouchVelocity = DeviceInfo.current.screenDPI * 0.05;
 		
 		constraint = new Rectangle(0, 0, c.stage.stageWidth, c.stage.stageHeight);
 	}

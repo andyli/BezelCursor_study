@@ -6,13 +6,13 @@ import com.haxepunk.HXP;
 import nme.display.Sprite;
 import nme.events.TouchEvent;
 import nme.geom.Point;
-import nme.system.Capabilities;
 
 import bezelcursor.cursor.Cursor;
 import bezelcursor.cursor.CursorManager;
 import bezelcursor.cursor.behavior.MouseMove;
 import bezelcursor.entity.Target;
 import bezelcursor.entity.RandomMovingTarget;
+import bezelcursor.model.DeviceInfo;
 using bezelcursor.Main;
 
 class TestTouchWorld extends GameWorld {
@@ -23,7 +23,7 @@ class TestTouchWorld extends GameWorld {
 	override public function new():Void {
 		super();
 		
-		var dpi = Capabilities.screenDPI;
+		var dpi = DeviceInfo.current.screenDPI;
 		_w = Std.int(0.4 * dpi);
 		_h = Std.int(0.3 * dpi);
 		margin = Std.int(dpi*0.1);

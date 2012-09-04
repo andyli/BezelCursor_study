@@ -21,7 +21,7 @@ class Ruler extends Entity {
 	override public function added():Void {
 		super.added();
 		
-		var dpi = Capabilities.screenDPI;
+		var dpi = DeviceInfo.current.screenDPI;
 		sprite.graphics.beginFill(0xFFFFFF);
 		sprite.graphics.lineStyle(1, 0x000000, 1);
 		var x = 0.0;

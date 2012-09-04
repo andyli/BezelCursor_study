@@ -46,8 +46,10 @@ class DeviceInfo extends Struct {
 			#end
 		}catch(e:Dynamic){}
 		
-		if (current == null) {
-			current = new DeviceInfo();
+		if (true || current == null) { //overwrite anyway, use only the old id
+			var n = new DeviceInfo();
+			n.id = current.id;
+			current = n;
 			
 			current.systemName = if (BuildInfo.current.isAndroid) {
 				"Android";
@@ -75,7 +77,9 @@ class DeviceInfo extends Struct {
 			
 			current.screenResolutionX = Capabilities.screenResolutionX;
 			current.screenResolutionY = Capabilities.screenResolutionY;
+			
 			current.screenDPI = Capabilities.screenDPI;
+			
 			current.lastLocalSyncTime = Date.now().getTime();
 			sharedObject.data.current = current;
 			sharedObject.flush();

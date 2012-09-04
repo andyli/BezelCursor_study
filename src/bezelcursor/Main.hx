@@ -47,11 +47,11 @@ class Main extends Engine {
 		}catch(e:Dynamic){
 			isFirstRun = true;
 		}
-		
-		trace(new DeviceInfo());
+		//return;
 		trace(isFirstRun ? "isFirstRun" : "not isFirstRun");
 		trace(DeviceInfo.current.id);
 		trace(UserInfo.current.id);
+		trace(DeviceInfo.current);
 		/*
 		for (f in Type.getInstanceFields(DeviceInfo)) {
 			trace(f + " " + Reflect.getProperty(DeviceInfo.current, f));
