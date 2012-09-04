@@ -32,17 +32,16 @@ class CursorManager {
 	public var bezelCursorEnabled(default, null):Bool;
 	public var screenCursorEnabled(default, null):Bool;
 	
-	dynamic public function createCursor(evt:TouchEvent, _for:CreateCursorFor):Cursor {
+	static public var defaultCreateCursor = function(evt:TouchEvent, _for:CreateCursorFor):Cursor {
 		switch(_for) {
 			case ForBezel: 
 				return new bezelcursor.cursor.MouseCursor(evt.touchPointID);
 			case ForScreen:
-				var cursor = new bezelcursor.cursor.StickCursor(evt.touchPointID);
-				cursor.scaleFactor *= -1;
-				cursor.jointActivateDistance = Math.POSITIVE_INFINITY;
-				return cursor;
+				return new bezelcursor.cursor.MagStickCursor(evt.touchPointID);
 		}
 	}
+	
+	public var createCursor:TouchEvent->CreateCursorFor->Cursor;
 	
 	/**
 	* Basically Lib.stage.
@@ -63,6 +62,7 @@ class CursorManager {
 		tapEnabled = true;
 		bezelCursorEnabled = true;
 		screenCursorEnabled = true;
+		createCursor = defaultCreateCursor;
 		
 		onActivateSignaler = new DirectSignaler<Point>(this);
 		onMoveSignaler = new DirectSignaler<Point>(this);

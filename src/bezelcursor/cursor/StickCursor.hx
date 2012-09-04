@@ -10,7 +10,7 @@ import bezelcursor.cursor.behavior.Behavior;
 import bezelcursor.cursor.behavior.ClickWhenTouchEnd;
 import bezelcursor.cursor.behavior.DynaScale;
 import bezelcursor.cursor.behavior.SimpleDraw;
-import bezelcursor.cursor.snapper.DirectionalSnapper;
+import bezelcursor.cursor.snapper.SimpleSnapper;
 import bezelcursor.model.DeviceInfo;
 
 class StickCursor extends PointActivatedCursor {
@@ -24,7 +24,7 @@ class StickCursor extends PointActivatedCursor {
 		jointActivateDistance = DeviceInfo.current.screenDPI * 0.2;
 		scaleFactor = 3;
 		
-		snapper = new DirectionalSnapper(this);
+		snapper = new SimpleSnapper(this);
 		
 		behaviors.push(new DynaScale(this));
 		behaviors.push(new SimpleDraw(this));

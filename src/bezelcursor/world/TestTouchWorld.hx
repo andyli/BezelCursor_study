@@ -9,6 +9,7 @@ import nme.geom.Point;
 
 import bezelcursor.cursor.Cursor;
 import bezelcursor.cursor.CursorManager;
+import bezelcursor.cursor.behavior.DynaScale;
 import bezelcursor.cursor.behavior.MouseMove;
 import bezelcursor.entity.Target;
 import bezelcursor.entity.RandomMovingTarget;
@@ -65,17 +66,7 @@ class TestTouchWorld extends GameWorld {
 		targets.remove(target);
 		
 		target.onClickSignaler.bindVoid(function() {
-			HXP.engine.asMain().cursorManager.createCursor = function(evt:TouchEvent, _for:CreateCursorFor):Cursor {
-				switch(_for) {
-					case ForBezel: 
-						return new bezelcursor.cursor.MouseCursor(evt.touchPointID);
-					case ForScreen:
-						var cursor = new bezelcursor.cursor.StickCursor(evt.touchPointID);
-						cursor.scaleFactor *= -1;
-						cursor.jointActivateDistance = Math.POSITIVE_INFINITY;
-						return cursor;
-				}
-			}
+			HXP.engine.asMain().cursorManager.createCursor = CursorManager.defaultCreateCursor;
 		});
 		
 		
@@ -93,10 +84,7 @@ class TestTouchWorld extends GameWorld {
 					case ForBezel: 
 						return new bezelcursor.cursor.StickCursor(evt.touchPointID);
 					case ForScreen:
-						var cursor = new bezelcursor.cursor.StickCursor(evt.touchPointID);
-						cursor.scaleFactor *= -1;
-						cursor.jointActivateDistance = Math.POSITIVE_INFINITY;
-						return cursor;
+						return new bezelcursor.cursor.MagStickCursor(evt.touchPointID);
 				}
 			}
 		});
@@ -112,12 +100,9 @@ class TestTouchWorld extends GameWorld {
 			HXP.engine.asMain().cursorManager.createCursor = function(evt:TouchEvent, _for:CreateCursorFor):Cursor {
 				switch(_for) {
 					case ForBezel: 
-						return new bezelcursor.cursor.StickCursor(evt.touchPointID);
+						return new bezelcursor.cursor.BubbleMouseCursor(evt.touchPointID);
 					case ForScreen:
-						var cursor = new bezelcursor.cursor.BubbleCursor(evt.touchPointID);
-						var mouseMove:MouseMove = cast cursor.behaviors.filter(function(b) return Std.is(b,MouseMove)).first();
-						mouseMove.minVelocityFactor = mouseMove.maxVelocityFactor = 1;
-						return cursor;
+						return new bezelcursor.cursor.MagStickCursor(evt.touchPointID);
 				}
 			}
 		});
