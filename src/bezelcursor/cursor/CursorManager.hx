@@ -169,7 +169,7 @@ class CursorManager {
 	}
 	
 	function onMouseDown(evt:MouseEvent):Void {
-		#if cpp
+		#if sys
 		onTouchBegin(new TouchEvent(
 			TouchEvent.TOUCH_BEGIN, 
 			evt.bubbles, 
@@ -224,7 +224,7 @@ class CursorManager {
 	}
 	
 	function onMouseMove(evt:MouseEvent):Void {
-		#if cpp
+		#if sys
 		onTouchMove(new TouchEvent(
 			TouchEvent.TOUCH_MOVE, 
 			evt.bubbles, 
@@ -279,7 +279,7 @@ class CursorManager {
 	}
 	
 	function onMouseUp(evt:MouseEvent):Void {
-		#if cpp
+		#if sys
 		onTouchEnd(new TouchEvent(
 			TouchEvent.TOUCH_END, 
 			evt.bubbles, 

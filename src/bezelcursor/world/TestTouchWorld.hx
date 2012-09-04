@@ -78,6 +78,8 @@ class TestTouchWorld extends GameWorld {
 			}
 		});
 		
+		
+		
 		var target = new Target(_w - margin, _h - margin);
 		target.color = 0x0000FF;
 		target.color_hover = 0x3333FF;
