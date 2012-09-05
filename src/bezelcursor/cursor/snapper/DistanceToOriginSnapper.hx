@@ -13,7 +13,7 @@ class DistanceToOriginSnapper extends Snapper<PointActivatedCursor> {
 		var targets:Array<Target> = [];
 		HXP.world.getType(Target.TYPE, targets);
 		
-		var minDistanceToOrigin = Point.distance(cursor.activatedPoint, cursor.currentTouchPoint);
+		var minDistanceToOrigin = Point.distance(cursor.activatedPoint, cursor.currentTouchPoint) + DeviceInfo.current.screenDPI * cursor.currentSize;
 		//var oriAngle = GeomUtil.normalizeDegree(GeomUtil.angle(cursor.activatedPoint, cursor.currentTouchPoint) + 180);
 		//var minAngle = 40.0;
 		var minDistance = Math.POSITIVE_INFINITY;
