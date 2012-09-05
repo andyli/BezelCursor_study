@@ -10,7 +10,7 @@ import bezelcursor.cursor.behavior.ClickWhenTouchEnd;
 import bezelcursor.cursor.behavior.MouseMove;
 
 class BubbleMouseCursor extends MouseCursor {
-	public function new(?config:Dynamic):Void {
+	public function new(config:Dynamic):Void {
 		super(config);
 		
 		var r = stage.stageHeight + stage.stageWidth;

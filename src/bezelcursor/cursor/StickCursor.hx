@@ -21,10 +21,10 @@ class StickCursor extends PointActivatedCursor {
 	public var jointActivateDistance:Float;
 	public var scaleFactor:Float;
 	
-	public function new(?config:Dynamic):Void {
+	public function new(config:Dynamic):Void {
 		super(config);
 		
-		joint = config != null && Reflect.hasField(config, "joint") ? config.joint : null;
+		joint = config != null && Reflect.hasField(config, "joint") ? config.joint.toPoint() : null;
 		jointActivateDistance = config != null && Reflect.hasField(config, "jointActivateDistance") ? config.jointActivateDistance : DeviceInfo.current.screenDPI * 0.2;
 		scaleFactor = config != null && Reflect.hasField(config, "scaleFactor") ? config.scaleFactor : 3;
 		
@@ -109,8 +109,6 @@ class StickCursor extends PointActivatedCursor {
 	}
 	
 	override public function clone():StickCursor {
-		var cursor = new StickCursor(touchPointID); Cursor.nextId--;
-		cursor.setConfig(getConfig());
-		return cursor;
+		return new StickCursor(getConfig());
 	}
 }

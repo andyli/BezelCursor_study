@@ -11,7 +11,7 @@ import bezelcursor.cursor.behavior.MouseMove;
 import bezelcursor.model.TouchData;
 
 class MouseCursor extends PointActivatedCursor {
-	public function new(?config:Dynamic):Void {
+	public function new(config:Dynamic):Void {
 		super(config);
 		
 		behaviors.push(new DrawStick(this));

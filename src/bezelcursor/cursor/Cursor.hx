@@ -72,13 +72,16 @@ class Cursor {
 	public function new(?config:Dynamic):Void {
 		id = config != null && Reflect.hasField(config, "id") ? config.id : nextId++;
 		color = config != null && Reflect.hasField(config, "color") ? config.color : 0xFF0000;
-		behaviors = config != null && Reflect.hasField(config, "behaviors") ? config.behaviors : [];
-		snapper = config != null && Reflect.hasField(config, "snapper") ? config.snapper : new SimpleSnapper(this);
-		current_position = config != null && Reflect.hasField(config, "current_position") ? config.current_position : null;
-		target_position = config != null && Reflect.hasField(config, "target_position") ? config.target_position : null;
+		current_position = config != null && Reflect.hasField(config, "current_position") ? config.current_position.toPoint() : null;
+		target_position = config != null && Reflect.hasField(config, "target_position") ? config.target_position.toPoint() : null;
 		current_radius = config != null && Reflect.hasField(config, "current_radius") ? config.current_radius :  0.001;
 		target_radius = config != null && Reflect.hasField(config, "target_radius") ? config.target_radius :  0.001;
 		default_radius = config != null && Reflect.hasField(config, "default_radius") ? config.default_radius : 0.001;
+		
+		//behaviors = config != null && Reflect.hasField(config, "behaviors") ? config.behaviors : [];
+		//snapper = config != null && Reflect.hasField(config, "snapper") ? config.snapper : new SimpleSnapper(this);
+		behaviors = [];
+		snapper = new SimpleSnapper(this);
 		
 		stage = Lib.stage;
 		view = new Sprite();
@@ -205,8 +208,6 @@ class Cursor {
 	}
 	
 	static public function createFromConfig<C:Cursor>(config:Dynamic):C {
-		var c:C = Type.createInstance(Type.resolveClass(config._class), []);
-		c.setConfig(config);
-		return c;
+		return Type.createInstance(Type.resolveClass(config._class), [config]);
 	}
 }

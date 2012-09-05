@@ -41,14 +41,14 @@ class PointActivatedCursor extends Cursor {
 	*/
 	public var touchVelocity(default, null):Point;
 	
-	public function new(?config:Dynamic):Void {
+	public function new(config:Dynamic):Void {
 		super(config);
 		
 		touchPointID = config.touchPointID;
-		touchVelocity = config != null && Reflect.hasField(config, "touchVelocity") ? config.touchVelocity : new Point();
-		pFrameTouchPoint = config != null && Reflect.hasField(config, "pFrameTouchPoint") ? config.pFrameTouchPoint : null;
-		currentTouchPoint = config != null && Reflect.hasField(config, "currentTouchPoint") ? config.currentTouchPoint : null;
-		activatedPoint = config != null && Reflect.hasField(config, "activatedPoint") ? config.activatedPoint : null;
+		touchVelocity = config != null && Reflect.hasField(config, "touchVelocity") ? config.touchVelocity.toPoint() : new Point();
+		pFrameTouchPoint = config != null && Reflect.hasField(config, "pFrameTouchPoint") ? config.pFrameTouchPoint.toPoint() : null;
+		currentTouchPoint = config != null && Reflect.hasField(config, "currentTouchPoint") ? config.currentTouchPoint.toPoint() : null;
+		activatedPoint = config != null && Reflect.hasField(config, "activatedPoint") ? config.activatedPoint.toPoint() : null;
 	}
 	
 	override public function onFrame(evt:Event = null):Void {

@@ -15,7 +15,7 @@ import bezelcursor.cursor.snapper.DistanceToOriginSnapper;
 import bezelcursor.model.DeviceInfo;
 
 class MagStickCursor extends StickCursor {
-	public function new(?config:Dynamic):Void {
+	public function new(config:Dynamic):Void {
 		super(config);
 		
 		jointActivateDistance = config != null && Reflect.hasField(config, "jointActivateDistance") ? config.jointActivateDistance : Math.POSITIVE_INFINITY;

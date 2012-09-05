@@ -120,6 +120,11 @@ class CursorManager {
 	
 	function onBegin(touch:TouchData):Void {
 		var cursor = createCursor(touch, (bezelCursorEnabled && insideBezel(touch)) ? ForBezel : ForScreen);
+		
+		//tests:
+		//cursor = Cursor.createFromConfig(cursor.getConfig());
+		//cursor = cursor.clone();
+		
 		if (cursor.is(PointActivatedCursor)) {
 			var pCursor = cast(cursor,PointActivatedCursor);
 			pointActivatedCursors.set(pCursor.touchPointID, pCursor);
@@ -144,8 +149,6 @@ class CursorManager {
 			if (cursor.is(PointActivatedCursor))
 				pointActivatedCursors.remove(untyped cursor.touchPointID);
 		}).destroyOnUse();
-		
-		trace(cursor.getConfig());
 	}
 	
 	function onMove(touch:TouchData):Void {
