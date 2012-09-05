@@ -3,7 +3,11 @@ package bezelcursor.cursor.behavior;
 import bezelcursor.cursor.Cursor;
 import bezelcursor.model.DeviceInfo;
 
-class BubbleDraw extends Behavior<PointActivatedCursor> {
+class DrawBubble extends Behavior<PointActivatedCursor> {
+	public var lineWeight:Float = 2;
+	public var alpha:Float = 1;
+	public var centerSpotRadius:Float = 0.25;
+	
 	override public function onFrame():Void {
 		super.onFrame();
 		
@@ -18,9 +22,8 @@ class BubbleDraw extends Behavior<PointActivatedCursor> {
 				);
 			}
 			
-			cursor.view.graphics.clear();
-			cursor.view.graphics.lineStyle(2, 0xFF0000, 1);
-			cursor.view.graphics.drawCircle(cursor.position.x, cursor.position.y, 0.25);
+			cursor.view.graphics.lineStyle(lineWeight, cursor.color, alpha);
+			cursor.view.graphics.drawCircle(cursor.position.x, cursor.position.y, centerSpotRadius);
 			cursor.view.graphics.drawCircle(cursor.position.x, cursor.position.y, dist);
 		}
 	}

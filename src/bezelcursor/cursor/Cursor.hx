@@ -59,6 +59,11 @@ class Cursor {
 	public var view(default, null):Sprite;
 	
 	/**
+	* Color of the view.
+	*/
+	public var color:Int;
+	
+	/**
 	* Basically Lib.stage.
 	*/
 	public var stage(default, null):Stage;
@@ -68,6 +73,7 @@ class Cursor {
 		stage = Lib.stage;
 		view = new Sprite();
 		view.mouseEnabled = false;
+		color = 0xFF0000;
 		behaviors = [];
 		snapper = new SimpleSnapper(this);
 		current_radius = target_radius = default_radius = 0.001;
@@ -103,6 +109,7 @@ class Cursor {
 		
 		current_radius += (target_radius - current_radius) * stage.frameRate.map(0, 30, 1, 0.3);
 		
+		view.graphics.clear();
 		for (behavior in behaviors) {
 			behavior.onFrame();
 		}

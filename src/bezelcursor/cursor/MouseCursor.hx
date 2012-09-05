@@ -5,16 +5,18 @@ import nme.events.TouchEvent;
 import bezelcursor.cursor.behavior.Behavior;
 import bezelcursor.cursor.behavior.ClickWhenTouchEnd;
 import bezelcursor.cursor.behavior.DynaScale;
-import bezelcursor.cursor.behavior.SimpleDraw;
+import bezelcursor.cursor.behavior.DrawRadius;
+import bezelcursor.cursor.behavior.DrawStick;
 import bezelcursor.cursor.behavior.MouseMove;
 
 class MouseCursor extends PointActivatedCursor {
 	public function new(touchPointID:Int):Void {
 		super(touchPointID);
 		
-		behaviors.push(new DynaScale(this));
-		behaviors.push(new SimpleDraw(this));
+		behaviors.push(new DrawStick(this));
+		behaviors.push(new DrawRadius(this));
 		behaviors.push(new MouseMove(this));
+		behaviors.push(new DynaScale(this));
 		behaviors.push(new ClickWhenTouchEnd(this));
 	}
 	

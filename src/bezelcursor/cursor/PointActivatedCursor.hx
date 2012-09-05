@@ -57,7 +57,9 @@ class PointActivatedCursor extends Cursor {
 	}
 	
 	override public function onTouchBegin(evt:TouchEvent):Void {
-		if (evt.touchPointID != touchPointID) return;
+		#if debug
+		if (evt.touchPointID != touchPointID) throw "This cursor should receive only touchPointID of " + touchPointID + " but not " + evt.touchPointID + ".";
+		#end
 		
 		super.onTouchBegin(evt);
 		
@@ -67,7 +69,9 @@ class PointActivatedCursor extends Cursor {
 	}
 	
 	override public function onTouchMove(evt:TouchEvent):Void {
-		if (evt.touchPointID != touchPointID) return;
+		#if debug
+		if (evt.touchPointID != touchPointID) throw "This cursor should receive only touchPointID of " + touchPointID + " but not " + evt.touchPointID + ".";
+		#end
 		
 		super.onTouchMove(evt);
 		
@@ -77,7 +81,9 @@ class PointActivatedCursor extends Cursor {
 	}
 	
 	override public function onTouchEnd(evt:TouchEvent):Void {
-		if (evt.touchPointID != touchPointID) return;
+		#if debug
+		if (evt.touchPointID != touchPointID) throw "This cursor should receive only touchPointID of " + touchPointID + " but not " + evt.touchPointID + ".";
+		#end
 		
 		super.onTouchEnd(evt);
 		

@@ -4,7 +4,8 @@ import nme.events.Event;
 import nme.events.TouchEvent;
 
 import bezelcursor.cursor.behavior.Behavior;
-import bezelcursor.cursor.behavior.BubbleDraw;
+import bezelcursor.cursor.behavior.DrawBubble;
+import bezelcursor.cursor.behavior.DrawStick;
 import bezelcursor.cursor.behavior.ClickWhenTouchEnd;
 import bezelcursor.cursor.behavior.MouseMove;
 
@@ -13,6 +14,6 @@ class BubbleMouseCursor extends MouseCursor {
 		super(touchPointID);
 		
 		current_radius = target_radius = default_radius = stage.stageHeight + stage.stageWidth;
-		behaviors = [new MouseMove(this), new BubbleDraw(this), new ClickWhenTouchEnd(this)];
+		behaviors = [new DrawStick(this), new DrawBubble(this), new MouseMove(this), new ClickWhenTouchEnd(this)];
 	}
 }

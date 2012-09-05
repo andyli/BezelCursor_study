@@ -9,7 +9,8 @@ using org.casalib.util.NumberUtil;
 import bezelcursor.cursor.behavior.Behavior;
 import bezelcursor.cursor.behavior.ClickWhenTouchEnd;
 import bezelcursor.cursor.behavior.DynaScale;
-import bezelcursor.cursor.behavior.SimpleDraw;
+import bezelcursor.cursor.behavior.DrawStick;
+import bezelcursor.cursor.behavior.DrawRadius;
 import bezelcursor.cursor.snapper.SimpleSnapper;
 import bezelcursor.model.DeviceInfo;
 
@@ -24,10 +25,9 @@ class StickCursor extends PointActivatedCursor {
 		jointActivateDistance = DeviceInfo.current.screenDPI * 0.2;
 		scaleFactor = 3;
 		
-		snapper = new SimpleSnapper(this);
-		
 		behaviors.push(new DynaScale(this));
-		behaviors.push(new SimpleDraw(this));
+		behaviors.push(new DrawStick(this));
+		behaviors.push(new DrawRadius(this));
 		behaviors.push(new ClickWhenTouchEnd(this));
 	}
 	
@@ -37,7 +37,8 @@ class StickCursor extends PointActivatedCursor {
 		target_position = current_position = activatedPoint;
 		joint = null;
 	}
-	
+		
+	/*
 	override function onFrame(evt:Event = null):Void {		
 		super.onFrame(evt);
 		
@@ -52,6 +53,7 @@ class StickCursor extends PointActivatedCursor {
 			}
 		}
 	}
+	*/
 	
 	override function onTouchBegin(evt:TouchEvent):Void {
 		super.onTouchBegin(evt);
@@ -81,7 +83,6 @@ class StickCursor extends PointActivatedCursor {
 	}
 	
 	override function onTouchEnd(evt:TouchEvent):Void {
-		if (evt.touchPointID != touchPointID) return;
 		joint = null;
 		super.onTouchEnd(evt);
 	}
