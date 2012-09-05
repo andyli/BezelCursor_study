@@ -53,15 +53,15 @@ class Cursor {
 	public var snapper(default, null):Snapper<Dynamic>;
 	
 	/**
+	* Color of the view.
+	*/
+	public var color:Int;
+	
+	/**
 	* The visual graphics of the cursor.
 	* It is automatically added to the stage on `start` and removed on `end`.
 	*/
 	public var view(default, null):Sprite;
-	
-	/**
-	* Color of the view.
-	*/
-	public var color:Int;
 	
 	/**
 	* Basically Lib.stage.
@@ -155,13 +155,17 @@ class Cursor {
 	}
 	
 	public function clone():Cursor {
-		var cursor = new Cursor();
+		var cursor = new Cursor(); Cursor.nextId--;
+		
 		cursor.id = id;
 		cursor.current_position = current_position;
 		cursor.target_position = target_position;
 		cursor.current_radius = current_radius;
 		cursor.target_radius = target_radius;
 		cursor.behaviors = behaviors.copy();
+		cursor.snapper = snapper;
+		cursor.color = color;
+		
 		return cursor;
 	}
 }

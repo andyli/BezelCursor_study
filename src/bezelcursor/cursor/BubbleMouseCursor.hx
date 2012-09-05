@@ -16,4 +16,24 @@ class BubbleMouseCursor extends MouseCursor {
 		current_radius = target_radius = default_radius = stage.stageHeight + stage.stageWidth;
 		behaviors = [new DrawStick(this), new DrawBubble(this), new MouseMove(this), new ClickWhenTouchEnd(this)];
 	}
+	
+	override public function clone():BubbleMouseCursor {
+		var cursor = new BubbleMouseCursor(touchPointID); Cursor.nextId--;
+		
+		cursor.id = id;
+		cursor.current_position = current_position;
+		cursor.target_position = target_position;
+		cursor.current_radius = current_radius;
+		cursor.target_radius = target_radius;
+		cursor.behaviors = behaviors.copy();
+		cursor.snapper = snapper;
+		cursor.color = color;
+		
+		cursor.pFrameTouchPoint = pFrameTouchPoint;
+		cursor.activatedPoint = activatedPoint;
+		cursor.currentTouchPoint = currentTouchPoint;
+		cursor.touchVelocity = touchVelocity;
+		
+		return cursor;
+	}
 }

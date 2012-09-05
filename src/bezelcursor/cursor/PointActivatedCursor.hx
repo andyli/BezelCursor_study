@@ -92,16 +92,22 @@ class PointActivatedCursor extends Cursor {
 	}
 	
 	override public function clone():PointActivatedCursor {
-		var cursor = new PointActivatedCursor(touchPointID);
+		var cursor = new PointActivatedCursor(touchPointID); Cursor.nextId--;
+		
 		cursor.id = id;
 		cursor.current_position = current_position;
 		cursor.target_position = target_position;
 		cursor.current_radius = current_radius;
 		cursor.target_radius = target_radius;
-		cursor.activatedPoint = activatedPoint;
+		cursor.behaviors = behaviors.copy();
+		cursor.snapper = snapper;
+		cursor.color = color;
+		
 		cursor.pFrameTouchPoint = pFrameTouchPoint;
+		cursor.activatedPoint = activatedPoint;
 		cursor.currentTouchPoint = currentTouchPoint;
 		cursor.touchVelocity = touchVelocity;
+		
 		return cursor;
 	}
 }
