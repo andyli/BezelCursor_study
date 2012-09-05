@@ -21,11 +21,12 @@ class StickCursor extends PointActivatedCursor {
 	public var jointActivateDistance:Float;
 	public var scaleFactor:Float;
 	
-	public function new(touchPointID:Int = 0):Void {
-		super(touchPointID);
+	public function new(?config:Dynamic):Void {
+		super(config);
 		
-		jointActivateDistance = DeviceInfo.current.screenDPI * 0.2;
-		scaleFactor = 3;
+		joint = config != null && Reflect.hasField(config, "joint") ? config.joint : null;
+		jointActivateDistance = config != null && Reflect.hasField(config, "jointActivateDistance") ? config.jointActivateDistance : DeviceInfo.current.screenDPI * 0.2;
+		scaleFactor = config != null && Reflect.hasField(config, "scaleFactor") ? config.scaleFactor : 3;
 		
 		behaviors.push(new DynaScale(this));
 		behaviors.push(new DrawStick(this));

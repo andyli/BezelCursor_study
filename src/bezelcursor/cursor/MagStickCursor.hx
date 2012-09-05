@@ -15,20 +15,20 @@ import bezelcursor.cursor.snapper.DistanceToOriginSnapper;
 import bezelcursor.model.DeviceInfo;
 
 class MagStickCursor extends StickCursor {
-	public function new(touchPointID:Int = 0):Void {
-		super(touchPointID);
+	public function new(?config:Dynamic):Void {
+		super(config);
 		
-		jointActivateDistance = Math.POSITIVE_INFINITY;
-		scaleFactor = -1;
-		current_radius = target_radius = default_radius = 0.1;
+		jointActivateDistance = config != null && Reflect.hasField(config, "jointActivateDistance") ? config.jointActivateDistance : Math.POSITIVE_INFINITY;
+		scaleFactor = config != null && Reflect.hasField(config, "scaleFactor") ? config.scaleFactor : -1;
+		current_radius = config != null && Reflect.hasField(config, "current_radius") ? config.current_radius : 0.1;
+		target_radius = config != null && Reflect.hasField(config, "target_radius") ? config.target_radius : 0.1;
+		default_radius = config != null && Reflect.hasField(config, "default_radius") ? config.default_radius : 0.1;
 		
 		behaviors = [new DrawMagStick(this), new ClickWhenTouchEnd(this)];
 		snapper = new DistanceToOriginSnapper(this);
 	}
 	
 	override public function clone():MagStickCursor {
-		var cursor = new MagStickCursor(touchPointID); Cursor.nextId--;
-		cursor.setConfig(getConfig());
-		return cursor;
+		return new MagStickCursor(getConfig());
 	}
 }

@@ -10,16 +10,18 @@ import bezelcursor.cursor.behavior.ClickWhenTouchEnd;
 import bezelcursor.cursor.behavior.MouseMove;
 
 class BubbleMouseCursor extends MouseCursor {
-	public function new(touchPointID:Int = 0):Void {
-		super(touchPointID);
+	public function new(?config:Dynamic):Void {
+		super(config);
 		
-		current_radius = target_radius = default_radius = stage.stageHeight + stage.stageWidth;
+		var r = stage.stageHeight + stage.stageWidth;
+		current_radius = config != null && Reflect.hasField(config, "current_radius") ? config.current_radius : r;
+		target_radius = config != null && Reflect.hasField(config, "target_radius") ? config.target_radius : r;
+		default_radius = config != null && Reflect.hasField(config, "default_radius") ? config.default_radius : r;
+		
 		behaviors = [new DrawStick(this), new DrawBubble(this), new MouseMove(this), new ClickWhenTouchEnd(this)];
 	}
 	
 	override public function clone():BubbleMouseCursor {
-		var cursor = new BubbleMouseCursor(touchPointID); Cursor.nextId--;
-		cursor.setConfig(getConfig());		
-		return cursor;
+		return new BubbleMouseCursor(getConfig());
 	}
 }

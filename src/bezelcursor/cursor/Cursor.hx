@@ -69,15 +69,20 @@ class Cursor {
 	*/
 	public var stage(default, null):Stage;
 	
-	public function new():Void {
-		id = nextId++;
+	public function new(?config:Dynamic):Void {
+		id = config != null && Reflect.hasField(config, "id") ? config.id : nextId++;
+		color = config != null && Reflect.hasField(config, "color") ? config.color : 0xFF0000;
+		behaviors = config != null && Reflect.hasField(config, "behaviors") ? config.behaviors : [];
+		snapper = config != null && Reflect.hasField(config, "snapper") ? config.snapper : new SimpleSnapper(this);
+		current_position = config != null && Reflect.hasField(config, "current_position") ? config.current_position : null;
+		target_position = config != null && Reflect.hasField(config, "target_position") ? config.target_position : null;
+		current_radius = config != null && Reflect.hasField(config, "current_radius") ? config.current_radius :  0.001;
+		target_radius = config != null && Reflect.hasField(config, "target_radius") ? config.target_radius :  0.001;
+		default_radius = config != null && Reflect.hasField(config, "default_radius") ? config.default_radius : 0.001;
+		
 		stage = Lib.stage;
 		view = new Sprite();
 		view.mouseEnabled = false;
-		color = 0xFF0000;
-		behaviors = [];
-		snapper = new SimpleSnapper(this);
-		current_radius = target_radius = default_radius = 0.001;
 		
 		onActivateSignaler = new DirectSignaler<Point>(this);
 		onMoveSignaler = new DirectSignaler<Point>(this);
@@ -189,15 +194,14 @@ class Cursor {
 		target_position = config.target_position.toPoint();
 		current_radius = config.current_radius;
 		target_radius = config.target_radius;
+		default_radius = config.default_radius;
 		behaviors = config.behaviors;
 		snapper = config.snapper;
 		color = config.color;
 	}
 	
 	public function clone():Cursor {
-		var cursor = new Cursor(); Cursor.nextId--;
-		cursor.setConfig(getConfig());
-		return cursor;
+		return new Cursor(getConfig());
 	}
 	
 	static public function createFromConfig<C:Cursor>(config:Dynamic):C {

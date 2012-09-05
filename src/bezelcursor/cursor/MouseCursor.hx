@@ -11,8 +11,8 @@ import bezelcursor.cursor.behavior.MouseMove;
 import bezelcursor.model.TouchData;
 
 class MouseCursor extends PointActivatedCursor {
-	public function new(touchPointID:Int = 0):Void {
-		super(touchPointID);
+	public function new(?config:Dynamic):Void {
+		super(config);
 		
 		behaviors.push(new DrawStick(this));
 		behaviors.push(new DrawRadius(this));
@@ -28,8 +28,6 @@ class MouseCursor extends PointActivatedCursor {
 	}
 	
 	override public function clone():MouseCursor {
-		var cursor = new MouseCursor(touchPointID); Cursor.nextId--;
-		cursor.setConfig(getConfig());		
-		return cursor;
+		return new MouseCursor(getConfig());
 	}
 }

@@ -83,9 +83,9 @@ class TestTouchWorld extends GameWorld {
 			HXP.engine.asMain().cursorManager.createCursor = function(touch:TouchData, _for:CreateCursorFor):Cursor {
 				switch(_for) {
 					case ForBezel: 
-						return new bezelcursor.cursor.StickCursor(touch.touchPointID);
+						return new bezelcursor.cursor.StickCursor({touchPointID: touch.touchPointID});
 					case ForScreen:
-						return new bezelcursor.cursor.MagStickCursor(touch.touchPointID);
+						return new bezelcursor.cursor.MagStickCursor({touchPointID: touch.touchPointID});
 				}
 			}
 		});
@@ -101,9 +101,9 @@ class TestTouchWorld extends GameWorld {
 			HXP.engine.asMain().cursorManager.createCursor = function(touch:TouchData, _for:CreateCursorFor):Cursor {
 				switch(_for) {
 					case ForBezel: 
-						return new bezelcursor.cursor.BubbleMouseCursor(touch.touchPointID);
+						return new bezelcursor.cursor.BubbleMouseCursor({touchPointID: touch.touchPointID});
 					case ForScreen:
-						return new bezelcursor.cursor.MagStickCursor(touch.touchPointID);
+						return new bezelcursor.cursor.MagStickCursor({touchPointID: touch.touchPointID});
 				}
 			}
 		});

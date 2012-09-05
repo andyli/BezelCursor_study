@@ -36,9 +36,9 @@ class CursorManager {
 	static public var defaultCreateCursor = function(touch:TouchData, _for:CreateCursorFor):Cursor {
 		switch(_for) {
 			case ForBezel: 
-				return new bezelcursor.cursor.MouseCursor(touch.touchPointID);
+				return new bezelcursor.cursor.MouseCursor({touchPointID: touch.touchPointID});
 			case ForScreen:
-				return new bezelcursor.cursor.MagStickCursor(touch.touchPointID);
+				return new bezelcursor.cursor.MagStickCursor({touchPointID: touch.touchPointID});
 		}
 	}
 	
