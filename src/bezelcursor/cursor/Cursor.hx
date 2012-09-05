@@ -36,8 +36,9 @@ class Cursor {
 	*/
 	public var targetPoint:Point;
 	
-	
-	//in inch
+	/**
+	* The radius(in inch) of this cursor, which define the interest area used by snapper.
+	*/
 	public var radius(get_radius, set_radius):Float;
 	var default_radius:Float;
 	var target_radius:Float;
