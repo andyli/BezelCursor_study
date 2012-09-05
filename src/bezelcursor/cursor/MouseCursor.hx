@@ -14,11 +14,7 @@ class MouseCursor extends PointActivatedCursor {
 	public function new(config:Dynamic):Void {
 		super(config);
 		
-		behaviors.push(new DrawStick(this));
-		behaviors.push(new DrawRadius(this));
-		behaviors.push(new MouseMove(this));
-		behaviors.push(new DynaScale(this));
-		behaviors.push(new ClickWhenTouchEnd(this));
+		behaviors = config != null && Reflect.hasField(config, "behaviors") ? Behavior.createFromConfigs(this, config.behaviors) : [new DrawStick(this), new DrawRadius(this), new MouseMove(this), new DynaScale(this), new ClickWhenTouchEnd(this)];
 	}
 	
 	override function onTouchBegin(touch:TouchData):Void {

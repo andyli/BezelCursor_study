@@ -80,7 +80,7 @@ class Cursor {
 		
 		//behaviors = config != null && Reflect.hasField(config, "behaviors") ? config.behaviors : [];
 		snapper = config != null && Reflect.hasField(config, "snapper") ? Snapper.createFromConfig(this, config.snapper) : new SimpleSnapper(this);
-		behaviors = [];
+		behaviors = config != null && Reflect.hasField(config, "behaviors") ? Behavior.createFromConfigs(this, config.behaviors) : [];
 		
 		stage = Lib.stage;
 		view = new Sprite();
@@ -180,7 +180,7 @@ class Cursor {
 		config.target_position = target_position.toObj();
 		config.current_radius = current_radius;
 		config.target_radius = target_radius;
-		config.behaviors = behaviors.copy();
+		config.behaviors = []; for (b in behaviors) config.behaviors.push(b.getConfig());
 		config.snapper = snapper.getConfig();
 		config.color = color;
 		

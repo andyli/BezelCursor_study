@@ -25,7 +25,7 @@ class MagStickCursor extends StickCursor {
 		target_radius = config != null && Reflect.hasField(config, "target_radius") ? config.target_radius : 0.1;
 		default_radius = config != null && Reflect.hasField(config, "default_radius") ? config.default_radius : 0.1;
 		
-		behaviors = [new DrawMagStick(this), new ClickWhenTouchEnd(this)];
+		behaviors = config != null && Reflect.hasField(config, "behaviors") ? Behavior.createFromConfigs(this, config.behaviors) : [new DrawMagStick(this), new ClickWhenTouchEnd(this)];
 		snapper = config != null && Reflect.hasField(config, "snapper") ? Snapper.createFromConfig(this, config.snapper) : new DistanceToOriginSnapper(this);
 	}
 	

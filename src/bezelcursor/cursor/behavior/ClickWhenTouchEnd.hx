@@ -13,4 +13,8 @@ class ClickWhenTouchEnd extends Behavior<PointActivatedCursor> {
 		
 		cursor.end();
 	}
+	
+	override public function clone(?c:PointActivatedCursor):ClickWhenTouchEnd {
+		return new ClickWhenTouchEnd(c == null ? cursor : c, getConfig());
+	}
 }

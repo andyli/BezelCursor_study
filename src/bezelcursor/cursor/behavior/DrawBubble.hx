@@ -4,9 +4,17 @@ import bezelcursor.cursor.Cursor;
 import bezelcursor.model.DeviceInfo;
 
 class DrawBubble extends Behavior<PointActivatedCursor> {
-	public var lineWeight:Float = 2;
-	public var alpha:Float = 1;
-	public var centerSpotRadius:Float = 0.25;
+	public var lineWeight:Float;
+	public var alpha:Float;
+	public var centerSpotRadius:Float;
+	
+	public function new(c:PointActivatedCursor, ?config:Dynamic):Void {
+		super(c, config);
+		
+		lineWeight = config != null && Reflect.hasField(config, "lineWeight") ? config.lineWeight : 2;
+		alpha = config != null && Reflect.hasField(config, "alpha") ? config.alpha : 1;
+		centerSpotRadius = config != null && Reflect.hasField(config, "centerSpotRadius") ? config.centerSpotRadius : 0.25;
+	}
 	
 	override public function onFrame():Void {
 		super.onFrame();
@@ -26,5 +34,27 @@ class DrawBubble extends Behavior<PointActivatedCursor> {
 			cursor.view.graphics.drawCircle(cursor.position.x, cursor.position.y, centerSpotRadius);
 			cursor.view.graphics.drawCircle(cursor.position.x, cursor.position.y, dist);
 		}
+	}
+	
+	override public function getConfig():Dynamic {
+		var config:Dynamic = super.getConfig();
+		
+		config.lineWeight = lineWeight;
+		config.alpha = alpha;
+		config.centerSpotRadius = centerSpotRadius;
+		
+		return config;
+	}
+	
+	override public function setConfig(config:Dynamic):Void {
+		super.setConfig(config);
+		
+		lineWeight = config.lineWeight;
+		alpha = config.alpha;
+		centerSpotRadius = config.centerSpotRadius;
+	}
+	
+	override public function clone(?c:PointActivatedCursor):DrawBubble {
+		return new DrawBubble(c == null ? cursor : c, getConfig());
 	}
 }

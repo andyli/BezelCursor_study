@@ -15,14 +15,15 @@ class DrawMagStick extends Behavior<MagStickCursor> {
 	public var radiusCircleLineWidth:Float;
 	public var radiusCircleAlpha:Float;
 	
-	public function new(c:MagStickCursor):Void {
-		super(c);
-		lineWidthThumb = [3.5, 3, 2.2, 2];
-		alphaThumb = [1, 1, 1, 1];
-		lineWidthTarget = [2, 1.5];
-		alphaTarget = [1, 1];
-		radiusCircleLineWidth = 2;
-		radiusCircleAlpha = 1;
+	public function new(c:MagStickCursor, ?config:Dynamic):Void {
+		super(c, config);
+		
+		lineWidthThumb = config != null && Reflect.hasField(config, "lineWidthThumb") ? config.lineWidthThumb : [3.5, 3.0, 2.2, 2.0];
+		alphaThumb = config != null && Reflect.hasField(config, "alphaThumb") ? config.alphaThumb : [1.0, 1.0, 1.0, 1.0];
+		lineWidthTarget = config != null && Reflect.hasField(config, "lineWidthTarget") ? config.lineWidthTarget : [2.0, 1.5];
+		alphaTarget = config != null && Reflect.hasField(config, "alphaTarget") ? config.alphaTarget : [1.0, 1.0];
+		radiusCircleLineWidth = config != null && Reflect.hasField(config, "radiusCircleLineWidth") ? config.radiusCircleLineWidth : 2.0;
+		radiusCircleAlpha = config != null && Reflect.hasField(config, "radiusCircleAlpha") ? config.radiusCircleAlpha : 1.0;
 	}
 	
 	override public function onFrame():Void {
@@ -65,5 +66,33 @@ class DrawMagStick extends Behavior<MagStickCursor> {
 				}
 			}
 		}
+	}
+	
+	override public function getConfig():Dynamic {
+		var config:Dynamic = super.getConfig();
+		
+		config.lineWidthThumb = lineWidthThumb.copy();
+		config.alphaThumb = alphaThumb.copy();
+		config.lineWidthTarget = lineWidthTarget.copy();
+		config.alphaTarget = alphaTarget.copy();
+		config.radiusCircleLineWidth = radiusCircleLineWidth;
+		config.radiusCircleAlpha = radiusCircleAlpha;
+		
+		return config;
+	}
+	
+	override public function setConfig(config:Dynamic):Void {
+		super.setConfig(config);
+
+		lineWidthThumb = config.lineWidthThumb;
+		alphaThumb = config.alphaThumb;
+		lineWidthTarget = config.lineWidthTarget;
+		alphaTarget = config.alphaTarget;
+		radiusCircleLineWidth = config.radiusCircleLineWidth;
+		radiusCircleAlpha = config.radiusCircleAlpha;
+	}
+	
+	override public function clone(?c:MagStickCursor):DrawMagStick {
+		return new DrawMagStick(c == null ? cursor : c, getConfig());
 	}
 }

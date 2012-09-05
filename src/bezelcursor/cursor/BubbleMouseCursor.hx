@@ -18,7 +18,7 @@ class BubbleMouseCursor extends MouseCursor {
 		target_radius = config != null && Reflect.hasField(config, "target_radius") ? config.target_radius : r;
 		default_radius = config != null && Reflect.hasField(config, "default_radius") ? config.default_radius : r;
 		
-		behaviors = [new DrawStick(this), new DrawBubble(this), new MouseMove(this), new ClickWhenTouchEnd(this)];
+		behaviors = config != null && Reflect.hasField(config, "behaviors") ? Behavior.createFromConfigs(this, config.behaviors) : [new DrawStick(this), new DrawBubble(this), new MouseMove(this), new ClickWhenTouchEnd(this)];
 	}
 	
 	override public function clone():BubbleMouseCursor {
