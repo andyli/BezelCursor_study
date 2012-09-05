@@ -19,12 +19,25 @@ class Struct {
 	}
 	
 	function toObj():Dynamic {
-    	var obj = {};
+    	var obj:Dynamic = {};
 		for (field in Type.getInstanceFields(Type.getClass(this))) {
 			var value = Reflect.getProperty(this, field);
 			if (Reflect.isFunction(value)) continue;
 			Reflect.setField(obj, field, value);
 		}
 		return obj;
+	}
+}
+
+class Point2Obj {
+	static public function toObj(pt:nme.geom.Point) {
+		return pt == null ? null : {
+			x:pt.x,
+			y:pt.y
+		}
+	}
+	
+	static public function toPoint(obj:Dynamic) {
+		return obj == null ? null : new nme.geom.Point(obj.x, obj.y);
 	}
 }

@@ -15,6 +15,7 @@ import bezelcursor.cursor.snapper.Snapper;
 import bezelcursor.cursor.snapper.SimpleSnapper;
 import bezelcursor.entity.Target;
 import bezelcursor.model.TouchData;
+using bezelcursor.model.Struct;
 
 class Cursor {
 	static var nextId = 0;
@@ -153,19 +154,55 @@ class Cursor {
 		current_position = target_position = null;
 		onEndSignaler.dispatch();
 	}
+
+    function hxSerialize(s:haxe.Serializer) {
+		s.serialize(getConfig());
+    }
+	
+    function hxUnserialize(s:haxe.Unserializer) {
+		setConfig(s.unserialize());
+    }
+	
+	public function getConfig():Dynamic {
+		var config:Dynamic = {};
+		
+		config._class = Type.getClass(this).string();
+		config.id = id;
+		config.current_position = current_position.toObj();
+		config.target_position = target_position.toObj();
+		config.current_radius = current_radius;
+		config.target_radius = target_radius;
+		config.behaviors = behaviors.copy();
+		config.snapper = snapper;
+		config.color = color;
+		
+		return config;
+	}
+	
+	public function setConfig(config:Dynamic):Void {
+		#if debug
+		if (config._class != Type.getClass(this).string())
+			throw "Should not set " + Type.getClass(this).string() + "from a config of " + config._class;
+		#end
+		id = config.id;
+		current_position = config.current_position.toPoint();
+		target_position = config.target_position.toPoint();
+		current_radius = config.current_radius;
+		target_radius = config.target_radius;
+		behaviors = config.behaviors;
+		snapper = config.snapper;
+		color = config.color;
+	}
 	
 	public function clone():Cursor {
 		var cursor = new Cursor(); Cursor.nextId--;
-		
-		cursor.id = id;
-		cursor.current_position = current_position;
-		cursor.target_position = target_position;
-		cursor.current_radius = current_radius;
-		cursor.target_radius = target_radius;
-		cursor.behaviors = behaviors.copy();
-		cursor.snapper = snapper;
-		cursor.color = color;
-		
+		cursor.setConfig(getConfig());
 		return cursor;
+	}
+	
+	static public function createFromConfig<C:Cursor>(config:Dynamic):C {
+		var c:C = Type.createInstance(Type.resolveClass(config._class), []);
+		c.setConfig(config);
+		return c;
 	}
 }

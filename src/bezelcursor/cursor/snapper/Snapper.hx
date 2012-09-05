@@ -13,10 +13,18 @@ class Snapper<C:Cursor> {
 		lastSnapTarget = null;
 	}
 	
+	/**
+	* Get the Target for a cursor. Returns null if none is suitable.
+	* Usually no need to override this one. Override getInterestedTargets instead.
+	*/
 	public function getSnapTarget():Null<Target> {		
 		return lastSnapTarget = getInterestedTargets().length > 0 ? lastInterestedTargets[0] : null;
 	}
 	
+	/**
+	* Return the interested targets(usually based on distance to the cursor).
+	* Sorted as the most suitable ones come first.
+	*/
 	public function getInterestedTargets():Array<Target> {
 		return lastInterestedTargets = [];
 	}

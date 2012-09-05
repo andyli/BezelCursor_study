@@ -15,7 +15,7 @@ import bezelcursor.cursor.snapper.DistanceToOriginSnapper;
 import bezelcursor.model.DeviceInfo;
 
 class MagStickCursor extends StickCursor {
-	public function new(touchPointID:Int):Void {
+	public function new(touchPointID:Int = 0):Void {
 		super(touchPointID);
 		
 		jointActivateDistance = Math.POSITIVE_INFINITY;
@@ -28,25 +28,7 @@ class MagStickCursor extends StickCursor {
 	
 	override public function clone():MagStickCursor {
 		var cursor = new MagStickCursor(touchPointID); Cursor.nextId--;
-		
-		cursor.id = id;
-		cursor.current_position = current_position;
-		cursor.target_position = target_position;
-		cursor.current_radius = current_radius;
-		cursor.target_radius = target_radius;
-		cursor.behaviors = behaviors.copy();
-		cursor.snapper = snapper;
-		cursor.color = color;
-		
-		cursor.pFrameTouchPoint = pFrameTouchPoint;
-		cursor.activatedPoint = activatedPoint;
-		cursor.currentTouchPoint = currentTouchPoint;
-		cursor.touchVelocity = touchVelocity;
-
-		cursor.joint = joint;
-		cursor.jointActivateDistance = jointActivateDistance;
-		cursor.scaleFactor = scaleFactor;
-		
+		cursor.setConfig(getConfig());
 		return cursor;
 	}
 }

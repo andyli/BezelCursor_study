@@ -10,6 +10,7 @@ import nme.ui.Multitouch;
 import nme.ui.MultitouchInputMode;
 
 import bezelcursor.model.TouchData;
+using bezelcursor.model.Struct;
 
 /**
 * Cursor that is activated and controlled by a single touch.
@@ -40,7 +41,7 @@ class PointActivatedCursor extends Cursor {
 	*/
 	public var touchVelocity(default, null):Point;
 	
-	public function new(touchPointID:Int):Void {
+	public function new(touchPointID:Int = 0):Void {
 		super();
 		
 		this.touchPointID = touchPointID;
@@ -93,23 +94,31 @@ class PointActivatedCursor extends Cursor {
 		touchVelocity.x = touchVelocity.y = 0;
 	}
 	
+	override public function getConfig():Dynamic {
+		var config:Dynamic = super.getConfig();
+		
+		config.touchPointID = touchPointID;
+		config.activatedPoint = activatedPoint.toObj();
+		config.pFrameTouchPoint = pFrameTouchPoint.toObj();
+		config.currentTouchPoint = currentTouchPoint.toObj();
+		config.touchVelocity = touchVelocity.toObj();
+		
+		return config;
+	}
+	
+	override public function setConfig(config:Dynamic):Void {
+		super.setConfig(config);
+		
+		touchPointID = config.touchPointID;
+		activatedPoint = config.activatedPoint.toPoint();
+		pFrameTouchPoint = config.pFrameTouchPoint.toPoint();
+		currentTouchPoint = config.currentTouchPoint.toPoint();
+		touchVelocity = config.touchVelocity.toPoint();
+	}
+	
 	override public function clone():PointActivatedCursor {
 		var cursor = new PointActivatedCursor(touchPointID); Cursor.nextId--;
-		
-		cursor.id = id;
-		cursor.current_position = current_position;
-		cursor.target_position = target_position;
-		cursor.current_radius = current_radius;
-		cursor.target_radius = target_radius;
-		cursor.behaviors = behaviors.copy();
-		cursor.snapper = snapper;
-		cursor.color = color;
-		
-		cursor.pFrameTouchPoint = pFrameTouchPoint;
-		cursor.activatedPoint = activatedPoint;
-		cursor.currentTouchPoint = currentTouchPoint;
-		cursor.touchVelocity = touchVelocity;
-		
+		cursor.setConfig(getConfig());
 		return cursor;
 	}
 }

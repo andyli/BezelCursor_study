@@ -143,6 +143,8 @@ class CursorManager {
 			if (cursor.is(PointActivatedCursor))
 				pointActivatedCursors.remove(untyped cursor.touchPointID);
 		}).destroyOnUse();
+		
+		trace(cursor.getConfig());
 	}
 	
 	function onTouchBegin(evt:TouchEvent):Void {

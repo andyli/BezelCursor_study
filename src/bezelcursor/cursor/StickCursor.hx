@@ -14,13 +14,14 @@ import bezelcursor.cursor.behavior.DrawRadius;
 import bezelcursor.cursor.snapper.SimpleSnapper;
 import bezelcursor.model.DeviceInfo;
 import bezelcursor.model.TouchData;
+using bezelcursor.model.Struct;
 
 class StickCursor extends PointActivatedCursor {
 	public var joint:Null<Point>;
 	public var jointActivateDistance:Float;
 	public var scaleFactor:Float;
 	
-	public function new(touchPointID:Int):Void {
+	public function new(touchPointID:Int = 0):Void {
 		super(touchPointID);
 		
 		jointActivateDistance = DeviceInfo.current.screenDPI * 0.2;
@@ -88,27 +89,27 @@ class StickCursor extends PointActivatedCursor {
 		super.onTouchEnd(touch);
 	}
 	
+	override public function getConfig():Dynamic {
+		var config:Dynamic = super.getConfig();
+
+		config.joint = joint.toObj();
+		config.jointActivateDistance = jointActivateDistance;
+		config.scaleFactor = scaleFactor;
+		
+		return config;
+	}
+	
+	override public function setConfig(config:Dynamic):Void {
+		super.setConfig(config);
+
+		joint = config.joint.toPoint();
+		jointActivateDistance = config.jointActivateDistance;
+		scaleFactor = config.scaleFactor;
+	}
+	
 	override public function clone():StickCursor {
 		var cursor = new StickCursor(touchPointID); Cursor.nextId--;
-		
-		cursor.id = id;
-		cursor.current_position = current_position;
-		cursor.target_position = target_position;
-		cursor.current_radius = current_radius;
-		cursor.target_radius = target_radius;
-		cursor.behaviors = behaviors.copy();
-		cursor.snapper = snapper;
-		cursor.color = color;
-		
-		cursor.pFrameTouchPoint = pFrameTouchPoint;
-		cursor.activatedPoint = activatedPoint;
-		cursor.currentTouchPoint = currentTouchPoint;
-		cursor.touchVelocity = touchVelocity;
-
-		cursor.joint = joint;
-		cursor.jointActivateDistance = jointActivateDistance;
-		cursor.scaleFactor = scaleFactor;
-		
+		cursor.setConfig(getConfig());
 		return cursor;
 	}
 }
