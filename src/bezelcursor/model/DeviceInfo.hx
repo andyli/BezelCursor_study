@@ -48,7 +48,8 @@ class DeviceInfo extends Struct {
 		
 		if (true || current == null) { //overwrite anyway, use only the old id
 			var n = new DeviceInfo();
-			n.id = current.id;
+			if (current != null)
+				n.id = current.id;
 			current = n;
 			
 			current.systemName = if (BuildInfo.current.isAndroid) {
