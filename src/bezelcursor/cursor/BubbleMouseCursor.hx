@@ -12,7 +12,7 @@ class BubbleMouseCursor extends MouseCursor {
 	public function new(touchPointID:Int):Void {
 		super(touchPointID);
 		
-		targetSize = currentSize = startSize = stage.stageHeight + stage.stageWidth;
+		current_radius = target_radius = default_radius = stage.stageHeight + stage.stageWidth;
 		behaviors = [new MouseMove(this), new BubbleDraw(this), new ClickWhenTouchEnd(this)];
 	}
 }

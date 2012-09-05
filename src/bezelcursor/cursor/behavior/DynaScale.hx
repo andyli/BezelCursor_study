@@ -31,7 +31,7 @@ class DynaScale extends Behavior<PointActivatedCursor> {
 		super.start();
 		expended = false;
 		expendedTime = 0;
-		cursor.targetSize = cursor.currentSize = 0;
+		cursor.radius = 0;
 	}
 	
 	override function onFrame():Void {
@@ -44,15 +44,13 @@ class DynaScale extends Behavior<PointActivatedCursor> {
 		if (l > collapseVelocity) {
 			expendedTime = curTime;
 		} else if (expended && (curTime - expendedTime > collapseLag)) {
-			cursor.targetSize = collapsedSize;
+			cursor.radius = collapsedSize;
 			expended = false;
 		}
 				
 		if (l > expendVelocity) {
-			cursor.targetSize = expendedSize;
+			cursor.radius = expendedSize;
 			expended = true;
 		}
-		
-		cursor.currentSize += (cursor.targetSize - cursor.currentSize) * cursor.stage.frameRate.map(0, 30, 1, 0.3);
 	}
 }

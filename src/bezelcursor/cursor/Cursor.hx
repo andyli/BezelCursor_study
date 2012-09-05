@@ -38,9 +38,12 @@ class Cursor {
 	
 	
 	//in inch
-	public var currentSize:Float;
-	public var targetSize:Float;
-	public var startSize:Float;
+	public var radius(get_radius, set_radius):Float;
+	var default_radius:Float;
+	var target_radius:Float;
+	var current_radius:Float;
+	function get_radius():Float { return current_radius; }
+	function set_radius(v:Float):Float { return target_radius = v; }
 	
 	/**
 	* The Behavior instances that define how the cursor behaves.
@@ -67,7 +70,7 @@ class Cursor {
 		view.mouseEnabled = false;
 		behaviors = [];
 		snapper = new SimpleSnapper(this);
-		targetSize = currentSize = startSize = 0.001;
+		current_radius = target_radius = default_radius = 0.001;
 		
 		onActivateSignaler = new DirectSignaler<Point>(this);
 		onMoveSignaler = new DirectSignaler<Point>(this);
@@ -98,7 +101,7 @@ class Cursor {
 			dispatch(onMoveSignaler);
 		}
 		
-		currentSize += (targetSize - currentSize) * stage.frameRate.map(0, 30, 1, 0.3);
+		current_radius += (target_radius - current_radius) * stage.frameRate.map(0, 30, 1, 0.3);
 		
 		for (behavior in behaviors) {
 			behavior.onFrame();
@@ -106,7 +109,7 @@ class Cursor {
 	}
 	
 	public function onTouchBegin(evt:TouchEvent):Void {
-		targetSize = currentSize = startSize;
+		current_radius = target_radius = default_radius;
 		
 		for (behavior in behaviors) {
 			behavior.onTouchBegin(evt);

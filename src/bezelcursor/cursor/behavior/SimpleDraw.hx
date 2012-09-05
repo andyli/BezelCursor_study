@@ -8,7 +8,7 @@ class SimpleDraw extends Behavior<Cursor> {
 		super.onFrame();
 		
 		if (cursor.currentPoint != null) {
-			var sizePx = DeviceInfo.current.screenDPI * cursor.currentSize;
+			var sizePx = DeviceInfo.current.screenDPI * cursor.radius;
 			cursor.view.graphics.clear();
 			cursor.view.graphics.lineStyle(2, 0xFF0000, 1);
 			cursor.view.graphics.drawCircle(cursor.currentPoint.x, cursor.currentPoint.y, 0.25);

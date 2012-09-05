@@ -16,7 +16,7 @@ class SimpleSnapper extends Snapper<Cursor> {
 		
 		for (target in targets) {
 			var distance = target.distanceToPoint(cursor.currentPoint.x, cursor.currentPoint.y, true);
-			if (distance > DeviceInfo.current.screenDPI * cursor.currentSize)
+			if (distance > DeviceInfo.current.screenDPI * cursor.radius)
 				continue;
 			else
 				lastInterestedTargets.push(target);
