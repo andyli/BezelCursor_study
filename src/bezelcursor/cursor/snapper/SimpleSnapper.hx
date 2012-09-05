@@ -12,7 +12,7 @@ class SimpleSnapper extends Snapper<Cursor> {
 		var targets:Array<Target> = [];
 		HXP.world.getType(Target.TYPE, targets);
 		
-		var lastInterestedTargets = [];
+		lastInterestedTargets = [];
 		
 		for (target in targets) {
 			var distance = target.distanceToPoint(cursor.currentPoint.x, cursor.currentPoint.y, true);

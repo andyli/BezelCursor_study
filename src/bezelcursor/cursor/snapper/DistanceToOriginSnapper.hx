@@ -13,7 +13,7 @@ class DistanceToOriginSnapper extends Snapper<PointActivatedCursor> {
 		var targets:Array<Target> = [];
 		HXP.world.getType(Target.TYPE, targets);
 		
-		var lastInterestedTargets = [];
+		lastInterestedTargets = [];
 		var minDistanceToOrigin = Point.distance(cursor.activatedPoint, cursor.currentTouchPoint) + DeviceInfo.current.screenDPI * cursor.currentSize;
 		for (target in targets) {
 			var distance = target.distanceToPoint(cursor.currentPoint.x, cursor.currentPoint.y, true);

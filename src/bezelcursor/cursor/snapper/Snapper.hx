@@ -14,7 +14,7 @@ class Snapper<C:Cursor> {
 	}
 	
 	public function getSnapTarget():Null<Target> {		
-		return lastSnapTarget = getInterestedTargets()[0];
+		return lastSnapTarget = getInterestedTargets().length > 0 ? lastInterestedTargets[0] : null;
 	}
 	
 	public function getInterestedTargets():Array<Target> {
