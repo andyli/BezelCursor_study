@@ -8,22 +8,20 @@ import bezelcursor.entity.Target;
 import bezelcursor.model.DeviceInfo;
 
 class SimpleSnapper extends Snapper<Cursor> {	
-	override public function getInterestedTargets():Array<Target> {
+	override public function run():Void {
 		var targets:Array<Target> = [];
 		HXP.world.getType(Target.TYPE, targets);
 		
-		lastInterestedTargets = [];
+		interestedTargets = [];
 		
 		for (target in targets) {
 			var distance = target.distanceToPoint(cursor.position.x, cursor.position.y, true);
 			if (distance > DeviceInfo.current.screenDPI * cursor.radius)
 				continue;
 			else
-				lastInterestedTargets.push(target);
+				interestedTargets.push(target);
 		}
-		lastInterestedTargets.sort(sortTargets);
-		
-		return lastInterestedTargets;
+		interestedTargets.sort(sortTargets);
 	}
 	
 	function sortTargets(t0:Target, t1:Target):Int {

@@ -94,7 +94,7 @@ class Cursor {
 	}
 	
 	public function dispatch(signaler:Signaler<Point>):Void {
-		var snapTarget = snapper.getSnapTarget();
+		var snapTarget = snapper.target;
 		if (snapTarget != null) {
 			signaler.dispatch(new Point(snapTarget.centerX, snapTarget.centerY));
 		} else {
@@ -102,7 +102,9 @@ class Cursor {
 		}
 	}
 	
-	function onFrame(evt:Event = null):Void {		
+	function onFrame(evt:Event = null):Void {
+		snapper.run();
+			
 		if (target_position != null) {
 			if (current_position == null) {
 				current_position = target_position;
@@ -126,7 +128,6 @@ class Cursor {
 	
 	public function onTouchBegin(touch:TouchData):Void {
 		current_radius = target_radius = default_radius;
-		
 		for (behavior in behaviors) {
 			behavior.onTouchBegin(touch);
 		}

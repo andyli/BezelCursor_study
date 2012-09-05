@@ -11,13 +11,13 @@ class DrawBubble extends Behavior<PointActivatedCursor> {
 	override public function onFrame():Void {
 		super.onFrame();
 		
-		if (cursor.snapper.lastSnapTarget != null) {
-			var dist = 	cursor.snapper.lastSnapTarget.distanceToPoint(cursor.position.x, cursor.position.y, true)
-				 		+ Math.max(cursor.snapper.lastSnapTarget.width, cursor.snapper.lastSnapTarget.height);
+		if (cursor.snapper.target != null) {
+			var dist = 	cursor.snapper.target.distanceToPoint(cursor.position.x, cursor.position.y, true)
+				 		+ Math.max(cursor.snapper.target.width, cursor.snapper.target.height);
 			
-			if (cursor.snapper.lastInterestedTargets.length > 1) {
+			if (cursor.snapper.interestedTargets.length > 1) {
 				dist = Math.min(
-					cursor.snapper.lastInterestedTargets[1].distanceToPoint(cursor.position.x, cursor.position.y, true),
+					cursor.snapper.interestedTargets[1].distanceToPoint(cursor.position.x, cursor.position.y, true),
 					dist
 				);
 			}

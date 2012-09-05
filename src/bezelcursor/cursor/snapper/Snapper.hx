@@ -5,27 +5,28 @@ import bezelcursor.entity.Target;
 
 class Snapper<C:Cursor> {
 	public var cursor(default, null):C;
-	public var lastSnapTarget(default, null):Null<Target>;
-	public var lastInterestedTargets(default, null):Array<Target>;
+	
+	/**
+	* The Target for a cursor. null if none is suitable.
+	*/
+	public var target(get_target, null):Null<Target>;
+	function get_target():Null<Target> {
+		return interestedTargets.length > 0 ? interestedTargets[0] : null;
+	}
+	
+	/**
+	* The interested targets(usually based on distance to the cursor).
+	* Sorted as the most suitable ones come first.
+	*/
+	public var interestedTargets(default, null):Array<Target>;
 	
 	public function new(c:C):Void {
 		cursor = c;
-		lastSnapTarget = null;
+		target = null;
+		interestedTargets = [];
 	}
 	
-	/**
-	* Get the Target for a cursor. Returns null if none is suitable.
-	* Usually no need to override this one. Override getInterestedTargets instead.
-	*/
-	public function getSnapTarget():Null<Target> {		
-		return lastSnapTarget = getInterestedTargets().length > 0 ? lastInterestedTargets[0] : null;
-	}
-	
-	/**
-	* Return the interested targets(usually based on distance to the cursor).
-	* Sorted as the most suitable ones come first.
-	*/
-	public function getInterestedTargets():Array<Target> {
-		return lastInterestedTargets = [];
+	public function run():Void {
+		interestedTargets = [];
 	}
 }

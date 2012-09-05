@@ -9,11 +9,11 @@ import bezelcursor.entity.Target;
 import bezelcursor.model.DeviceInfo;
 
 class DistanceToOriginSnapper extends Snapper<PointActivatedCursor> {	
-	override public function getInterestedTargets():Array<Target> {
+	override public function run():Void {
 		var targets:Array<Target> = [];
 		HXP.world.getType(Target.TYPE, targets);
 		
-		lastInterestedTargets = [];
+		interestedTargets = [];
 		var minDistanceToOrigin = Point.distance(cursor.activatedPoint, cursor.currentTouchPoint) + DeviceInfo.current.screenDPI * cursor.radius;
 		for (target in targets) {
 			var distance = target.distanceToPoint(cursor.position.x, cursor.position.y, true);
@@ -24,12 +24,10 @@ class DistanceToOriginSnapper extends Snapper<PointActivatedCursor> {
 			if (distance > minDistanceToOrigin)
 				continue;
 			
-			lastInterestedTargets.push(target);
+			interestedTargets.push(target);
 		}
 		
-		lastInterestedTargets.sort(sortTargets);
-		
-		return lastInterestedTargets;
+		interestedTargets.sort(sortTargets);
 	}
 	
 	function sortTargets(t0:Target, t1:Target):Int {

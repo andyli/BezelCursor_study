@@ -42,8 +42,8 @@ class DrawMagStick extends Behavior<MagStickCursor> {
 			var g = cursor.view.graphics;
 			DrawStick.drawGradientLine(g, cursor.currentTouchPoint, cursor.activatedPoint, lineWidthThumb, colorThumb, alphaThumb);
 			
-			if (cursor.snapper.lastSnapTarget != null) {
-				var tpt = new Point(cursor.snapper.lastSnapTarget.centerX, cursor.snapper.lastSnapTarget.centerY);
+			if (cursor.snapper.target != null) {
+				var tpt = new Point(cursor.snapper.target.centerX, cursor.snapper.target.centerY);
 				var v = tpt.subtract(cursor.activatedPoint);
 				v.normalize(cursor.currentTouchPoint.subtract(cursor.activatedPoint).length);
 				var end = cursor.activatedPoint.add(v);
