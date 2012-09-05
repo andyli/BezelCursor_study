@@ -1,8 +1,7 @@
 package bezelcursor.cursor.behavior;
 
-import nme.events.Event;
-import nme.events.TouchEvent;
 import bezelcursor.cursor.Cursor;
+import bezelcursor.model.TouchData;
 
 class Behavior<C:Cursor> {
 	public var cursor(default, null):C;
@@ -23,15 +22,15 @@ class Behavior<C:Cursor> {
 		
 	}
 	
-	public function onTouchBegin(evt:TouchEvent):Void {
+	public function onTouchBegin(touch:TouchData):Void {
 		
 	}
 	
-	public function onTouchMove(evt:TouchEvent):Void {
+	public function onTouchMove(touch:TouchData):Void {
 		
 	}
 	
-	public function onTouchEnd(evt:TouchEvent):Void {
+	public function onTouchEnd(touch:TouchData):Void {
 		
 	}
 }

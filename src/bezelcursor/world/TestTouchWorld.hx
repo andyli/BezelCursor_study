@@ -14,6 +14,7 @@ import bezelcursor.cursor.behavior.MouseMove;
 import bezelcursor.entity.Target;
 import bezelcursor.entity.RandomMovingTarget;
 import bezelcursor.model.DeviceInfo;
+import bezelcursor.model.TouchData;
 using bezelcursor.Main;
 
 class TestTouchWorld extends GameWorld {
@@ -79,12 +80,12 @@ class TestTouchWorld extends GameWorld {
 		targets.remove(target);
 		
 		target.onClickSignaler.bindVoid(function() {
-			HXP.engine.asMain().cursorManager.createCursor = function(evt:TouchEvent, _for:CreateCursorFor):Cursor {
+			HXP.engine.asMain().cursorManager.createCursor = function(touch:TouchData, _for:CreateCursorFor):Cursor {
 				switch(_for) {
 					case ForBezel: 
-						return new bezelcursor.cursor.StickCursor(evt.touchPointID);
+						return new bezelcursor.cursor.StickCursor(touch.touchPointID);
 					case ForScreen:
-						return new bezelcursor.cursor.MagStickCursor(evt.touchPointID);
+						return new bezelcursor.cursor.MagStickCursor(touch.touchPointID);
 				}
 			}
 		});
@@ -97,12 +98,12 @@ class TestTouchWorld extends GameWorld {
 		targets.remove(target);
 		
 		target.onClickSignaler.bindVoid(function() {
-			HXP.engine.asMain().cursorManager.createCursor = function(evt:TouchEvent, _for:CreateCursorFor):Cursor {
+			HXP.engine.asMain().cursorManager.createCursor = function(touch:TouchData, _for:CreateCursorFor):Cursor {
 				switch(_for) {
 					case ForBezel: 
-						return new bezelcursor.cursor.BubbleMouseCursor(evt.touchPointID);
+						return new bezelcursor.cursor.BubbleMouseCursor(touch.touchPointID);
 					case ForScreen:
-						return new bezelcursor.cursor.MagStickCursor(evt.touchPointID);
+						return new bezelcursor.cursor.MagStickCursor(touch.touchPointID);
 				}
 			}
 		});

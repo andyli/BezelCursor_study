@@ -9,6 +9,8 @@ import nme.system.Capabilities;
 import nme.ui.Multitouch;
 import nme.ui.MultitouchInputMode;
 
+import bezelcursor.model.TouchData;
+
 /**
 * Cursor that is activated and controlled by a single touch.
 */
@@ -56,36 +58,36 @@ class PointActivatedCursor extends Cursor {
 		}
 	}
 	
-	override public function onTouchBegin(evt:TouchEvent):Void {
+	override public function onTouchBegin(touch:TouchData):Void {
 		#if debug
-		if (evt.touchPointID != touchPointID) throw "This cursor should receive only touchPointID of " + touchPointID + " but not " + evt.touchPointID + ".";
+		if (touch.touchPointID != touchPointID) throw "This cursor should receive only touchPointID of " + touchPointID + " but not " + touch.touchPointID + ".";
 		#end
 		
-		super.onTouchBegin(evt);
+		super.onTouchBegin(touch);
 		
-		var pt = new Point(evt.localX, evt.localY);
+		var pt = new Point(touch.x, touch.y);
 		currentTouchPoint = activatedPoint = pt;
 		touchVelocity.x = touchVelocity.y = 0;
 	}
 	
-	override public function onTouchMove(evt:TouchEvent):Void {
+	override public function onTouchMove(touch:TouchData):Void {
 		#if debug
-		if (evt.touchPointID != touchPointID) throw "This cursor should receive only touchPointID of " + touchPointID + " but not " + evt.touchPointID + ".";
+		if (touch.touchPointID != touchPointID) throw "This cursor should receive only touchPointID of " + touchPointID + " but not " + touch.touchPointID + ".";
 		#end
 		
-		super.onTouchMove(evt);
+		super.onTouchMove(touch);
 		
 		if (activatedPoint != null) {
-			currentTouchPoint = new Point(evt.localX, evt.localY);
+			currentTouchPoint = new Point(touch.x, touch.y);
 		}
 	}
 	
-	override public function onTouchEnd(evt:TouchEvent):Void {
+	override public function onTouchEnd(touch:TouchData):Void {
 		#if debug
-		if (evt.touchPointID != touchPointID) throw "This cursor should receive only touchPointID of " + touchPointID + " but not " + evt.touchPointID + ".";
+		if (touch.touchPointID != touchPointID) throw "This cursor should receive only touchPointID of " + touchPointID + " but not " + touch.touchPointID + ".";
 		#end
 		
-		super.onTouchEnd(evt);
+		super.onTouchEnd(touch);
 		
 		pFrameTouchPoint = currentTouchPoint = activatedPoint = null;
 		touchVelocity.x = touchVelocity.y = 0;

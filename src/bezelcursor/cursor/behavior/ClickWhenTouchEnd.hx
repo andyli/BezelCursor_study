@@ -1,14 +1,15 @@
 package bezelcursor.cursor.behavior;
 
-import nme.events.TouchEvent;
 import nme.system.Capabilities;
 using org.casalib.util.NumberUtil;
 
+import bezelcursor.model.TouchData;
+
 class ClickWhenTouchEnd extends Behavior<PointActivatedCursor> {	
-	override public function onTouchEnd(evt:TouchEvent):Void {
+	override public function onTouchEnd(touch:TouchData):Void {
 		cursor.dispatch(cursor.onClickSignaler);
 		
-		super.onTouchEnd(evt);
+		super.onTouchEnd(touch);
 		
 		cursor.end();
 	}

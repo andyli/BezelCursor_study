@@ -5,7 +5,6 @@ import nme.Lib;
 import nme.display.Stage;
 import nme.display.Sprite;
 import nme.events.Event;
-import nme.events.TouchEvent;
 import nme.geom.Point;
 import hsl.haxe.Signaler;
 import hsl.haxe.DirectSignaler;
@@ -15,6 +14,7 @@ import bezelcursor.cursor.behavior.Behavior;
 import bezelcursor.cursor.snapper.Snapper;
 import bezelcursor.cursor.snapper.SimpleSnapper;
 import bezelcursor.entity.Target;
+import bezelcursor.model.TouchData;
 
 class Cursor {
 	static var nextId = 0;
@@ -115,23 +115,23 @@ class Cursor {
 		}
 	}
 	
-	public function onTouchBegin(evt:TouchEvent):Void {
+	public function onTouchBegin(touch:TouchData):Void {
 		current_radius = target_radius = default_radius;
 		
 		for (behavior in behaviors) {
-			behavior.onTouchBegin(evt);
+			behavior.onTouchBegin(touch);
 		}
 	}
 	
-	public function onTouchMove(evt:TouchEvent):Void {
+	public function onTouchMove(touch:TouchData):Void {
 		for (behavior in behaviors) {
-			behavior.onTouchMove(evt);
+			behavior.onTouchMove(touch);
 		}
 	}
 	
-	public function onTouchEnd(evt:TouchEvent):Void {
+	public function onTouchEnd(touch:TouchData):Void {
 		for (behavior in behaviors) {
-			behavior.onTouchEnd(evt);
+			behavior.onTouchEnd(touch);
 		}
 	}
 	

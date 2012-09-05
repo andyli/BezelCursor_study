@@ -13,6 +13,7 @@ import bezelcursor.cursor.behavior.DrawStick;
 import bezelcursor.cursor.behavior.DrawRadius;
 import bezelcursor.cursor.snapper.SimpleSnapper;
 import bezelcursor.model.DeviceInfo;
+import bezelcursor.model.TouchData;
 
 class StickCursor extends PointActivatedCursor {
 	public var joint:Null<Point>;
@@ -55,16 +56,16 @@ class StickCursor extends PointActivatedCursor {
 	}
 	*/
 	
-	override function onTouchBegin(evt:TouchEvent):Void {
-		super.onTouchBegin(evt);
+	override function onTouchBegin(touch:TouchData):Void {
+		super.onTouchBegin(touch);
 		
 		target_position = current_position = activatedPoint;
 	}
 	
-	override function onTouchMove(evt:TouchEvent):Void {
-		super.onTouchMove(evt);
+	override function onTouchMove(touch:TouchData):Void {
+		super.onTouchMove(touch);
 
-		var pt = new Point(evt.localX, evt.localY);
+		var pt = new Point(touch.x, touch.y);
 		if (activatedPoint != null) {
 			if (joint != null) {
 				var v = pt.subtract(joint);
@@ -82,9 +83,9 @@ class StickCursor extends PointActivatedCursor {
 		}
 	}
 	
-	override function onTouchEnd(evt:TouchEvent):Void {
+	override function onTouchEnd(touch:TouchData):Void {
 		joint = null;
-		super.onTouchEnd(evt);
+		super.onTouchEnd(touch);
 	}
 	
 	override public function clone():StickCursor {

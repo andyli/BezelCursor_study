@@ -16,6 +16,7 @@ import hsl.haxe.Signaler;
 import hsl.haxe.DirectSignaler;
 
 import bezelcursor.model.DeviceInfo;
+import bezelcursor.model.TouchData;
 
 enum CreateCursorFor {
 	ForBezel;
@@ -32,16 +33,16 @@ class CursorManager {
 	public var bezelCursorEnabled(default, null):Bool;
 	public var screenCursorEnabled(default, null):Bool;
 	
-	static public var defaultCreateCursor = function(evt:TouchEvent, _for:CreateCursorFor):Cursor {
+	static public var defaultCreateCursor = function(touch:TouchData, _for:CreateCursorFor):Cursor {
 		switch(_for) {
 			case ForBezel: 
-				return new bezelcursor.cursor.MouseCursor(evt.touchPointID);
+				return new bezelcursor.cursor.MouseCursor(touch.touchPointID);
 			case ForScreen:
-				return new bezelcursor.cursor.MagStickCursor(evt.touchPointID);
+				return new bezelcursor.cursor.MagStickCursor(touch.touchPointID);
 		}
 	}
 	
-	public var createCursor:TouchEvent->CreateCursorFor->Cursor;
+	public var createCursor:TouchData->CreateCursorFor->Cursor;
 	
 	/**
 	* Basically Lib.stage.
@@ -112,19 +113,19 @@ class CursorManager {
 		}
 	}
 	
-	function insideBezel(evt:TouchEvent):Bool {
-		var pt = new Point(evt.localX, evt.localY);
+	function insideBezel(touch:TouchData):Bool {
+		var pt = new Point(touch.x, touch.y);
 		return bezelOut.containsPoint(pt) && !bezelIn.containsPoint(pt);
 	}
 	
-	function addCursor(evt:TouchEvent, cursor:Cursor):Void {
+	function addCursor(touch:TouchData, cursor:Cursor):Void {
 		if (cursor.is(PointActivatedCursor)) {
 			var pCursor = cast(cursor,PointActivatedCursor);
 			pointActivatedCursors.set(pCursor.touchPointID, pCursor);
 		}
 			
 		cursor.start();
-		cursor.onTouchBegin(evt);
+		cursor.onTouchBegin(touch);
 		
 		cursor.onActivateSignaler.addBubblingTarget(onActivateSignaler);
 		cursor.onMoveSignaler.addBubblingTarget(onMoveSignaler);
@@ -145,191 +146,56 @@ class CursorManager {
 	}
 	
 	function onTouchBegin(evt:TouchEvent):Void {
-		if (bezelCursorEnabled && insideBezel(evt)) {
-			addCursor(evt, createCursor(evt, ForBezel));
+		var touchData = TouchData.fromTouchEvent(evt);
+		if (bezelCursorEnabled && insideBezel(touchData)) {
+			addCursor(touchData, createCursor(touchData, ForBezel));
 		} else if (screenCursorEnabled) {
-			addCursor(evt, createCursor(evt, ForScreen));
+			addCursor(touchData, createCursor(touchData, ForScreen));
 		}
 	}
 	
 	function onTouchMove(evt:TouchEvent):Void {
-		if (pointActivatedCursors.exists(evt.touchPointID)) {
-			var cursor = pointActivatedCursors.get(evt.touchPointID);
-			cursor.onTouchMove(evt);
+		var touchData = TouchData.fromTouchEvent(evt);
+		if (pointActivatedCursors.exists(touchData.touchPointID)) {
+			var cursor = pointActivatedCursors.get(touchData.touchPointID);
+			cursor.onTouchMove(touchData);
 		}
 	}
 	
 	function onTouchEnd(evt:TouchEvent):Void {
-		if (pointActivatedCursors.exists(evt.touchPointID)) {
-			var cursor = pointActivatedCursors.get(evt.touchPointID);
-			cursor.onTouchEnd(evt);
+		var touchData = TouchData.fromTouchEvent(evt);
+		if (pointActivatedCursors.exists(touchData.touchPointID)) {
+			var cursor = pointActivatedCursors.get(touchData.touchPointID);
+			cursor.onTouchEnd(touchData);
 		} else if (tapEnabled) {
-			onClickSignaler.dispatch(new Point(evt.localX, evt.localY));
+			onClickSignaler.dispatch(new Point(touchData.x, touchData.y));
 		}
 	}
 	
 	function onMouseDown(evt:MouseEvent):Void {
-		#if sys
-		onTouchBegin(new TouchEvent(
-			TouchEvent.TOUCH_BEGIN, 
-			evt.bubbles, 
-			evt.cancelable,
-			evt.localX, 
-			evt.localY, 
-			1, 
-			1, 
-			evt.relatedObject, 
-			evt.ctrlKey, 
-			evt.altKey, 
-			evt.shiftKey, 
-			evt.buttonDown, 
-			evt.delta, 
-			evt.commandKey, 
-			evt.clickCount
-		));
-		#elseif js
-		onTouchBegin(new TouchEvent(
-			TouchEvent.TOUCH_BEGIN, 
-			evt.bubbles, 
-			evt.cancelable,
-			evt.localX, 
-			evt.localY,
-			evt.relatedObject, 
-			evt.ctrlKey, 
-			evt.altKey, 
-			evt.shiftKey, 
-			evt.buttonDown, 
-			evt.delta, 
-			evt.commandKey, 
-			evt.clickCount
-		));
-		#else
-		onTouchBegin(new TouchEvent(
-			TouchEvent.TOUCH_BEGIN,
-			evt.bubbles, 
-			evt.cancelable,
-			0,
-			true,
-			evt.localX, 
-			evt.localY, 
-			1, 
-			1,
-			Math.NaN,
-			evt.relatedObject, 
-			evt.ctrlKey, 
-			evt.altKey, 
-			evt.shiftKey
-		));
-		#end
+		var touchData = TouchData.fromMouseEvent(evt);
+		if (bezelCursorEnabled && insideBezel(touchData)) {
+			addCursor(touchData, createCursor(touchData, ForBezel));
+		} else if (screenCursorEnabled) {
+			addCursor(touchData, createCursor(touchData, ForScreen));
+		}
 	}
 	
 	function onMouseMove(evt:MouseEvent):Void {
-		#if sys
-		onTouchMove(new TouchEvent(
-			TouchEvent.TOUCH_MOVE, 
-			evt.bubbles, 
-			evt.cancelable,
-			evt.localX, 
-			evt.localY, 
-			1, 
-			1, 
-			evt.relatedObject, 
-			evt.ctrlKey, 
-			evt.altKey, 
-			evt.shiftKey, 
-			evt.buttonDown, 
-			evt.delta, 
-			evt.commandKey, 
-			evt.clickCount
-		));
-		#elseif js
-		onTouchMove(new TouchEvent(
-			TouchEvent.TOUCH_MOVE, 
-			evt.bubbles, 
-			evt.cancelable,
-			evt.localX, 
-			evt.localY,
-			evt.relatedObject, 
-			evt.ctrlKey, 
-			evt.altKey, 
-			evt.shiftKey, 
-			evt.buttonDown, 
-			evt.delta, 
-			evt.commandKey, 
-			evt.clickCount
-		));
-		#else
-		onTouchMove(new TouchEvent(
-			TouchEvent.TOUCH_MOVE,
-			evt.bubbles, 
-			evt.cancelable,
-			0,
-			true,
-			evt.localX, 
-			evt.localY, 
-			1, 
-			1,
-			Math.NaN,
-			evt.relatedObject, 
-			evt.ctrlKey, 
-			evt.altKey, 
-			evt.shiftKey
-		));
-		#end
+		var touchData = TouchData.fromMouseEvent(evt);
+		if (pointActivatedCursors.exists(touchData.touchPointID)) {
+			var cursor = pointActivatedCursors.get(touchData.touchPointID);
+			cursor.onTouchMove(touchData);
+		}
 	}
 	
 	function onMouseUp(evt:MouseEvent):Void {
-		#if sys
-		onTouchEnd(new TouchEvent(
-			TouchEvent.TOUCH_END, 
-			evt.bubbles, 
-			evt.cancelable,
-			evt.localX, 
-			evt.localY, 
-			1, 
-			1, 
-			evt.relatedObject, 
-			evt.ctrlKey, 
-			evt.altKey, 
-			evt.shiftKey, 
-			evt.buttonDown, 
-			evt.delta, 
-			evt.commandKey, 
-			evt.clickCount
-		));
-		#elseif js
-		onTouchEnd(new TouchEvent(
-			TouchEvent.TOUCH_END, 
-			evt.bubbles, 
-			evt.cancelable,
-			evt.localX, 
-			evt.localY,
-			evt.relatedObject, 
-			evt.ctrlKey, 
-			evt.altKey, 
-			evt.shiftKey, 
-			evt.buttonDown, 
-			evt.delta, 
-			evt.commandKey, 
-			evt.clickCount
-		));
-		#else
-		onTouchEnd(new TouchEvent(
-			TouchEvent.TOUCH_END,
-			evt.bubbles, 
-			evt.cancelable,
-			0,
-			true,
-			evt.localX, 
-			evt.localY, 
-			1, 
-			1,
-			Math.NaN,
-			evt.relatedObject, 
-			evt.ctrlKey, 
-			evt.altKey, 
-			evt.shiftKey
-		));
-		#end
+		var touchData = TouchData.fromMouseEvent(evt);
+		if (pointActivatedCursors.exists(touchData.touchPointID)) {
+			var cursor = pointActivatedCursors.get(touchData.touchPointID);
+			cursor.onTouchEnd(touchData);
+		} else if (tapEnabled) {
+			onClickSignaler.dispatch(new Point(touchData.x, touchData.y));
+		}
 	}
 }

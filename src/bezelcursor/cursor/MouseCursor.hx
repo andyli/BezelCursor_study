@@ -8,6 +8,7 @@ import bezelcursor.cursor.behavior.DynaScale;
 import bezelcursor.cursor.behavior.DrawRadius;
 import bezelcursor.cursor.behavior.DrawStick;
 import bezelcursor.cursor.behavior.MouseMove;
+import bezelcursor.model.TouchData;
 
 class MouseCursor extends PointActivatedCursor {
 	public function new(touchPointID:Int):Void {
@@ -20,8 +21,8 @@ class MouseCursor extends PointActivatedCursor {
 		behaviors.push(new ClickWhenTouchEnd(this));
 	}
 	
-	override function onTouchBegin(evt:TouchEvent):Void {
-		super.onTouchBegin(evt);
+	override function onTouchBegin(touch:TouchData):Void {
+		super.onTouchBegin(touch);
 		
 		target_position = current_position = activatedPoint;
 	}
