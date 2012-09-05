@@ -41,4 +41,8 @@ class DistanceToOriginSnapper extends Snapper<PointActivatedCursor> {
 		else
 			0;
 	}
+	
+	override public function clone(?c:PointActivatedCursor):DistanceToOriginSnapper {
+		return new DistanceToOriginSnapper(c == null ? cursor : c, getConfig());
+	}
 }

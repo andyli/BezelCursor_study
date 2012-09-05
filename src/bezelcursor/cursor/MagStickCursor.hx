@@ -11,6 +11,7 @@ import bezelcursor.cursor.behavior.Behavior;
 import bezelcursor.cursor.behavior.ClickWhenTouchEnd;
 import bezelcursor.cursor.behavior.DrawRadius;
 import bezelcursor.cursor.behavior.DrawMagStick;
+import bezelcursor.cursor.snapper.Snapper;
 import bezelcursor.cursor.snapper.DistanceToOriginSnapper;
 import bezelcursor.model.DeviceInfo;
 
@@ -25,7 +26,7 @@ class MagStickCursor extends StickCursor {
 		default_radius = config != null && Reflect.hasField(config, "default_radius") ? config.default_radius : 0.1;
 		
 		behaviors = [new DrawMagStick(this), new ClickWhenTouchEnd(this)];
-		snapper = new DistanceToOriginSnapper(this);
+		snapper = config != null && Reflect.hasField(config, "snapper") ? Snapper.createFromConfig(this, config.snapper) : new DistanceToOriginSnapper(this);
 	}
 	
 	override public function clone():MagStickCursor {

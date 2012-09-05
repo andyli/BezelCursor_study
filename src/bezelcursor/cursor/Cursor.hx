@@ -79,9 +79,8 @@ class Cursor {
 		default_radius = config != null && Reflect.hasField(config, "default_radius") ? config.default_radius : 0.001;
 		
 		//behaviors = config != null && Reflect.hasField(config, "behaviors") ? config.behaviors : [];
-		//snapper = config != null && Reflect.hasField(config, "snapper") ? config.snapper : new SimpleSnapper(this);
+		snapper = config != null && Reflect.hasField(config, "snapper") ? Snapper.createFromConfig(this, config.snapper) : new SimpleSnapper(this);
 		behaviors = [];
-		snapper = new SimpleSnapper(this);
 		
 		stage = Lib.stage;
 		view = new Sprite();
@@ -175,14 +174,14 @@ class Cursor {
 	public function getConfig():Dynamic {
 		var config:Dynamic = {};
 		
-		config._class = Type.getClass(this).string();
+		config._class = Type.getClassName(Type.getClass(this));
 		config.id = id;
 		config.current_position = current_position.toObj();
 		config.target_position = target_position.toObj();
 		config.current_radius = current_radius;
 		config.target_radius = target_radius;
 		config.behaviors = behaviors.copy();
-		config.snapper = snapper;
+		config.snapper = snapper.getConfig();
 		config.color = color;
 		
 		return config;
@@ -190,8 +189,8 @@ class Cursor {
 	
 	public function setConfig(config:Dynamic):Void {
 		#if debug
-		if (config._class != Type.getClass(this).string())
-			throw "Should not set " + Type.getClass(this).string() + "from a config of " + config._class;
+		if (config._class != Type.getClassName(Type.getClass(this)))
+			throw "Should not set " + Type.getClassName(Type.getClass(this)) + "from a config of " + config._class;
 		#end
 		id = config.id;
 		current_position = config.current_position.toPoint();
@@ -200,7 +199,7 @@ class Cursor {
 		target_radius = config.target_radius;
 		default_radius = config.default_radius;
 		behaviors = config.behaviors;
-		snapper = config.snapper;
+		snapper = Snapper.createFromConfig(this, config.snapper);
 		color = config.color;
 	}
 	
