@@ -13,8 +13,8 @@ class Snapper<C:Cursor> {
 		lastSnapTarget = null;
 	}
 	
-	public function getSnapTarget():Null<Target> {
-		return lastSnapTarget = null;
+	public function getSnapTarget():Null<Target> {		
+		return lastSnapTarget = getInterestedTargets()[0];
 	}
 	
 	public function getInterestedTargets():Array<Target> {
