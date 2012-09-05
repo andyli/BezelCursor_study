@@ -118,7 +118,8 @@ class CursorManager {
 		return bezelOut.containsPoint(pt) && !bezelIn.containsPoint(pt);
 	}
 	
-	function addCursor(touch:TouchData, cursor:Cursor):Void {
+	function onBegin(touch:TouchData):Void {
+		var cursor = createCursor(touch, (bezelCursorEnabled && insideBezel(touch)) ? ForBezel : ForScreen);
 		if (cursor.is(PointActivatedCursor)) {
 			var pCursor = cast(cursor,PointActivatedCursor);
 			pointActivatedCursors.set(pCursor.touchPointID, pCursor);
@@ -147,57 +148,43 @@ class CursorManager {
 		trace(cursor.getConfig());
 	}
 	
-	function onTouchBegin(evt:TouchEvent):Void {
-		var touchData = TouchData.fromTouchEvent(evt);
-		if (bezelCursorEnabled && insideBezel(touchData)) {
-			addCursor(touchData, createCursor(touchData, ForBezel));
-		} else if (screenCursorEnabled) {
-			addCursor(touchData, createCursor(touchData, ForScreen));
+	function onMove(touch:TouchData):Void {
+		if (pointActivatedCursors.exists(touch.touchPointID)) {
+			var cursor = pointActivatedCursors.get(touch.touchPointID);
+			cursor.onTouchMove(touch);
 		}
+	}
+	
+	function onEnd(touch:TouchData):Void {
+		if (pointActivatedCursors.exists(touch.touchPointID)) {
+			var cursor = pointActivatedCursors.get(touch.touchPointID);
+			cursor.onTouchEnd(touch);
+		} else if (tapEnabled) {
+			onClickSignaler.dispatch(new Point(touch.x, touch.y));
+		}
+	}
+	
+	function onTouchBegin(evt:TouchEvent):Void {
+		onBegin(TouchData.fromTouchEvent(evt));
 	}
 	
 	function onTouchMove(evt:TouchEvent):Void {
-		var touchData = TouchData.fromTouchEvent(evt);
-		if (pointActivatedCursors.exists(touchData.touchPointID)) {
-			var cursor = pointActivatedCursors.get(touchData.touchPointID);
-			cursor.onTouchMove(touchData);
-		}
+		onMove(TouchData.fromTouchEvent(evt));
 	}
 	
 	function onTouchEnd(evt:TouchEvent):Void {
-		var touchData = TouchData.fromTouchEvent(evt);
-		if (pointActivatedCursors.exists(touchData.touchPointID)) {
-			var cursor = pointActivatedCursors.get(touchData.touchPointID);
-			cursor.onTouchEnd(touchData);
-		} else if (tapEnabled) {
-			onClickSignaler.dispatch(new Point(touchData.x, touchData.y));
-		}
+		onEnd(TouchData.fromTouchEvent(evt));
 	}
 	
 	function onMouseDown(evt:MouseEvent):Void {
-		var touchData = TouchData.fromMouseEvent(evt);
-		if (bezelCursorEnabled && insideBezel(touchData)) {
-			addCursor(touchData, createCursor(touchData, ForBezel));
-		} else if (screenCursorEnabled) {
-			addCursor(touchData, createCursor(touchData, ForScreen));
-		}
+		onBegin(TouchData.fromMouseEvent(evt));
 	}
 	
 	function onMouseMove(evt:MouseEvent):Void {
-		var touchData = TouchData.fromMouseEvent(evt);
-		if (pointActivatedCursors.exists(touchData.touchPointID)) {
-			var cursor = pointActivatedCursors.get(touchData.touchPointID);
-			cursor.onTouchMove(touchData);
-		}
+		onMove(TouchData.fromMouseEvent(evt));
 	}
 	
 	function onMouseUp(evt:MouseEvent):Void {
-		var touchData = TouchData.fromMouseEvent(evt);
-		if (pointActivatedCursors.exists(touchData.touchPointID)) {
-			var cursor = pointActivatedCursors.get(touchData.touchPointID);
-			cursor.onTouchEnd(touchData);
-		} else if (tapEnabled) {
-			onClickSignaler.dispatch(new Point(touchData.x, touchData.y));
-		}
+		onEnd(TouchData.fromMouseEvent(evt));
 	}
 }
