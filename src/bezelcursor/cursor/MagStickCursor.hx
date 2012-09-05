@@ -38,10 +38,10 @@ class MagStickCursor extends StickCursor {
 				v.normalize(currentTouchPoint.subtract(activatedPoint).length);
 				tpt = activatedPoint.add(v);
 				view.graphics.lineTo(tpt.x, tpt.y);
-				view.graphics.drawCircle(tpt.x, tpt.y, 2);
+				view.graphics.drawCircle(tpt.x, tpt.y, DeviceInfo.current.screenDPI * currentSize);
 			} else {
 				view.graphics.lineTo(currentPoint.x, currentPoint.y);
-				view.graphics.drawCircle(currentPoint.x, currentPoint.y, 2);
+				view.graphics.drawCircle(currentPoint.x, currentPoint.y, DeviceInfo.current.screenDPI * currentSize);
 			}
 		}
 	}
