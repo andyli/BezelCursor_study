@@ -27,14 +27,13 @@ class Cursor {
 	public var id(default, null):Int;
 	
 	/**
-	* Current pointing position.
+	* Position of where the cursor is pointing to.
 	*/
-	public var currentPoint:Point;
-	
-	/**
-	* Where this cursor is heading to.
-	*/
-	public var targetPoint:Point;
+	public var position(get_position, set_position):Point;
+	var target_position:Point;
+	var current_position:Point;
+	function get_position():Point { return current_position; }
+	function set_position(v:Point):Point { return target_position = v; }
 	
 	/**
 	* The radius(in inch) of this cursor, which define the interest area used by snapper.
@@ -84,19 +83,19 @@ class Cursor {
 		if (snapTarget != null) {
 			signaler.dispatch(new Point(snapTarget.centerX, snapTarget.centerY));
 		} else {
-			signaler.dispatch(currentPoint);
+			signaler.dispatch(current_position);
 		}
 	}
 	
 	function onFrame(evt:Event = null):Void {		
-		if (targetPoint != null) {
-			if (currentPoint == null) {
-				currentPoint = targetPoint;
-				onActivateSignaler.dispatch(currentPoint);
-			} else if (!currentPoint.equals(targetPoint)) {
-				var pt = targetPoint.subtract(currentPoint);
+		if (target_position != null) {
+			if (current_position == null) {
+				current_position = target_position;
+				onActivateSignaler.dispatch(current_position);
+			} else if (!current_position.equals(target_position)) {
+				var pt = target_position.subtract(current_position);
 				pt.normalize(pt.length * stage.frameRate.map(0, 30, 1, 0.78));
-				currentPoint = currentPoint.add(pt);
+				current_position = current_position.add(pt);
 			}
 			
 			dispatch(onMoveSignaler);
@@ -144,29 +143,18 @@ class Cursor {
 		}
 		stage.removeEventListener(Event.ENTER_FRAME, onFrame);
 		stage.removeChild(view);
-		currentPoint = targetPoint = null;
+		current_position = target_position = null;
 		onEndSignaler.dispatch();
 	}
 	
 	public function clone():Cursor {
 		var cursor = new Cursor();
 		cursor.id = id;
-		cursor.currentPoint = currentPoint;
-		cursor.targetPoint = targetPoint;
+		cursor.current_position = current_position;
+		cursor.target_position = target_position;
+		cursor.current_radius = current_radius;
+		cursor.target_radius = target_radius;
 		cursor.behaviors = behaviors.copy();
 		return cursor;
 	}
-	
-    function hxSerialize( s : haxe.Serializer ) {
-		s.serialize(id);
-        s.serialize(currentPoint);
-        s.serialize(targetPoint);
-		s.serialize(behaviors);
-    }
-    function hxUnserialize( s : haxe.Unserializer ) {
-		id = s.unserialize();
-        currentPoint = s.unserialize();
-        targetPoint = s.unserialize();
-		behaviors = s.unserialize();
-    }
 }

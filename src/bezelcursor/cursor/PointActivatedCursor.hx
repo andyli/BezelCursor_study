@@ -88,29 +88,14 @@ class PointActivatedCursor extends Cursor {
 	override public function clone():PointActivatedCursor {
 		var cursor = new PointActivatedCursor(touchPointID);
 		cursor.id = id;
-		cursor.currentPoint = currentPoint;
-		cursor.targetPoint = targetPoint;
+		cursor.current_position = current_position;
+		cursor.target_position = target_position;
+		cursor.current_radius = current_radius;
+		cursor.target_radius = target_radius;
 		cursor.activatedPoint = activatedPoint;
 		cursor.pFrameTouchPoint = pFrameTouchPoint;
 		cursor.currentTouchPoint = currentTouchPoint;
 		cursor.touchVelocity = touchVelocity;
 		return cursor;
 	}
-	
-    override function hxSerialize( s : haxe.Serializer ) {
-		super.hxSerialize(s);
-        s.serialize(touchPointID);
-        s.serialize(activatedPoint);
-        s.serialize(pFrameTouchPoint);
-        s.serialize(currentTouchPoint);
-        s.serialize(touchVelocity);
-    }
-    override function hxUnserialize( s : haxe.Unserializer ) {
-		super.hxUnserialize(s);
-        touchPointID = s.unserialize();
-        activatedPoint = s.unserialize();
-        pFrameTouchPoint = s.unserialize();
-        currentTouchPoint = s.unserialize();
-        touchVelocity = s.unserialize();
-    }
 }

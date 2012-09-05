@@ -28,7 +28,7 @@ class MagStickCursor extends StickCursor {
 		super.onFrame(evt);
 		
 		view.graphics.clear();
-		if (currentPoint != null) {
+		if (position != null) {
 			view.graphics.lineStyle(2, 0xFF0000, 1);
 			view.graphics.moveTo(currentTouchPoint.x, currentTouchPoint.y);
 			view.graphics.lineTo(activatedPoint.x, activatedPoint.y);
@@ -40,8 +40,8 @@ class MagStickCursor extends StickCursor {
 				view.graphics.lineTo(tpt.x, tpt.y);
 				view.graphics.drawCircle(tpt.x, tpt.y, DeviceInfo.current.screenDPI * radius);
 			} else {
-				view.graphics.lineTo(currentPoint.x, currentPoint.y);
-				view.graphics.drawCircle(currentPoint.x, currentPoint.y, DeviceInfo.current.screenDPI * radius);
+				view.graphics.lineTo(position.x, position.y);
+				view.graphics.drawCircle(position.x, position.y, DeviceInfo.current.screenDPI * radius);
 			}
 		}
 	}

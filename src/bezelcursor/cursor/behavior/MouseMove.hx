@@ -28,7 +28,7 @@ class MouseMove extends Behavior<PointActivatedCursor> {
 	override public function onFrame():Void {
 		super.onFrame();
 		
-		if (cursor.targetPoint != null) {
+		if (cursor.position != null) {
 			var v = cursor.touchVelocity.clone();
 			var l = cursor.touchVelocity.length;
 			v.normalize(
@@ -36,14 +36,14 @@ class MouseMove extends Behavior<PointActivatedCursor> {
 				* l.map(minVelocityFactorTouchVelocity, maxVelocityFactorTouchVelocity, minVelocityFactor, maxVelocityFactor).constrain(minVelocityFactor, maxVelocityFactor)
 				* cursor.stage.frameRate.map(30, 60, 1, 0.5)
 			);
-			cursor.targetPoint = cursor.targetPoint.add(v);
+			cursor.position = cursor.position.add(v);
 		} else {
-			cursor.targetPoint = cursor.currentTouchPoint;
+			cursor.position = cursor.currentTouchPoint;
 		}
 		
-		if (!constraint.containsPoint(cursor.targetPoint)) {
-			cursor.targetPoint.x = cursor.targetPoint.x.constrain(constraint.left, constraint.right);
-			cursor.targetPoint.y = cursor.targetPoint.y.constrain(constraint.top, constraint.bottom);
+		if (!constraint.containsPoint(cursor.position)) {
+			cursor.position.x = cursor.position.x.constrain(constraint.left, constraint.right);
+			cursor.position.y = cursor.position.y.constrain(constraint.top, constraint.bottom);
 		}
 	}
 }

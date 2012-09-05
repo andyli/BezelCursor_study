@@ -16,7 +16,7 @@ class DistanceToOriginSnapper extends Snapper<PointActivatedCursor> {
 		lastInterestedTargets = [];
 		var minDistanceToOrigin = Point.distance(cursor.activatedPoint, cursor.currentTouchPoint) + DeviceInfo.current.screenDPI * cursor.radius;
 		for (target in targets) {
-			var distance = target.distanceToPoint(cursor.currentPoint.x, cursor.currentPoint.y, true);
+			var distance = target.distanceToPoint(cursor.position.x, cursor.position.y, true);
 			if (distance > DeviceInfo.current.screenDPI * cursor.radius)
 				continue;
 				
@@ -33,8 +33,8 @@ class DistanceToOriginSnapper extends Snapper<PointActivatedCursor> {
 	}
 	
 	function sortTargets(t0:Target, t1:Target):Int {
-		var d0 = Point.distance(cursor.currentPoint, new Point(t0.centerX, t0.centerY));
-		var d1 = Point.distance(cursor.currentPoint, new Point(t1.centerX, t1.centerY));
+		var d0 = Point.distance(cursor.position, new Point(t0.centerX, t0.centerY));
+		var d1 = Point.distance(cursor.position, new Point(t1.centerX, t1.centerY));
 		
 		return if (d0 < d1)
 			-1;

@@ -38,7 +38,7 @@ class RandomMovingTarget extends Target {
 		super.onClick(signal);
 		
 		var cursor:Cursor = cast signal.origin;
-		var pt = cursor.currentPoint;
+		var pt = cursor.position;
 		
 		if (collidePoint(x, y, pt.x, pt.y)) {
 			color = (Math.random() * 0xFFFFFF).int();

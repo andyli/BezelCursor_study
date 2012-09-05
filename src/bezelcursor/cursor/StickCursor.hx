@@ -34,21 +34,21 @@ class StickCursor extends PointActivatedCursor {
 	override function start():Void {
 		super.start();
 		
-		this.targetPoint = this.currentPoint = this.activatedPoint;
+		target_position = current_position = activatedPoint;
 		joint = null;
 	}
 	
 	override function onFrame(evt:Event = null):Void {		
 		super.onFrame(evt);
 		
-		if (currentPoint != null) {
+		if (position != null) {
 			view.graphics.lineStyle(2, 0xFF0000, 1);
 			view.graphics.moveTo(activatedPoint.x, activatedPoint.y);
 			if (joint != null) {
 				view.graphics.drawCircle(joint.x, joint.y, 2);
-				view.graphics.curveTo(joint.x, joint.y, currentPoint.x, currentPoint.y);
+				view.graphics.curveTo(joint.x, joint.y, position.x, position.y);
 			} else {
-				view.graphics.lineTo(currentPoint.x, currentPoint.y);
+				view.graphics.lineTo(position.x, position.y);
 			}
 		}
 	}
@@ -56,7 +56,7 @@ class StickCursor extends PointActivatedCursor {
 	override function onTouchBegin(evt:TouchEvent):Void {
 		super.onTouchBegin(evt);
 		
-		this.targetPoint = this.currentPoint = this.activatedPoint;
+		target_position = current_position = activatedPoint;
 	}
 	
 	override function onTouchMove(evt:TouchEvent):Void {
@@ -67,7 +67,7 @@ class StickCursor extends PointActivatedCursor {
 			if (joint != null) {
 				var v = pt.subtract(joint);
 				v.normalize((v.length + jointActivateDistance) * scaleFactor - jointActivateDistance);
-				targetPoint = joint.add(v);
+				position = joint.add(v);
 			} else {
 				if (Point.distance(pt, activatedPoint) > jointActivateDistance) {
 					joint = pt;
@@ -75,7 +75,7 @@ class StickCursor extends PointActivatedCursor {
 				
 				var v = pt.subtract(activatedPoint);
 				v.normalize(v.length * scaleFactor);
-				targetPoint = activatedPoint.add(v);
+				position = activatedPoint.add(v);
 			}
 		}
 	}
