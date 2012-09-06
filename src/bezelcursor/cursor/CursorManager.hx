@@ -56,7 +56,20 @@ class CursorManager {
 	var bezelOut:Rectangle;
 	var bezelIn:Rectangle;
 	
+	/**
+	* Cursor id as key
+	*/
+	var cursors:IntHash<Cursor>;
+	
+	/**
+	* touchPointId as key
+	*/
 	var pointActivatedCursors:IntHash<PointActivatedCursor>;
+	
+	/**
+	* Timestamp of previous frame.
+	*/
+	var pFrameTime:Float;
 	
 	public function new():Void {
 		stage = Lib.stage;
@@ -70,6 +83,7 @@ class CursorManager {
 		onClickSignaler = new DirectSignaler<Point>(this);
 		onEndSignaler = new DirectSignaler<Void>(this);
 		
+		cursors = new IntHash<Cursor>();
 		pointActivatedCursors = new IntHash<PointActivatedCursor>();
 	}
 	
@@ -96,10 +110,14 @@ class CursorManager {
 			stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
 		}
 		
+		stage.addEventListener(Event.ENTER_FRAME, onFrame);
 		stage.addEventListener(Event.RESIZE, onResize);
+		
+		pFrameTime = haxe.Timer.stamp();
 	}
 	
 	public function end():Void {
+		stage.removeEventListener(Event.ENTER_FRAME, onFrame);
 		stage.removeEventListener(Event.RESIZE, onResize);
 		
 		if (Multitouch.supportsTouchEvents) {
@@ -113,6 +131,15 @@ class CursorManager {
 		}
 	}
 	
+	function onFrame(evt:Event):Void {
+		var time = haxe.Timer.stamp();
+		var timeInterval = time - pFrameTime;
+		for (cursor in cursors) {
+			cursor.onFrame(timeInterval);
+		}
+		pFrameTime = time;
+	}
+	
 	function insideBezel(touch:TouchData):Bool {
 		var pt = new Point(touch.x, touch.y);
 		return bezelOut.containsPoint(pt) && !bezelIn.containsPoint(pt);
@@ -124,7 +151,9 @@ class CursorManager {
 		//tests:
 		//cursor = Cursor.createFromConfig(cursor.getConfig());
 		//cursor = cursor.clone();
+		//trace(haxe.Json.stringify(cursor));
 		
+		cursors.set(cursor.id, cursor);
 		if (cursor.is(PointActivatedCursor)) {
 			var pCursor = cast(cursor,PointActivatedCursor);
 			pointActivatedCursors.set(pCursor.touchPointID, pCursor);
@@ -145,7 +174,8 @@ class CursorManager {
 			cursor.onMoveSignaler.removeBubblingTarget(onMoveSignaler);
 			cursor.onClickSignaler.removeBubblingTarget(onClickSignaler);
 			cursor.onEndSignaler.removeBubblingTarget(onEndSignaler);
-				
+			
+			cursors.remove(cursor.id);
 			if (cursor.is(PointActivatedCursor))
 				pointActivatedCursors.remove(untyped cursor.touchPointID);
 		}).destroyOnUse();

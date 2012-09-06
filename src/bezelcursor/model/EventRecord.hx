@@ -2,11 +2,11 @@ package bezelcursor.model;
 
 class EventRecord {
 	public function new(type:EventRecordType):Void {
-		this.timestamp = haxe.Timer.stamp();
+		this.time = haxe.Timer.stamp();
 		this.type = type;
 	}
 	
-	public var timestamp(default,null):Float;
+	public var time(default,null):Float;
 	public var type(default,null):EventRecordType;
 }
 

@@ -1,5 +1,6 @@
 package bezelcursor.cursor.behavior;
 
+import nme.Lib;
 import nme.geom.Rectangle;
 using org.casalib.util.NumberUtil;
 
@@ -20,32 +21,33 @@ class MouseMove extends Behavior<PointActivatedCursor> {
 		
 		minVelocityFactor = config != null && Reflect.hasField(config, "minVelocityFactor") ? config.minVelocityFactor : 1;
 		maxVelocityFactor = config != null && Reflect.hasField(config, "maxVelocityFactor") ? config.maxVelocityFactor : 3;
-		minVelocityFactorTouchVelocity = config != null && Reflect.hasField(config, "minVelocityFactorTouchVelocity") ? config.minVelocityFactorTouchVelocity : DeviceInfo.current.screenDPI * 0.01;
-		maxVelocityFactorTouchVelocity = config != null && Reflect.hasField(config, "maxVelocityFactorTouchVelocity") ? config.maxVelocityFactorTouchVelocity : DeviceInfo.current.screenDPI * 0.05;
+		minVelocityFactorTouchVelocity = config != null && Reflect.hasField(config, "minVelocityFactorTouchVelocity") ? config.minVelocityFactorTouchVelocity : DeviceInfo.current.screenDPI * 0.01 * 30;
+		maxVelocityFactorTouchVelocity = config != null && Reflect.hasField(config, "maxVelocityFactorTouchVelocity") ? config.maxVelocityFactorTouchVelocity : DeviceInfo.current.screenDPI * 0.05 * 30;
 		
-		constraint = config != null && Reflect.hasField(config, "constraint") ? config.constraint.toRectangle() : new Rectangle(0, 0, c.stage.stageWidth, c.stage.stageHeight);
+		constraint = config != null && Reflect.hasField(config, "constraint") ? config.constraint.toRectangle() : new Rectangle(0, 0, Lib.stage.stageWidth, Lib.stage.stageHeight);
 	}
 	
-	override public function onFrame():Void {
-		super.onFrame();
+	override public function onFrame(timeInterval:Float):Void {
+		super.onFrame(timeInterval);
 		
+		var targetPos;
 		if (cursor.position != null) {
 			var v = cursor.touchVelocity.clone();
 			var l = cursor.touchVelocity.length;
 			v.normalize(
-				l
-				* l.map(minVelocityFactorTouchVelocity, maxVelocityFactorTouchVelocity, minVelocityFactor, maxVelocityFactor).constrain(minVelocityFactor, maxVelocityFactor)
-				* cursor.stage.frameRate.map(30, 60, 1, 0.5)
+				timeInterval * l * l.map(minVelocityFactorTouchVelocity, maxVelocityFactorTouchVelocity, minVelocityFactor, maxVelocityFactor).constrain(minVelocityFactor, maxVelocityFactor)
 			);
-			cursor.position = cursor.position.add(v);
+			targetPos = cursor.position.add(v);
 		} else {
-			cursor.position = cursor.currentTouchPoint;
+			targetPos = cursor.currentTouchPoint;
 		}
 		
-		if (!constraint.containsPoint(cursor.position)) {
-			cursor.position.x = cursor.position.x.constrain(constraint.left, constraint.right);
-			cursor.position.y = cursor.position.y.constrain(constraint.top, constraint.bottom);
+		if (!constraint.containsPoint(targetPos)) {
+			targetPos.x = targetPos.x.constrain(constraint.left, constraint.right);
+			targetPos.y = targetPos.y.constrain(constraint.top, constraint.bottom);
 		}
+		
+		cursor.position = targetPos;
 	}
 	
 	override public function getConfig():Dynamic {

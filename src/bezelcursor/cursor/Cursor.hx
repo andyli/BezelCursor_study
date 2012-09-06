@@ -64,11 +64,6 @@ class Cursor {
 	*/
 	public var view(default, null):Sprite;
 	
-	/**
-	* Basically Lib.stage.
-	*/
-	public var stage(default, null):Stage;
-	
 	public function new(?config:Dynamic):Void {
 		id = config != null && Reflect.hasField(config, "id") ? config.id : nextId++;
 		color = config != null && Reflect.hasField(config, "color") ? config.color : 0xFF0000;
@@ -81,10 +76,6 @@ class Cursor {
 		//behaviors = config != null && Reflect.hasField(config, "behaviors") ? config.behaviors : [];
 		snapper = config != null && Reflect.hasField(config, "snapper") ? Snapper.createFromConfig(this, config.snapper) : new SimpleSnapper(this);
 		behaviors = config != null && Reflect.hasField(config, "behaviors") ? Behavior.createFromConfigs(this, config.behaviors) : [];
-		
-		stage = Lib.stage;
-		view = new Sprite();
-		view.mouseEnabled = false;
 		
 		onActivateSignaler = new DirectSignaler<Point>(this);
 		onMoveSignaler = new DirectSignaler<Point>(this);
@@ -101,7 +92,7 @@ class Cursor {
 		}
 	}
 	
-	function onFrame(evt:Event = null):Void {
+	public function onFrame(timeInterval:Float):Void {
 		snapper.run();
 			
 		if (target_position != null) {
@@ -110,18 +101,18 @@ class Cursor {
 				onActivateSignaler.dispatch(current_position);
 			} else if (!current_position.equals(target_position)) {
 				var pt = target_position.subtract(current_position);
-				pt.normalize(pt.length * stage.frameRate.map(0, 30, 1, 0.78));
+				pt.normalize(pt.length * timeInterval.map(0, 1/30, 0, 0.8));
 				current_position = current_position.add(pt);
 			}
 			
 			dispatch(onMoveSignaler);
 		}
 		
-		current_radius += (target_radius - current_radius) * stage.frameRate.map(0, 30, 1, 0.3);
+		current_radius += (target_radius - current_radius) * timeInterval.map(0, 1/30, 0, 0.3);
 		
 		view.graphics.clear();
 		for (behavior in behaviors) {
-			behavior.onFrame();
+			behavior.onFrame(timeInterval);
 		}
 	}
 	
@@ -145,8 +136,10 @@ class Cursor {
 	}
 	
 	public function start():Void {
-		stage.addChild(view);
-		stage.addEventListener(Event.ENTER_FRAME, onFrame);
+		view = new Sprite();
+		view.mouseEnabled = false;
+		
+		Lib.stage.addChild(view);
 		
 		for (behavior in behaviors) {
 			behavior.start();
@@ -157,8 +150,7 @@ class Cursor {
 		for (behavior in behaviors) {
 			behavior.end();
 		}
-		stage.removeEventListener(Event.ENTER_FRAME, onFrame);
-		stage.removeChild(view);
+		Lib.stage.removeChild(view);
 		current_position = target_position = null;
 		onEndSignaler.dispatch();
 	}

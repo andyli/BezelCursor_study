@@ -18,7 +18,7 @@ class Behavior<C:Cursor> {
 		
 	}
 	
-	public function onFrame():Void {		
+	public function onFrame(timeInterval:Float):Void {		
 		
 	}
 	

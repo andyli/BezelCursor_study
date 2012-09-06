@@ -17,8 +17,8 @@ class DrawStick extends Behavior<PointActivatedCursor> {
 		alpha = config != null && Reflect.hasField(config, "alpha") ? config.alpha : [1.0, 1.0, 1.0, 1.0, 1.0];
 	}
 	
-	override public function onFrame():Void {
-		super.onFrame();
+	override public function onFrame(timeInterval:Float):Void {
+		super.onFrame(timeInterval);
 		
 		if (cursor.position != null) {
 			var color = [];

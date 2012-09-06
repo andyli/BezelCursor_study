@@ -16,8 +16,8 @@ class DrawBubble extends Behavior<PointActivatedCursor> {
 		centerSpotRadius = config != null && Reflect.hasField(config, "centerSpotRadius") ? config.centerSpotRadius : 0.25;
 	}
 	
-	override public function onFrame():Void {
-		super.onFrame();
+	override public function onFrame(timeInterval:Float):Void {
+		super.onFrame(timeInterval);
 		
 		if (cursor.snapper.target != null) {
 			var dist = 	cursor.snapper.target.distanceToPoint(cursor.position.x, cursor.position.y, true)

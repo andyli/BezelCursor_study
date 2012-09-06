@@ -51,12 +51,13 @@ class PointActivatedCursor extends Cursor {
 		activatedPoint = config != null && Reflect.hasField(config, "activatedPoint") ? config.activatedPoint.toPoint() : null;
 	}
 	
-	override public function onFrame(evt:Event = null):Void {
-		super.onFrame();
+	override public function onFrame(timeInterval:Float):Void {
+		super.onFrame(timeInterval);
 		
 		if (currentTouchPoint != null) {
 			if (pFrameTouchPoint != null) {
 				touchVelocity = currentTouchPoint.subtract(pFrameTouchPoint);
+				touchVelocity.normalize(touchVelocity.length/timeInterval);
 			}
 			pFrameTouchPoint = currentTouchPoint;
 		}
