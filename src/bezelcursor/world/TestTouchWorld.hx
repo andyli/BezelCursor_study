@@ -41,7 +41,7 @@ class TestTouchWorld extends GameWorld {
 			while (_y + _h < HXP.stage.stageHeight - 100) {
 				
 				if (Math.random() < 0.25) {
-					var target = new Target(_w - margin, _h - margin);
+					var target = new Target({width: _w - margin, height: _h - margin});
 					target.moveTo(_x + margin*0.5, _y + margin*0.5);
 					add(target);
 				}
@@ -59,7 +59,7 @@ class TestTouchWorld extends GameWorld {
 		
 		replaceTargets();
 		
-		var target = new Target(_w - margin, _h - margin);
+		var target = new Target({width: _w - margin, height: _h - margin});
 		target.color = 0x0000FF;
 		target.color_hover = 0x3333FF;
 		target.moveTo(margin, HXP.stage.stageHeight - _h - margin * 0.5);
@@ -72,7 +72,7 @@ class TestTouchWorld extends GameWorld {
 		
 		
 		
-		var target = new Target(_w - margin, _h - margin);
+		var target = new Target({width: _w - margin, height: _h - margin});
 		target.color = 0x0000FF;
 		target.color_hover = 0x3333FF;
 		target.moveTo(_w + margin, HXP.stage.stageHeight - _h - margin * 0.5);
@@ -90,7 +90,7 @@ class TestTouchWorld extends GameWorld {
 			}
 		});
 		
-		var target = new Target(_w - margin, _h - margin);
+		var target = new Target({width: _w - margin, height: _h - margin});
 		target.color = 0x0000FF;
 		target.color_hover = 0x3333FF;
 		target.moveTo(_w * 2 + margin, HXP.stage.stageHeight - _h - margin * 0.5);

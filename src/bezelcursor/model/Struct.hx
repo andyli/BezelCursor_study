@@ -47,3 +47,26 @@ class RectangleToObj {
 		return obj == null ? null : new nme.geom.Rectangle(obj.x, obj.y, obj.width, obj.height);
 	}
 }
+
+class IntHashCursorToObj {
+	static public function toObj(inthash:IntHash<bezelcursor.cursor.Cursor>) {
+		if (inthash == null) return null;
+		
+		var obj = {};
+		for (k in inthash.keys()) {
+			Reflect.setField(obj, Std.string(k), inthash.get(k).getData());
+		}
+		
+		return obj;
+	}
+	
+	static public function toIntHashCursor(obj:Dynamic) {
+		if (obj == null) return null;
+		
+		var inthash = new IntHash<bezelcursor.cursor.Cursor>();
+		for (f in Reflect.fields(obj)) {
+			inthash.set(Std.parseInt(f), bezelcursor.cursor.Cursor.createFromData(Reflect.field(obj, f)));
+		}
+		return inthash;
+	}
+}

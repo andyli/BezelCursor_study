@@ -15,6 +15,7 @@ import com.haxepunk.graphics.Graphiclist;
 using bezelcursor.Main;
 import bezelcursor.cursor.Cursor;
 import bezelcursor.cursor.CursorManager;
+using bezelcursor.model.Struct;
 
 class Target extends Entity {
 	inline static public var TYPE = "Target";
@@ -26,25 +27,20 @@ class Target extends Entity {
 	
 	var cursorManager:CursorManager;
 	var graphicList:Graphiclist;
-	var image:Image;
-	var image_hover:Image;
-	var text:Text;
-	var needUpdate:Bool;
+	
 	
 	public var id(default, null):Int;
-	public var color(default, set_color):Int = 0xFFFFFF;
-	public var color_hover(default, set_color_hover):Int = 0xFF6666;
-	public var isHoverBy(default, null):IntHash<Cursor>;
+	public var color(default, set_color):Int;
+	public var color_hover(default, set_color_hover):Int;
+	public var image:Image;
+	public var image_hover:Image;
 	public var state(default, null):Int;
+	public var isHoverBy(default, null):IntHash<Cursor>;
 	
-	public function new(w:Int = 100, h:Int = 100):Void {
+	public function new(?data:Dynamic):Void {
 		super();
 		
-		id = nextId++;
 		type = Target.TYPE;
-		isHoverBy = new IntHash<Cursor>();
-		needUpdate = false;
-		state = 0;
 		
 		onClickSignaler = new DirectSignaler<Point>(this);
 		onCursorInSignaler = new DirectSignaler<Point>(this);
@@ -52,7 +48,17 @@ class Target extends Entity {
 		
 		cursorManager = HXP.engine.asMain().cursorManager;
 		graphic = graphicList = new Graphiclist();
-		resize(w, h);
+
+		state = data != null && Reflect.hasField(data, "state") ? data.state : 0;
+		isHoverBy = data != null && Reflect.hasField(data, "isHoverBy") ? data.isHoverBy.toIntHashCursor() : new IntHash<Cursor>();
+		
+		id = data != null && Reflect.hasField(data, "id") ? data.id : nextId++;
+		x = data != null && Reflect.hasField(data, "x") ? data.x : 0;
+		y = data != null && Reflect.hasField(data, "y") ? data.y : 0;
+		width = data != null && Reflect.hasField(data, "width") ? data.width : 100;
+		height = data != null && Reflect.hasField(data, "height") ? data.height : 100;
+		color = data != null && Reflect.hasField(data, "color") ? data.color : 0xFFFFFF;
+		color_hover = data != null && Reflect.hasField(data, "color_hover") ? data.color_hover : 0xFF6666;
 	}
 	
 	override public function added():Void {
@@ -135,5 +141,56 @@ class Target extends Entity {
 				onCursorOutSignaler.dispatch(pt);
 			}
 		}
+	}
+
+    function hxSerialize(s:haxe.Serializer) {
+		s.serialize(getData());
+    }
+	
+    function hxUnserialize(s:haxe.Unserializer) {
+		setData(s.unserialize());
+    }
+	
+	public function getData():Dynamic {
+		var data:Dynamic = {};
+		
+		data._class = Type.getClassName(Type.getClass(this));
+		
+		data.id = id;
+		data.x = x;
+		data.y = y;
+		data.width = width;
+		data.height = height;
+		data.color = color;
+		data.color_hover = color_hover;
+		data.state = state;
+		data.isHoverBy = isHoverBy.toObj();
+		
+		return data;
+	}
+	
+	public function setData(data:Dynamic):Void {
+		#if debug
+		if (data._class != Type.getClassName(Type.getClass(this)))
+			throw "Should not set " + Type.getClassName(Type.getClass(this)) + "from a data of " + data._class;
+		#end
+		
+		id = data.id;
+		x = data.x;
+		y = data.y;
+		width = data.width;
+		height = data.height;
+		color = data.color;
+		color_hover = data.color_hover;
+		state = data.state;
+		isHoverBy = data.isHoverBy.toIntHashCursor();
+	}
+	
+	public function clone():Target {
+		return new Target(getData());
+	}
+	
+	static public function createFromData<T:Target>(data:Dynamic):T {
+		return Type.createInstance(Type.resolveClass(data._class), [data]);
 	}
 }
