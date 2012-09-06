@@ -5,7 +5,7 @@ import nme.geom.Point;
 import bezelcursor.cursor.Cursor;
 import bezelcursor.cursor.MagStickCursor;
 import bezelcursor.cursor.behavior.DrawStick;
-import bezelcursor.model.DeviceInfo;
+import bezelcursor.model.DeviceData;
 
 class DrawMagStick extends Behavior<MagStickCursor> {
 	public var lineWidthThumb:Array<Float>;
@@ -52,17 +52,17 @@ class DrawMagStick extends Behavior<MagStickCursor> {
 				DrawStick.drawGradientLine(g, cursor.activatedPoint.add(v), end, lineWidthTarget, colorTarget, alphaTarget);
 				if (radiusCircleLineWidth > 0){
 					g.lineStyle(radiusCircleLineWidth, cursor.color, radiusCircleAlpha);
-					g.drawCircle(end.x, end.y, DeviceInfo.current.screenDPI * cursor.radius);
+					g.drawCircle(end.x, end.y, DeviceData.current.screenDPI * cursor.radius);
 				}
 			} else {
 				var v = cursor.position.subtract(cursor.activatedPoint);
 				v.normalize(4);
 				var end = cursor.position;
 				DrawStick.drawGradientLine(g, cursor.activatedPoint.add(v), end, lineWidthTarget, colorTarget, alphaTarget);
-				g.drawCircle(end.x, end.y, DeviceInfo.current.screenDPI * cursor.radius);
+				g.drawCircle(end.x, end.y, DeviceData.current.screenDPI * cursor.radius);
 				if (radiusCircleLineWidth > 0){
 					g.lineStyle(radiusCircleLineWidth, cursor.color, radiusCircleAlpha);
-					g.drawCircle(end.x, end.y, DeviceInfo.current.screenDPI * cursor.radius);
+					g.drawCircle(end.x, end.y, DeviceData.current.screenDPI * cursor.radius);
 				}
 			}
 		}

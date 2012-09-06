@@ -5,7 +5,7 @@ import nme.geom.Rectangle;
 using org.casalib.util.NumberUtil;
 
 import bezelcursor.cursor.PointActivatedCursor;
-import bezelcursor.model.DeviceInfo;
+import bezelcursor.model.DeviceData;
 using bezelcursor.model.Struct;
 
 class MouseMove extends Behavior<PointActivatedCursor> {
@@ -21,8 +21,8 @@ class MouseMove extends Behavior<PointActivatedCursor> {
 		
 		minVelocityFactor = config != null && Reflect.hasField(config, "minVelocityFactor") ? config.minVelocityFactor : 1;
 		maxVelocityFactor = config != null && Reflect.hasField(config, "maxVelocityFactor") ? config.maxVelocityFactor : 3;
-		minVelocityFactorTouchVelocity = config != null && Reflect.hasField(config, "minVelocityFactorTouchVelocity") ? config.minVelocityFactorTouchVelocity : DeviceInfo.current.screenDPI * 0.01 * 30;
-		maxVelocityFactorTouchVelocity = config != null && Reflect.hasField(config, "maxVelocityFactorTouchVelocity") ? config.maxVelocityFactorTouchVelocity : DeviceInfo.current.screenDPI * 0.05 * 30;
+		minVelocityFactorTouchVelocity = config != null && Reflect.hasField(config, "minVelocityFactorTouchVelocity") ? config.minVelocityFactorTouchVelocity : DeviceData.current.screenDPI * 0.01 * 30;
+		maxVelocityFactorTouchVelocity = config != null && Reflect.hasField(config, "maxVelocityFactorTouchVelocity") ? config.maxVelocityFactorTouchVelocity : DeviceData.current.screenDPI * 0.05 * 30;
 		
 		constraint = config != null && Reflect.hasField(config, "constraint") ? config.constraint.toRectangle() : new Rectangle(0, 0, Lib.stage.stageWidth, Lib.stage.stageHeight);
 	}

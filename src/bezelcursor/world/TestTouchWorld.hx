@@ -13,7 +13,7 @@ import bezelcursor.cursor.behavior.DynaScale;
 import bezelcursor.cursor.behavior.MouseMove;
 import bezelcursor.entity.Target;
 import bezelcursor.entity.RandomMovingTarget;
-import bezelcursor.model.DeviceInfo;
+import bezelcursor.model.DeviceData;
 import bezelcursor.model.TouchData;
 using bezelcursor.Main;
 
@@ -25,7 +25,7 @@ class TestTouchWorld extends GameWorld {
 	override public function new():Void {
 		super();
 		
-		var dpi = DeviceInfo.current.screenDPI;
+		var dpi = DeviceData.current.screenDPI;
 		_w = Std.int(0.4 * dpi);
 		_h = Std.int(0.3 * dpi);
 		margin = Std.int(dpi*0.1);

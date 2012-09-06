@@ -6,8 +6,8 @@ class PlayRecord {
 	*/
 	public var id:Int;
 	public var creationTime:Float;
-	public var device:DeviceInfo;
+	public var device:DeviceData;
 	public var isPortrait:Bool;
-	public var user:UserInfo;
+	public var user:UserData;
 	public var eventRecords:Array<EventRecord>;
 }

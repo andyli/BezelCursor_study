@@ -8,10 +8,10 @@ import nme.ui.Keyboard;
 import nme.Lib;
 
 import bezelcursor.cursor.CursorManager;
-import bezelcursor.model.BuildInfo;
-import bezelcursor.model.DeviceInfo;
+import bezelcursor.model.BuildData;
+import bezelcursor.model.DeviceData;
 import bezelcursor.model.Env;
-import bezelcursor.model.UserInfo;
+import bezelcursor.model.UserData;
 import bezelcursor.world.TestTouchWorld;
 
 class Main extends Engine {
@@ -43,17 +43,17 @@ class Main extends Engine {
 	
 	function initStorage():Void {
 		try {
-			isFirstRun = DeviceInfo.sharedObject.data.current == null;
+			isFirstRun = DeviceData.sharedObject.data.current == null;
 		}catch(e:Dynamic){
 			isFirstRun = true;
 		}
 		
 		trace(isFirstRun ? "isFirstRun" : "not isFirstRun");
-		trace(DeviceInfo.current.id);
-		trace(UserInfo.current.id);
+		trace(DeviceData.current.id);
+		trace(UserData.current.id);
 		/*
-		for (f in Type.getInstanceFields(DeviceInfo)) {
-			trace(f + " " + Reflect.getProperty(DeviceInfo.current, f));
+		for (f in Type.getInstanceFields(DeviceData)) {
+			trace(f + " " + Reflect.getProperty(DeviceData.current, f));
 		}
 		*/
 	}

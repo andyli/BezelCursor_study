@@ -1,9 +1,9 @@
 package bezelcursor.model;
 
-class BuildInfo {
-	static public var current(get_current, null):BuildInfo;
-	static function get_current():BuildInfo {
-		return current != null ? current : current = new BuildInfo();
+class BuildData {
+	static public var current(get_current, null):BuildData;
+	static function get_current():BuildData {
+		return current != null ? current : current = new BuildData();
 	}
 	
 	function new():Void{}

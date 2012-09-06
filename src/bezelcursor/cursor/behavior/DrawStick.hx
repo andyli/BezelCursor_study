@@ -4,7 +4,7 @@ import nme.geom.Point;
 
 import bezelcursor.cursor.Cursor;
 import bezelcursor.cursor.PointActivatedCursor;
-import bezelcursor.model.DeviceInfo;
+import bezelcursor.model.DeviceData;
 
 class DrawStick extends Behavior<PointActivatedCursor> {
 	public var lineWidth:Array<Float>;

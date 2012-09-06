@@ -12,7 +12,7 @@ import bezelcursor.cursor.behavior.DynaScale;
 import bezelcursor.cursor.behavior.DrawStick;
 import bezelcursor.cursor.behavior.DrawRadius;
 import bezelcursor.cursor.snapper.SimpleSnapper;
-import bezelcursor.model.DeviceInfo;
+import bezelcursor.model.DeviceData;
 import bezelcursor.model.TouchData;
 using bezelcursor.model.Struct;
 
@@ -25,7 +25,7 @@ class StickCursor extends PointActivatedCursor {
 		super(config);
 		
 		joint = config != null && Reflect.hasField(config, "joint") ? config.joint.toPoint() : null;
-		jointActivateDistance = config != null && Reflect.hasField(config, "jointActivateDistance") ? config.jointActivateDistance : DeviceInfo.current.screenDPI * 0.2;
+		jointActivateDistance = config != null && Reflect.hasField(config, "jointActivateDistance") ? config.jointActivateDistance : DeviceData.current.screenDPI * 0.2;
 		scaleFactor = config != null && Reflect.hasField(config, "scaleFactor") ? config.scaleFactor : 3;
 		behaviors = config != null && Reflect.hasField(config, "behaviors") ? Behavior.createFromConfigs(this, config.behaviors) : [new DynaScale(this), new DrawStick(this), new DrawRadius(this), new ClickWhenTouchEnd(this)];
 	}

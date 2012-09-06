@@ -15,7 +15,7 @@ import hsl.haxe.Signal;
 import hsl.haxe.Signaler;
 import hsl.haxe.DirectSignaler;
 
-import bezelcursor.model.DeviceInfo;
+import bezelcursor.model.DeviceData;
 import bezelcursor.model.TouchData;
 
 enum CreateCursorFor {
@@ -91,7 +91,7 @@ class CursorManager {
 		bezelOut = new Rectangle(0, 0, stage.stageWidth, stage.stageHeight);
 		bezelIn = bezelOut.clone();
 		
-		var bezelWidthPx = DeviceInfo.current.screenDPI * bezelWidth;
+		var bezelWidthPx = DeviceData.current.screenDPI * bezelWidth;
 		bezelIn.inflate(-bezelWidthPx, -bezelWidthPx); 
 	}
 	

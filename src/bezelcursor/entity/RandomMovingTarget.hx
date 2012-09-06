@@ -9,7 +9,7 @@ using org.casalib.util.NumberUtil;
 using Std;
 
 import bezelcursor.cursor.Cursor;
-import bezelcursor.model.DeviceInfo;
+import bezelcursor.model.DeviceData;
 
 class RandomMovingTarget extends Target {
 	
@@ -22,7 +22,7 @@ class RandomMovingTarget extends Target {
 	}
 	
 	function rndSize():Void {
-		var toInch = DeviceInfo.current.screenDPI;
+		var toInch = DeviceData.current.screenDPI;
 		resize(
 			NumberUtil.randomIntegerWithinRange((0.5 * toInch).int(), (1 * toInch).int()),
 			NumberUtil.randomIntegerWithinRange((0.5 * toInch).int(), (1 * toInch).int())

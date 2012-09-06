@@ -1,6 +1,6 @@
 package bezelcursor.model;
 
-class UserInfo extends Struct {
+class UserData extends Struct {
 	/**
 	* uuid of length 36
 	*/
@@ -18,27 +18,25 @@ class UserInfo extends Struct {
 		if (sharedObject != null) 
 			return sharedObject;
 		else
-			return sharedObject = nme.net.SharedObject.getLocal("UserInfo");
+			return sharedObject = nme.net.SharedObject.getLocal("UserData");
 	}
 	
 	
-	public static var current(get_current, null):UserInfo;
-	static function get_current():UserInfo {
+	public static var current(get_current, null):UserData;
+	static function get_current():UserData {
 		if (current != null) return current;
 		
-		try {
-			current = new UserInfo();
-			current.fromObj(sharedObject.data.current);
-		}catch(e:Dynamic){}
+		current = new UserData();
 		
-		if (current == null) {
-			current = new UserInfo();
-			
+		if (sharedObject.data.current == null) {
 			current.userName = "User";
 			
 			sharedObject.data.current = current.toObj();
 			sharedObject.flush();
+		} else {
+			current.fromObj(sharedObject.data.current);
 		}
+		
 		return current;
 	}
 }

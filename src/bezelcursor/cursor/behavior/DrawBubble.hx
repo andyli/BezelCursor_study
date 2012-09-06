@@ -1,7 +1,7 @@
 package bezelcursor.cursor.behavior;
 
 import bezelcursor.cursor.Cursor;
-import bezelcursor.model.DeviceInfo;
+import bezelcursor.model.DeviceData;
 
 class DrawBubble extends Behavior<PointActivatedCursor> {
 	public var lineWeight:Float;

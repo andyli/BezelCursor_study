@@ -1,7 +1,7 @@
 package bezelcursor.cursor.behavior;
 
 import bezelcursor.cursor.Cursor;
-import bezelcursor.model.DeviceInfo;
+import bezelcursor.model.DeviceData;
 
 class DrawRadius extends Behavior<Cursor> {
 	public var lineWeight:Float = 2;
@@ -21,7 +21,7 @@ class DrawRadius extends Behavior<Cursor> {
 		
 		if (cursor.position != null) {
 			cursor.view.graphics.lineStyle(lineWeight, cursor.color, alpha);
-			cursor.view.graphics.drawCircle(cursor.position.x, cursor.position.y, DeviceInfo.current.screenDPI * cursor.radius);
+			cursor.view.graphics.drawCircle(cursor.position.x, cursor.position.y, DeviceData.current.screenDPI * cursor.radius);
 			
 			if (centerSpotRadius > 0)
 				cursor.view.graphics.drawCircle(cursor.position.x, cursor.position.y, centerSpotRadius);

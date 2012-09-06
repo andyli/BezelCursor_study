@@ -13,7 +13,7 @@ import bezelcursor.cursor.behavior.DrawRadius;
 import bezelcursor.cursor.behavior.DrawMagStick;
 import bezelcursor.cursor.snapper.Snapper;
 import bezelcursor.cursor.snapper.DistanceToOriginSnapper;
-import bezelcursor.model.DeviceInfo;
+import bezelcursor.model.DeviceData;
 
 class MagStickCursor extends StickCursor {
 	public function new(config:Dynamic):Void {

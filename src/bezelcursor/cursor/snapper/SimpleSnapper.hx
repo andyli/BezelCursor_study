@@ -5,7 +5,7 @@ import com.haxepunk.HXP;
 
 import bezelcursor.cursor.Cursor;
 import bezelcursor.entity.Target;
-import bezelcursor.model.DeviceInfo;
+import bezelcursor.model.DeviceData;
 
 class SimpleSnapper extends Snapper<Cursor> {	
 	override public function run():Void {
@@ -16,7 +16,7 @@ class SimpleSnapper extends Snapper<Cursor> {
 		
 		for (target in targets) {
 			var distance = target.distanceToPoint(cursor.position.x, cursor.position.y, true);
-			if (distance > DeviceInfo.current.screenDPI * cursor.radius)
+			if (distance > DeviceData.current.screenDPI * cursor.radius)
 				continue;
 			else
 				interestedTargets.push(target);

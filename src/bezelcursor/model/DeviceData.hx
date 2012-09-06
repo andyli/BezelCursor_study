@@ -5,7 +5,7 @@ import nme.system.Capabilities;
 import nme.JNI;
 #end
 
-class DeviceInfo extends Struct {
+class DeviceData extends Struct {
 	/**
 	* uuid of length 36
 	*/
@@ -29,28 +29,26 @@ class DeviceInfo extends Struct {
 		if (sharedObject != null) 
 			return sharedObject;
 		else
-			return sharedObject = nme.net.SharedObject.getLocal("DeviceInfo");
+			return sharedObject = nme.net.SharedObject.getLocal("DeviceData");
 	}
 	
 	
-	public static var current(get_current, null):DeviceInfo;
-	static function get_current():DeviceInfo {
+	public static var current(get_current, null):DeviceData;
+	static function get_current():DeviceData {
 		if (current != null) return current;
 		
-		try {
-			current = new DeviceInfo();
-			current.fromObj(sharedObject.data.current);
-		}catch(e:Dynamic){}
+
+		current = new DeviceData();
 		
-		if (true || current == null) { //overwrite anyway, use only the old id
-			var n = new DeviceInfo();
-			if (current != null)
-				n.id = current.id;
-			current = n;
-			
-			current.systemName = if (BuildInfo.current.isAndroid) {
+		//overwrite anyway, use only the old id
+		if (sharedObject.data.current != null) {
+			current.id = sharedObject.data.current.id;
+		}
+		
+		{
+			current.systemName = if (BuildData.current.isAndroid) {
 				"Android";
-			} else if (BuildInfo.current.isIos) {
+			} else if (BuildData.current.isIos) {
 				"iOS";
 			} else {
 				#if sys

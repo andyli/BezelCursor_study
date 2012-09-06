@@ -6,7 +6,7 @@ import org.casalib.util.GeomUtil;
 
 import bezelcursor.cursor.Cursor;
 import bezelcursor.entity.Target;
-import bezelcursor.model.DeviceInfo;
+import bezelcursor.model.DeviceData;
 
 class DistanceToOriginSnapper extends Snapper<PointActivatedCursor> {	
 	override public function run():Void {
@@ -14,10 +14,10 @@ class DistanceToOriginSnapper extends Snapper<PointActivatedCursor> {
 		HXP.world.getType(Target.TYPE, targets);
 		
 		interestedTargets = [];
-		var minDistanceToOrigin = Point.distance(cursor.activatedPoint, cursor.currentTouchPoint) + DeviceInfo.current.screenDPI * cursor.radius;
+		var minDistanceToOrigin = Point.distance(cursor.activatedPoint, cursor.currentTouchPoint) + DeviceData.current.screenDPI * cursor.radius;
 		for (target in targets) {
 			var distance = target.distanceToPoint(cursor.position.x, cursor.position.y, true);
-			if (distance > DeviceInfo.current.screenDPI * cursor.radius)
+			if (distance > DeviceData.current.screenDPI * cursor.radius)
 				continue;
 				
 			var distance = target.distanceToPoint(cursor.activatedPoint.x, cursor.activatedPoint.y, true);
