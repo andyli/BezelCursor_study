@@ -10,8 +10,11 @@
 
 	<source path="src" />
 	
-	<template path="template/AndroidManifest.xml" rename="AndroidManifest.xml" if="android" />
-	<template path="template/src" rename="src" include="*.java" if="android" />
+	<section if="android">
+		<template path="template/application.xml" rename="application.xml" if="air" />
+		<template path="template/AndroidManifest.xml" rename="AndroidManifest.xml" />
+		<template path="template/src" rename="src" include="*.java" />
+	</section>
 	
 	<haxelib name="nme" />
 	<haxelib name="HaxePunk" />
