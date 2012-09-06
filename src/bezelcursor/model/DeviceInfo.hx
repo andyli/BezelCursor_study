@@ -38,12 +38,8 @@ class DeviceInfo extends Struct {
 		if (current != null) return current;
 		
 		try {
-			#if !flash
-			current = sharedObject.data.current;
-			#else
 			current = new DeviceInfo();
 			current.fromObj(sharedObject.data.current);
-			#end
 		}catch(e:Dynamic){}
 		
 		if (true || current == null) { //overwrite anyway, use only the old id
@@ -82,7 +78,7 @@ class DeviceInfo extends Struct {
 			current.screenDPI = Capabilities.screenDPI;
 			
 			current.lastLocalSyncTime = Date.now().getTime();
-			sharedObject.data.current = current;
+			sharedObject.data.current = current.toObj();
 			sharedObject.flush();
 		}
 		

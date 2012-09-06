@@ -16,7 +16,11 @@ class TouchData extends Struct {
 	}
 	
 	static public function fromTouchEvent(evt:nme.events.TouchEvent):TouchData {
+		#if js
+		return new TouchData(evt.touchPointID, evt.stageX, evt.stageY, 1, 1);
+		#else
 		return new TouchData(evt.touchPointID, evt.stageX, evt.stageY, evt.sizeX, evt.sizeY);
+		#end
 	}
 	
 	static public function fromMouseEvent(evt:nme.events.MouseEvent):TouchData {

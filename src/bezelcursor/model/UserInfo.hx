@@ -27,12 +27,8 @@ class UserInfo extends Struct {
 		if (current != null) return current;
 		
 		try {
-			#if !flash
-			current = sharedObject.data.current;
-			#else
 			current = new UserInfo();
 			current.fromObj(sharedObject.data.current);
-			#end
 		}catch(e:Dynamic){}
 		
 		if (current == null) {
@@ -40,7 +36,7 @@ class UserInfo extends Struct {
 			
 			current.userName = "User";
 			
-			sharedObject.data.current = current;
+			sharedObject.data.current = current.toObj();
 			sharedObject.flush();
 		}
 		return current;
