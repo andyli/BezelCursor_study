@@ -16,20 +16,20 @@ import bezelcursor.cursor.snapper.DistanceToOriginSnapper;
 import bezelcursor.model.DeviceData;
 
 class MagStickCursor extends StickCursor {
-	public function new(config:Dynamic):Void {
-		super(config);
+	public function new(data:Dynamic):Void {
+		super(data);
 		
-		jointActivateDistance = config != null && Reflect.hasField(config, "jointActivateDistance") ? config.jointActivateDistance : Math.POSITIVE_INFINITY;
-		scaleFactor = config != null && Reflect.hasField(config, "scaleFactor") ? config.scaleFactor : -1;
-		current_radius = config != null && Reflect.hasField(config, "current_radius") ? config.current_radius : 0.1;
-		target_radius = config != null && Reflect.hasField(config, "target_radius") ? config.target_radius : 0.1;
-		default_radius = config != null && Reflect.hasField(config, "default_radius") ? config.default_radius : 0.1;
+		jointActivateDistance = data != null && Reflect.hasField(data, "jointActivateDistance") ? data.jointActivateDistance : Math.POSITIVE_INFINITY;
+		scaleFactor = data != null && Reflect.hasField(data, "scaleFactor") ? data.scaleFactor : -1;
+		current_radius = data != null && Reflect.hasField(data, "current_radius") ? data.current_radius : 0.1;
+		target_radius = data != null && Reflect.hasField(data, "target_radius") ? data.target_radius : 0.1;
+		default_radius = data != null && Reflect.hasField(data, "default_radius") ? data.default_radius : 0.1;
 		
-		behaviors = config != null && Reflect.hasField(config, "behaviors") ? Behavior.createFromConfigs(this, config.behaviors) : [new DrawMagStick(this), new ClickWhenTouchEnd(this)];
-		snapper = config != null && Reflect.hasField(config, "snapper") ? Snapper.createFromConfig(this, config.snapper) : new DistanceToOriginSnapper(this);
+		behaviors = data != null && Reflect.hasField(data, "behaviors") ? Behavior.createFromDatas(this, data.behaviors) : [new DrawMagStick(this), new ClickWhenTouchEnd(this)];
+		snapper = data != null && Reflect.hasField(data, "snapper") ? Snapper.createFromData(this, data.snapper) : new DistanceToOriginSnapper(this);
 	}
 	
 	override public function clone():MagStickCursor {
-		return new MagStickCursor(getConfig());
+		return new MagStickCursor(getData());
 	}
 }

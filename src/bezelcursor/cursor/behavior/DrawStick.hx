@@ -10,11 +10,11 @@ class DrawStick extends Behavior<PointActivatedCursor> {
 	public var lineWidth:Array<Float>;
 	public var alpha:Array<Float>;
 	
-	public function new(c:PointActivatedCursor, ?config:Dynamic):Void {
-		super(c, config);
+	public function new(c:PointActivatedCursor, ?data:Dynamic):Void {
+		super(c, data);
 		
-		lineWidth = config != null && Reflect.hasField(config, "lineWidth") ? config.lineWidth : [3.5, 3.0, 2.2, 2.0, 1.5];
-		alpha = config != null && Reflect.hasField(config, "alpha") ? config.alpha : [1.0, 1.0, 1.0, 1.0, 1.0];
+		lineWidth = data != null && Reflect.hasField(data, "lineWidth") ? data.lineWidth : [3.5, 3.0, 2.2, 2.0, 1.5];
+		alpha = data != null && Reflect.hasField(data, "alpha") ? data.alpha : [1.0, 1.0, 1.0, 1.0, 1.0];
 	}
 	
 	override public function onFrame(timeInterval:Float):Void {
@@ -40,23 +40,23 @@ class DrawStick extends Behavior<PointActivatedCursor> {
 		}
 	}
 	
-	override public function getConfig():Dynamic {
-		var config:Dynamic = super.getConfig();
+	override public function getData():Dynamic {
+		var data:Dynamic = super.getData();
 		
-		config.lineWidth = lineWidth.copy();
-		config.alpha = alpha.copy();
+		data.lineWidth = lineWidth.copy();
+		data.alpha = alpha.copy();
 		
-		return config;
+		return data;
 	}
 	
-	override public function setConfig(config:Dynamic):Void {
-		super.setConfig(config);
+	override public function setData(data:Dynamic):Void {
+		super.setData(data);
 		
-		lineWidth = config.lineWidth;
-		alpha = config.alpha;
+		lineWidth = data.lineWidth;
+		alpha = data.alpha;
 	}
 	
 	override public function clone(?c:PointActivatedCursor):DrawStick {
-		return new DrawStick(c == null ? cursor : c, getConfig());
+		return new DrawStick(c == null ? cursor : c, getData());
 	}
 }

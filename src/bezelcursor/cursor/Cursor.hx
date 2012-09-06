@@ -64,18 +64,18 @@ class Cursor {
 	*/
 	public var view(default, null):Sprite;
 	
-	public function new(?config:Dynamic):Void {
-		id = config != null && Reflect.hasField(config, "id") ? config.id : nextId++;
-		color = config != null && Reflect.hasField(config, "color") ? config.color : 0xFF0000;
-		current_position = config != null && Reflect.hasField(config, "current_position") ? config.current_position.toPoint() : null;
-		target_position = config != null && Reflect.hasField(config, "target_position") ? config.target_position.toPoint() : null;
-		current_radius = config != null && Reflect.hasField(config, "current_radius") ? config.current_radius :  0.001;
-		target_radius = config != null && Reflect.hasField(config, "target_radius") ? config.target_radius :  0.001;
-		default_radius = config != null && Reflect.hasField(config, "default_radius") ? config.default_radius : 0.001;
+	public function new(?data:Dynamic):Void {
+		id = data != null && Reflect.hasField(data, "id") ? data.id : nextId++;
+		color = data != null && Reflect.hasField(data, "color") ? data.color : 0xFF0000;
+		current_position = data != null && Reflect.hasField(data, "current_position") ? data.current_position.toPoint() : null;
+		target_position = data != null && Reflect.hasField(data, "target_position") ? data.target_position.toPoint() : null;
+		current_radius = data != null && Reflect.hasField(data, "current_radius") ? data.current_radius :  0.001;
+		target_radius = data != null && Reflect.hasField(data, "target_radius") ? data.target_radius :  0.001;
+		default_radius = data != null && Reflect.hasField(data, "default_radius") ? data.default_radius : 0.001;
 		
-		//behaviors = config != null && Reflect.hasField(config, "behaviors") ? config.behaviors : [];
-		snapper = config != null && Reflect.hasField(config, "snapper") ? Snapper.createFromConfig(this, config.snapper) : new SimpleSnapper(this);
-		behaviors = config != null && Reflect.hasField(config, "behaviors") ? Behavior.createFromConfigs(this, config.behaviors) : [];
+		//behaviors = data != null && Reflect.hasField(data, "behaviors") ? data.behaviors : [];
+		snapper = data != null && Reflect.hasField(data, "snapper") ? Snapper.createFromData(this, data.snapper) : new SimpleSnapper(this);
+		behaviors = data != null && Reflect.hasField(data, "behaviors") ? Behavior.createFromDatas(this, data.behaviors) : [];
 		
 		onActivateSignaler = new DirectSignaler<Point>(this);
 		onMoveSignaler = new DirectSignaler<Point>(this);
@@ -156,50 +156,50 @@ class Cursor {
 	}
 
     function hxSerialize(s:haxe.Serializer) {
-		s.serialize(getConfig());
+		s.serialize(getData());
     }
 	
     function hxUnserialize(s:haxe.Unserializer) {
-		setConfig(s.unserialize());
+		setData(s.unserialize());
     }
 	
-	public function getConfig():Dynamic {
-		var config:Dynamic = {};
+	public function getData():Dynamic {
+		var data:Dynamic = {};
 		
-		config._class = Type.getClassName(Type.getClass(this));
-		config.id = id;
-		config.current_position = current_position.toObj();
-		config.target_position = target_position.toObj();
-		config.current_radius = current_radius;
-		config.target_radius = target_radius;
-		config.behaviors = []; for (b in behaviors) config.behaviors.push(b.getConfig());
-		config.snapper = snapper.getConfig();
-		config.color = color;
+		data._class = Type.getClassName(Type.getClass(this));
+		data.id = id;
+		data.current_position = current_position.toObj();
+		data.target_position = target_position.toObj();
+		data.current_radius = current_radius;
+		data.target_radius = target_radius;
+		data.behaviors = []; for (b in behaviors) data.behaviors.push(b.getData());
+		data.snapper = snapper.getData();
+		data.color = color;
 		
-		return config;
+		return data;
 	}
 	
-	public function setConfig(config:Dynamic):Void {
+	public function setData(data:Dynamic):Void {
 		#if debug
-		if (config._class != Type.getClassName(Type.getClass(this)))
-			throw "Should not set " + Type.getClassName(Type.getClass(this)) + "from a config of " + config._class;
+		if (data._class != Type.getClassName(Type.getClass(this)))
+			throw "Should not set " + Type.getClassName(Type.getClass(this)) + "from a data of " + data._class;
 		#end
-		id = config.id;
-		current_position = config.current_position.toPoint();
-		target_position = config.target_position.toPoint();
-		current_radius = config.current_radius;
-		target_radius = config.target_radius;
-		default_radius = config.default_radius;
-		behaviors = config.behaviors;
-		snapper = Snapper.createFromConfig(this, config.snapper);
-		color = config.color;
+		id = data.id;
+		current_position = data.current_position.toPoint();
+		target_position = data.target_position.toPoint();
+		current_radius = data.current_radius;
+		target_radius = data.target_radius;
+		default_radius = data.default_radius;
+		behaviors = data.behaviors;
+		snapper = Snapper.createFromData(this, data.snapper);
+		color = data.color;
 	}
 	
 	public function clone():Cursor {
-		return new Cursor(getConfig());
+		return new Cursor(getData());
 	}
 	
-	static public function createFromConfig<C:Cursor>(config:Dynamic):C {
-		return Type.createInstance(Type.resolveClass(config._class), [config]);
+	static public function createFromData<C:Cursor>(data:Dynamic):C {
+		return Type.createInstance(Type.resolveClass(data._class), [data]);
 	}
 }

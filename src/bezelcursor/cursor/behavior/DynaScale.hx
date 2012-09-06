@@ -17,17 +17,17 @@ class DynaScale extends Behavior<PointActivatedCursor> {
 	public var collapseVelocity:Float;
 	public var collapseLag:Float;
 	
-	public function new(c:PointActivatedCursor, ?config):Void {
-		super(c, config);
+	public function new(c:PointActivatedCursor, ?data):Void {
+		super(c, data);
 		
-		collapseVelocity = config != null && Reflect.hasField(config, "collapseVelocity") ? config.collapseVelocity : DeviceData.current.screenDPI * 0.015 * 30;
-		expendVelocity = config != null && Reflect.hasField(config, "expendVelocity") ? config.expendVelocity : DeviceData.current.screenDPI * 0.035 * 30;
-		collapseLag = config != null && Reflect.hasField(config, "collapseLag") ? config.collapseLag : 0.6;
-		expendedSize = config != null && Reflect.hasField(config, "expendedSize") ? config.expendedSize : 0.15;
-		collapsedSize = config != null && Reflect.hasField(config, "collapsedSize") ? config.collapsedSize : 0.0;
+		collapseVelocity = data != null && Reflect.hasField(data, "collapseVelocity") ? data.collapseVelocity : DeviceData.current.screenDPI * 0.015 * 30;
+		expendVelocity = data != null && Reflect.hasField(data, "expendVelocity") ? data.expendVelocity : DeviceData.current.screenDPI * 0.035 * 30;
+		collapseLag = data != null && Reflect.hasField(data, "collapseLag") ? data.collapseLag : 0.6;
+		expendedSize = data != null && Reflect.hasField(data, "expendedSize") ? data.expendedSize : 0.15;
+		collapsedSize = data != null && Reflect.hasField(data, "collapsedSize") ? data.collapsedSize : 0.0;
 		
-		expended = config != null && Reflect.hasField(config, "expended") ? config.expended : false;
-		expendedTime = config != null && Reflect.hasField(config, "expendedTime") ? config.expendedTime : 0;
+		expended = data != null && Reflect.hasField(data, "expended") ? data.expended : false;
+		expendedTime = data != null && Reflect.hasField(data, "expendedTime") ? data.expendedTime : 0;
 	}
 	
 	override function start():Void {
@@ -57,35 +57,35 @@ class DynaScale extends Behavior<PointActivatedCursor> {
 		}
 	}
 	
-	override public function getConfig():Dynamic {
-		var config:Dynamic = super.getConfig();
+	override public function getData():Dynamic {
+		var data:Dynamic = super.getData();
 		
-		config.collapseVelocity = collapseVelocity;
-		config.expendVelocity = expendVelocity;
-		config.collapseLag = collapseLag;
-		config.expendedSize = expendedSize;
-		config.collapsedSize = collapsedSize;
+		data.collapseVelocity = collapseVelocity;
+		data.expendVelocity = expendVelocity;
+		data.collapseLag = collapseLag;
+		data.expendedSize = expendedSize;
+		data.collapsedSize = collapsedSize;
 		
-		config.expended = expended;
-		config.expendedTime = expendedTime;
+		data.expended = expended;
+		data.expendedTime = expendedTime;
 		
-		return config;
+		return data;
 	}
 	
-	override public function setConfig(config:Dynamic):Void {
-		super.setConfig(config);
+	override public function setData(data:Dynamic):Void {
+		super.setData(data);
 		
-		collapseVelocity = config.collapseVelocity;
-		expendVelocity = config.expendVelocity;
-		collapseLag = config.collapseLag;
-		expendedSize = config.expendedSize;
-		collapsedSize = config.collapsedSize;
+		collapseVelocity = data.collapseVelocity;
+		expendVelocity = data.expendVelocity;
+		collapseLag = data.collapseLag;
+		expendedSize = data.expendedSize;
+		collapsedSize = data.collapsedSize;
 		
-		expended = config.expended;
-		expendedTime = config.expendedTime;
+		expended = data.expended;
+		expendedTime = data.expendedTime;
 	}
 	
 	override public function clone(?c:PointActivatedCursor):DynaScale {
-		return new DynaScale(c == null ? cursor : c, getConfig());
+		return new DynaScale(c == null ? cursor : c, getData());
 	}
 }

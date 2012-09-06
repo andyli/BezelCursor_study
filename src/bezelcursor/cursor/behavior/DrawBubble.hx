@@ -8,12 +8,12 @@ class DrawBubble extends Behavior<PointActivatedCursor> {
 	public var alpha:Float;
 	public var centerSpotRadius:Float;
 	
-	public function new(c:PointActivatedCursor, ?config:Dynamic):Void {
-		super(c, config);
+	public function new(c:PointActivatedCursor, ?data:Dynamic):Void {
+		super(c, data);
 		
-		lineWeight = config != null && Reflect.hasField(config, "lineWeight") ? config.lineWeight : 2;
-		alpha = config != null && Reflect.hasField(config, "alpha") ? config.alpha : 1;
-		centerSpotRadius = config != null && Reflect.hasField(config, "centerSpotRadius") ? config.centerSpotRadius : 0.25;
+		lineWeight = data != null && Reflect.hasField(data, "lineWeight") ? data.lineWeight : 2;
+		alpha = data != null && Reflect.hasField(data, "alpha") ? data.alpha : 1;
+		centerSpotRadius = data != null && Reflect.hasField(data, "centerSpotRadius") ? data.centerSpotRadius : 0.25;
 	}
 	
 	override public function onFrame(timeInterval:Float):Void {
@@ -36,25 +36,25 @@ class DrawBubble extends Behavior<PointActivatedCursor> {
 		}
 	}
 	
-	override public function getConfig():Dynamic {
-		var config:Dynamic = super.getConfig();
+	override public function getData():Dynamic {
+		var data:Dynamic = super.getData();
 		
-		config.lineWeight = lineWeight;
-		config.alpha = alpha;
-		config.centerSpotRadius = centerSpotRadius;
+		data.lineWeight = lineWeight;
+		data.alpha = alpha;
+		data.centerSpotRadius = centerSpotRadius;
 		
-		return config;
+		return data;
 	}
 	
-	override public function setConfig(config:Dynamic):Void {
-		super.setConfig(config);
+	override public function setData(data:Dynamic):Void {
+		super.setData(data);
 		
-		lineWeight = config.lineWeight;
-		alpha = config.alpha;
-		centerSpotRadius = config.centerSpotRadius;
+		lineWeight = data.lineWeight;
+		alpha = data.alpha;
+		centerSpotRadius = data.centerSpotRadius;
 	}
 	
 	override public function clone(?c:PointActivatedCursor):DrawBubble {
-		return new DrawBubble(c == null ? cursor : c, getConfig());
+		return new DrawBubble(c == null ? cursor : c, getData());
 	}
 }

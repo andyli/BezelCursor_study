@@ -149,7 +149,7 @@ class CursorManager {
 		var cursor = createCursor(touch, (bezelCursorEnabled && insideBezel(touch)) ? ForBezel : ForScreen);
 		
 		//tests:
-		//cursor = Cursor.createFromConfig(cursor.getConfig());
+		//cursor = Cursor.createFromData(cursor.getData());
 		//cursor = cursor.clone();
 		//trace(haxe.Json.stringify(cursor));
 		

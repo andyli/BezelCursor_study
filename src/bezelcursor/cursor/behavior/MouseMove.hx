@@ -16,15 +16,15 @@ class MouseMove extends Behavior<PointActivatedCursor> {
 	
 	public var constraint:Rectangle;
 	
-	public function new(c:PointActivatedCursor, ?config:Dynamic):Void {
-		super(c, config);
+	public function new(c:PointActivatedCursor, ?data:Dynamic):Void {
+		super(c, data);
 		
-		minVelocityFactor = config != null && Reflect.hasField(config, "minVelocityFactor") ? config.minVelocityFactor : 1;
-		maxVelocityFactor = config != null && Reflect.hasField(config, "maxVelocityFactor") ? config.maxVelocityFactor : 3;
-		minVelocityFactorTouchVelocity = config != null && Reflect.hasField(config, "minVelocityFactorTouchVelocity") ? config.minVelocityFactorTouchVelocity : DeviceData.current.screenDPI * 0.01 * 30;
-		maxVelocityFactorTouchVelocity = config != null && Reflect.hasField(config, "maxVelocityFactorTouchVelocity") ? config.maxVelocityFactorTouchVelocity : DeviceData.current.screenDPI * 0.05 * 30;
+		minVelocityFactor = data != null && Reflect.hasField(data, "minVelocityFactor") ? data.minVelocityFactor : 1;
+		maxVelocityFactor = data != null && Reflect.hasField(data, "maxVelocityFactor") ? data.maxVelocityFactor : 3;
+		minVelocityFactorTouchVelocity = data != null && Reflect.hasField(data, "minVelocityFactorTouchVelocity") ? data.minVelocityFactorTouchVelocity : DeviceData.current.screenDPI * 0.01 * 30;
+		maxVelocityFactorTouchVelocity = data != null && Reflect.hasField(data, "maxVelocityFactorTouchVelocity") ? data.maxVelocityFactorTouchVelocity : DeviceData.current.screenDPI * 0.05 * 30;
 		
-		constraint = config != null && Reflect.hasField(config, "constraint") ? config.constraint.toRectangle() : new Rectangle(0, 0, Lib.stage.stageWidth, Lib.stage.stageHeight);
+		constraint = data != null && Reflect.hasField(data, "constraint") ? data.constraint.toRectangle() : new Rectangle(0, 0, Lib.stage.stageWidth, Lib.stage.stageHeight);
 	}
 	
 	override public function onFrame(timeInterval:Float):Void {
@@ -50,31 +50,31 @@ class MouseMove extends Behavior<PointActivatedCursor> {
 		cursor.position = targetPos;
 	}
 	
-	override public function getConfig():Dynamic {
-		var config:Dynamic = super.getConfig();
+	override public function getData():Dynamic {
+		var data:Dynamic = super.getData();
 		
-		config.minVelocityFactor = minVelocityFactor;
-		config.maxVelocityFactor = maxVelocityFactor;
-		config.minVelocityFactorTouchVelocity = minVelocityFactorTouchVelocity;
-		config.maxVelocityFactorTouchVelocity = maxVelocityFactorTouchVelocity;
+		data.minVelocityFactor = minVelocityFactor;
+		data.maxVelocityFactor = maxVelocityFactor;
+		data.minVelocityFactorTouchVelocity = minVelocityFactorTouchVelocity;
+		data.maxVelocityFactorTouchVelocity = maxVelocityFactorTouchVelocity;
 		
-		config.constraint = constraint.toObj();
+		data.constraint = constraint.toObj();
 		
-		return config;
+		return data;
 	}
 	
-	override public function setConfig(config:Dynamic):Void {
-		super.setConfig(config);
+	override public function setData(data:Dynamic):Void {
+		super.setData(data);
 		
-		minVelocityFactor = config.minVelocityFactor;
-		maxVelocityFactor = config.maxVelocityFactor;
-		minVelocityFactorTouchVelocity = config.minVelocityFactorTouchVelocity;
-		maxVelocityFactorTouchVelocity = config.maxVelocityFactorTouchVelocity;
+		minVelocityFactor = data.minVelocityFactor;
+		maxVelocityFactor = data.maxVelocityFactor;
+		minVelocityFactorTouchVelocity = data.minVelocityFactorTouchVelocity;
+		maxVelocityFactorTouchVelocity = data.maxVelocityFactorTouchVelocity;
 		
-		constraint = config.constraint.toRectangle();
+		constraint = data.constraint.toRectangle();
 	}
 	
 	override public function clone(?c:PointActivatedCursor):MouseMove {
-		return new MouseMove(c == null ? cursor : c, getConfig());
+		return new MouseMove(c == null ? cursor : c, getData());
 	}
 }

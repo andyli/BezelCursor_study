@@ -41,14 +41,14 @@ class PointActivatedCursor extends Cursor {
 	*/
 	public var touchVelocity(default, null):Point;
 	
-	public function new(config:Dynamic):Void {
-		super(config);
+	public function new(data:Dynamic):Void {
+		super(data);
 		
-		touchPointID = config.touchPointID;
-		touchVelocity = config != null && Reflect.hasField(config, "touchVelocity") ? config.touchVelocity.toPoint() : new Point();
-		pFrameTouchPoint = config != null && Reflect.hasField(config, "pFrameTouchPoint") ? config.pFrameTouchPoint.toPoint() : null;
-		currentTouchPoint = config != null && Reflect.hasField(config, "currentTouchPoint") ? config.currentTouchPoint.toPoint() : null;
-		activatedPoint = config != null && Reflect.hasField(config, "activatedPoint") ? config.activatedPoint.toPoint() : null;
+		touchPointID = data.touchPointID;
+		touchVelocity = data != null && Reflect.hasField(data, "touchVelocity") ? data.touchVelocity.toPoint() : new Point();
+		pFrameTouchPoint = data != null && Reflect.hasField(data, "pFrameTouchPoint") ? data.pFrameTouchPoint.toPoint() : null;
+		currentTouchPoint = data != null && Reflect.hasField(data, "currentTouchPoint") ? data.currentTouchPoint.toPoint() : null;
+		activatedPoint = data != null && Reflect.hasField(data, "activatedPoint") ? data.activatedPoint.toPoint() : null;
 	}
 	
 	override public function onFrame(timeInterval:Float):Void {
@@ -98,29 +98,29 @@ class PointActivatedCursor extends Cursor {
 		touchVelocity.x = touchVelocity.y = 0;
 	}
 	
-	override public function getConfig():Dynamic {
-		var config:Dynamic = super.getConfig();
+	override public function getData():Dynamic {
+		var data:Dynamic = super.getData();
 		
-		config.touchPointID = touchPointID;
-		config.activatedPoint = activatedPoint.toObj();
-		config.pFrameTouchPoint = pFrameTouchPoint.toObj();
-		config.currentTouchPoint = currentTouchPoint.toObj();
-		config.touchVelocity = touchVelocity.toObj();
+		data.touchPointID = touchPointID;
+		data.activatedPoint = activatedPoint.toObj();
+		data.pFrameTouchPoint = pFrameTouchPoint.toObj();
+		data.currentTouchPoint = currentTouchPoint.toObj();
+		data.touchVelocity = touchVelocity.toObj();
 		
-		return config;
+		return data;
 	}
 	
-	override public function setConfig(config:Dynamic):Void {
-		super.setConfig(config);
+	override public function setData(data:Dynamic):Void {
+		super.setData(data);
 		
-		touchPointID = config.touchPointID;
-		activatedPoint = config.activatedPoint.toPoint();
-		pFrameTouchPoint = config.pFrameTouchPoint.toPoint();
-		currentTouchPoint = config.currentTouchPoint.toPoint();
-		touchVelocity = config.touchVelocity.toPoint();
+		touchPointID = data.touchPointID;
+		activatedPoint = data.activatedPoint.toPoint();
+		pFrameTouchPoint = data.pFrameTouchPoint.toPoint();
+		currentTouchPoint = data.currentTouchPoint.toPoint();
+		touchVelocity = data.touchVelocity.toPoint();
 	}
 	
 	override public function clone():PointActivatedCursor {
-		return new PointActivatedCursor(getConfig());
+		return new PointActivatedCursor(getData());
 	}
 }

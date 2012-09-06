@@ -37,6 +37,6 @@ class SimpleSnapper extends Snapper<Cursor> {
 	}
 	
 	override public function clone(?c:Cursor):SimpleSnapper {
-		return new SimpleSnapper(c == null ? cursor : c, getConfig());
+		return new SimpleSnapper(c == null ? cursor : c, getData());
 	}
 }

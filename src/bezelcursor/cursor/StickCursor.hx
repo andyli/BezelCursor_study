@@ -21,13 +21,13 @@ class StickCursor extends PointActivatedCursor {
 	public var jointActivateDistance:Float;
 	public var scaleFactor:Float;
 	
-	public function new(config:Dynamic):Void {
-		super(config);
+	public function new(data:Dynamic):Void {
+		super(data);
 		
-		joint = config != null && Reflect.hasField(config, "joint") ? config.joint.toPoint() : null;
-		jointActivateDistance = config != null && Reflect.hasField(config, "jointActivateDistance") ? config.jointActivateDistance : DeviceData.current.screenDPI * 0.2;
-		scaleFactor = config != null && Reflect.hasField(config, "scaleFactor") ? config.scaleFactor : 3;
-		behaviors = config != null && Reflect.hasField(config, "behaviors") ? Behavior.createFromConfigs(this, config.behaviors) : [new DynaScale(this), new DrawStick(this), new DrawRadius(this), new ClickWhenTouchEnd(this)];
+		joint = data != null && Reflect.hasField(data, "joint") ? data.joint.toPoint() : null;
+		jointActivateDistance = data != null && Reflect.hasField(data, "jointActivateDistance") ? data.jointActivateDistance : DeviceData.current.screenDPI * 0.2;
+		scaleFactor = data != null && Reflect.hasField(data, "scaleFactor") ? data.scaleFactor : 3;
+		behaviors = data != null && Reflect.hasField(data, "behaviors") ? Behavior.createFromDatas(this, data.behaviors) : [new DynaScale(this), new DrawStick(this), new DrawRadius(this), new ClickWhenTouchEnd(this)];
 	}
 	
 	override function start():Void {
@@ -86,25 +86,25 @@ class StickCursor extends PointActivatedCursor {
 		super.onTouchEnd(touch);
 	}
 	
-	override public function getConfig():Dynamic {
-		var config:Dynamic = super.getConfig();
+	override public function getData():Dynamic {
+		var data:Dynamic = super.getData();
 
-		config.joint = joint.toObj();
-		config.jointActivateDistance = jointActivateDistance;
-		config.scaleFactor = scaleFactor;
+		data.joint = joint.toObj();
+		data.jointActivateDistance = jointActivateDistance;
+		data.scaleFactor = scaleFactor;
 		
-		return config;
+		return data;
 	}
 	
-	override public function setConfig(config:Dynamic):Void {
-		super.setConfig(config);
+	override public function setData(data:Dynamic):Void {
+		super.setData(data);
 
-		joint = config.joint.toPoint();
-		jointActivateDistance = config.jointActivateDistance;
-		scaleFactor = config.scaleFactor;
+		joint = data.joint.toPoint();
+		jointActivateDistance = data.jointActivateDistance;
+		scaleFactor = data.scaleFactor;
 	}
 	
 	override public function clone():StickCursor {
-		return new StickCursor(getConfig());
+		return new StickCursor(getData());
 	}
 }

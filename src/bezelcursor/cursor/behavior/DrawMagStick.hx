@@ -15,15 +15,15 @@ class DrawMagStick extends Behavior<MagStickCursor> {
 	public var radiusCircleLineWidth:Float;
 	public var radiusCircleAlpha:Float;
 	
-	public function new(c:MagStickCursor, ?config:Dynamic):Void {
-		super(c, config);
+	public function new(c:MagStickCursor, ?data:Dynamic):Void {
+		super(c, data);
 		
-		lineWidthThumb = config != null && Reflect.hasField(config, "lineWidthThumb") ? config.lineWidthThumb : [3.5, 3.0, 2.2, 2.0];
-		alphaThumb = config != null && Reflect.hasField(config, "alphaThumb") ? config.alphaThumb : [1.0, 1.0, 1.0, 1.0];
-		lineWidthTarget = config != null && Reflect.hasField(config, "lineWidthTarget") ? config.lineWidthTarget : [2.0, 1.5];
-		alphaTarget = config != null && Reflect.hasField(config, "alphaTarget") ? config.alphaTarget : [1.0, 1.0];
-		radiusCircleLineWidth = config != null && Reflect.hasField(config, "radiusCircleLineWidth") ? config.radiusCircleLineWidth : 2.0;
-		radiusCircleAlpha = config != null && Reflect.hasField(config, "radiusCircleAlpha") ? config.radiusCircleAlpha : 1.0;
+		lineWidthThumb = data != null && Reflect.hasField(data, "lineWidthThumb") ? data.lineWidthThumb : [3.5, 3.0, 2.2, 2.0];
+		alphaThumb = data != null && Reflect.hasField(data, "alphaThumb") ? data.alphaThumb : [1.0, 1.0, 1.0, 1.0];
+		lineWidthTarget = data != null && Reflect.hasField(data, "lineWidthTarget") ? data.lineWidthTarget : [2.0, 1.5];
+		alphaTarget = data != null && Reflect.hasField(data, "alphaTarget") ? data.alphaTarget : [1.0, 1.0];
+		radiusCircleLineWidth = data != null && Reflect.hasField(data, "radiusCircleLineWidth") ? data.radiusCircleLineWidth : 2.0;
+		radiusCircleAlpha = data != null && Reflect.hasField(data, "radiusCircleAlpha") ? data.radiusCircleAlpha : 1.0;
 	}
 	
 	override public function onFrame(timeInterval:Float):Void {
@@ -68,31 +68,31 @@ class DrawMagStick extends Behavior<MagStickCursor> {
 		}
 	}
 	
-	override public function getConfig():Dynamic {
-		var config:Dynamic = super.getConfig();
+	override public function getData():Dynamic {
+		var data:Dynamic = super.getData();
 		
-		config.lineWidthThumb = lineWidthThumb.copy();
-		config.alphaThumb = alphaThumb.copy();
-		config.lineWidthTarget = lineWidthTarget.copy();
-		config.alphaTarget = alphaTarget.copy();
-		config.radiusCircleLineWidth = radiusCircleLineWidth;
-		config.radiusCircleAlpha = radiusCircleAlpha;
+		data.lineWidthThumb = lineWidthThumb.copy();
+		data.alphaThumb = alphaThumb.copy();
+		data.lineWidthTarget = lineWidthTarget.copy();
+		data.alphaTarget = alphaTarget.copy();
+		data.radiusCircleLineWidth = radiusCircleLineWidth;
+		data.radiusCircleAlpha = radiusCircleAlpha;
 		
-		return config;
+		return data;
 	}
 	
-	override public function setConfig(config:Dynamic):Void {
-		super.setConfig(config);
+	override public function setData(data:Dynamic):Void {
+		super.setData(data);
 
-		lineWidthThumb = config.lineWidthThumb;
-		alphaThumb = config.alphaThumb;
-		lineWidthTarget = config.lineWidthTarget;
-		alphaTarget = config.alphaTarget;
-		radiusCircleLineWidth = config.radiusCircleLineWidth;
-		radiusCircleAlpha = config.radiusCircleAlpha;
+		lineWidthThumb = data.lineWidthThumb;
+		alphaThumb = data.alphaThumb;
+		lineWidthTarget = data.lineWidthTarget;
+		alphaTarget = data.alphaTarget;
+		radiusCircleLineWidth = data.radiusCircleLineWidth;
+		radiusCircleAlpha = data.radiusCircleAlpha;
 	}
 	
 	override public function clone(?c:MagStickCursor):DrawMagStick {
-		return new DrawMagStick(c == null ? cursor : c, getConfig());
+		return new DrawMagStick(c == null ? cursor : c, getData());
 	}
 }

@@ -20,7 +20,7 @@ class Snapper<C:Cursor> {
 	*/
 	public var interestedTargets(default, null):Array<Target>;
 	
-	public function new(c:C, ?config:Dynamic):Void {
+	public function new(c:C, ?data:Dynamic):Void {
 		cursor = c;
 		target = null;
 		interestedTargets = [];
@@ -31,33 +31,33 @@ class Snapper<C:Cursor> {
 	}
 
     function hxSerialize(s:haxe.Serializer) {
-		s.serialize(getConfig());
+		s.serialize(getData());
     }
 	
     function hxUnserialize(s:haxe.Unserializer) {
-		setConfig(s.unserialize());
+		setData(s.unserialize());
     }
 	
-	public function getConfig():Dynamic {
-		var config:Dynamic = {};
+	public function getData():Dynamic {
+		var data:Dynamic = {};
 		
-		config._class = Type.getClassName(Type.getClass(this));
+		data._class = Type.getClassName(Type.getClass(this));
 				
-		return config;
+		return data;
 	}
 	
-	public function setConfig(config:Dynamic):Void {
+	public function setData(data:Dynamic):Void {
 		#if debug
-		if (config._class != Type.getClassName(Type.getClass(this)))
-			throw "Should not set " + Type.getClassName(Type.getClass(this)) + "from a config of " + config._class;
+		if (data._class != Type.getClassName(Type.getClass(this)))
+			throw "Should not set " + Type.getClassName(Type.getClass(this)) + "from a data of " + data._class;
 		#end
 	}
 	
 	public function clone(?c:C):Snapper<C> {
-		return new Snapper<C>(c == null ? cursor : c, getConfig());
+		return new Snapper<C>(c == null ? cursor : c, getData());
 	}
 	
-	static public function createFromConfig<C:Cursor, S:Snapper<Dynamic>>(c:C, config:Dynamic):S {
-		return Type.createInstance(Type.resolveClass(config._class), [c, config]);
+	static public function createFromData<C:Cursor, S:Snapper<Dynamic>>(c:C, data:Dynamic):S {
+		return Type.createInstance(Type.resolveClass(data._class), [c, data]);
 	}
 }

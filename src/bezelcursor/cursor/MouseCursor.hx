@@ -11,10 +11,10 @@ import bezelcursor.cursor.behavior.MouseMove;
 import bezelcursor.model.TouchData;
 
 class MouseCursor extends PointActivatedCursor {
-	public function new(config:Dynamic):Void {
-		super(config);
+	public function new(data:Dynamic):Void {
+		super(data);
 		
-		behaviors = config != null && Reflect.hasField(config, "behaviors") ? Behavior.createFromConfigs(this, config.behaviors) : [new DrawStick(this), new DrawRadius(this), new MouseMove(this), new DynaScale(this), new ClickWhenTouchEnd(this)];
+		behaviors = data != null && Reflect.hasField(data, "behaviors") ? Behavior.createFromDatas(this, data.behaviors) : [new DrawStick(this), new DrawRadius(this), new MouseMove(this), new DynaScale(this), new ClickWhenTouchEnd(this)];
 	}
 	
 	override function onTouchBegin(touch:TouchData):Void {
@@ -24,6 +24,6 @@ class MouseCursor extends PointActivatedCursor {
 	}
 	
 	override public function clone():MouseCursor {
-		return new MouseCursor(getConfig());
+		return new MouseCursor(getData());
 	}
 }
