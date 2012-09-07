@@ -27,7 +27,7 @@ class StickCursor extends PointActivatedCursor {
 		joint = data != null && Reflect.hasField(data, "joint") ? data.joint.toPoint() : null;
 		jointActivateDistance = data != null && Reflect.hasField(data, "jointActivateDistance") ? data.jointActivateDistance : DeviceData.current.screenDPI * 0.2;
 		scaleFactor = data != null && Reflect.hasField(data, "scaleFactor") ? data.scaleFactor : 3;
-		behaviors = data != null && Reflect.hasField(data, "behaviors") ? Behavior.createFromDatas(this, data.behaviors) : [new DynaScale(this), new DrawStick(this), new DrawRadius(this), new ClickWhenTouchEnd(this)];
+		behaviors = data != null && Reflect.hasField(data, "behaviors") ? Behavior.createFromDatas(this, data.behaviors) : [new DynaScale(this), new DrawRadius(this), new ClickWhenTouchEnd(this)];
 	}
 	
 	override function start():Void {

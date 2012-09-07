@@ -117,7 +117,6 @@ class Cursor {
 	}
 	
 	public function onTouchBegin(touch:TouchData):Void {
-		current_radius = target_radius = default_radius;
 		for (behavior in behaviors) {
 			behavior.onTouchBegin(touch);
 		}
@@ -140,6 +139,8 @@ class Cursor {
 		view.mouseEnabled = false;
 		
 		Lib.stage.addChild(view);
+
+		current_radius = target_radius = default_radius;
 		
 		for (behavior in behaviors) {
 			behavior.start();

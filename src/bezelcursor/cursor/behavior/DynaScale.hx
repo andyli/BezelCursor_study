@@ -32,9 +32,13 @@ class DynaScale extends Behavior<PointActivatedCursor> {
 	
 	override function start():Void {
 		super.start();
-		expended = false;
-		expendedTime = 0;
-		cursor.radius = 0;
+		if (expended = true) {
+			expendedTime = haxe.Timer.stamp();
+			cursor.radius = expendedSize;
+		} else {
+			expendedTime = 0;
+			cursor.radius = collapsedSize;
+		}
 	}
 	
 	override function onFrame(timeInterval:Float):Void {
