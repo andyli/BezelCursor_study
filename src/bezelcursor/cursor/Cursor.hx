@@ -64,6 +64,10 @@ class Cursor {
 	*/
 	public var view(default, null):Sprite;
 	
+	var positionXFilter:OneEuroFilter;
+	var positionYFilter:OneEuroFilter;
+	var radiusFilter:OneEuroFilter;
+	
 	public function new(?data:Dynamic):Void {
 		id = data != null && Reflect.hasField(data, "id") ? data.id : nextId++;
 		color = data != null && Reflect.hasField(data, "color") ? data.color : 0xFF0000;
@@ -81,6 +85,10 @@ class Cursor {
 		onMoveSignaler = new DirectSignaler<Point>(this);
 		onClickSignaler = new DirectSignaler<Point>(this);
 		onEndSignaler = new DirectSignaler<Void>(this);
+		
+		positionXFilter = new OneEuroFilter(Lib.stage.frameRate, 1, 0.2);
+		positionYFilter = new OneEuroFilter(Lib.stage.frameRate, 1, 0.2);
+		radiusFilter = new OneEuroFilter(Lib.stage.frameRate);
 	}
 	
 	public function dispatch(signaler:Signaler<Point>):Void {
@@ -92,7 +100,7 @@ class Cursor {
 		}
 	}
 	
-	public function onFrame(timeInterval:Float):Void {
+	public function onFrame(timestamp:Float):Void {
 		snapper.run();
 			
 		if (target_position != null) {
@@ -100,19 +108,26 @@ class Cursor {
 				current_position = target_position;
 				onActivateSignaler.dispatch(current_position);
 			} else if (!current_position.equals(target_position)) {
+				/*
 				var pt = target_position.subtract(current_position);
-				pt.normalize(pt.length * timeInterval.map(0, 1/30, 0, 0.8));
+				pt.normalize(pt.length * timestamp.map(0, 1/30, 0, 0.8).constrain(0, 1));
 				current_position = current_position.add(pt);
+				*/
+				current_position = new Point(
+					positionXFilter.filter(target_position.x, timestamp),
+					positionYFilter.filter(target_position.y, timestamp)
+				);
 			}
 			
 			dispatch(onMoveSignaler);
 		}
 		
-		current_radius += (target_radius - current_radius) * timeInterval.map(0, 1/30, 0, 0.3);
+		current_radius = radiusFilter.filter(target_radius, timestamp);
+		//current_radius += (target_radius - current_radius) * timestamp.map(0, 1/30, 0, 0.3).constrain(0, 1);
 		
 		view.graphics.clear();
 		for (behavior in behaviors) {
-			behavior.onFrame(timeInterval);
+			behavior.onFrame(timestamp);
 		}
 	}
 	

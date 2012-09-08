@@ -26,8 +26,8 @@ class DrawMagStick extends Behavior<MagStickCursor> {
 		radiusCircleAlpha = data != null && Reflect.hasField(data, "radiusCircleAlpha") ? data.radiusCircleAlpha : 1.0;
 	}
 	
-	override public function onFrame(timeInterval:Float):Void {
-		super.onFrame(timeInterval);
+	override public function onFrame(timestamp:Float):Void {
+		super.onFrame(timestamp);
 		
 		if (cursor.position != null) {
 			var colorThumb = [];

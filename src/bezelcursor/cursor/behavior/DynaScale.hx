@@ -41,16 +41,14 @@ class DynaScale extends Behavior<PointActivatedCursor> {
 		}
 	}
 	
-	override function onFrame(timeInterval:Float):Void {
-		super.onFrame(timeInterval);
+	override function onFrame(timestamp:Float):Void {
+		super.onFrame(timestamp);
 		
 		var l = cursor.touchVelocity.length;
 				
-		var curTime = haxe.Timer.stamp();
-				
 		if (l > collapseVelocity) {
-			expendedTime = curTime;
-		} else if (expended && (curTime - expendedTime > collapseLag)) {
+			expendedTime = timestamp;
+		} else if (expended && (timestamp - expendedTime > collapseLag)) {
 			cursor.radius = collapsedSize;
 			expended = false;
 		}

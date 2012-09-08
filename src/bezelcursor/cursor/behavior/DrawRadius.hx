@@ -16,8 +16,8 @@ class DrawRadius extends Behavior<Cursor> {
 		centerSpotRadius = data != null && Reflect.hasField(data, "centerSpotRadius") ? data.centerSpotRadius : 0.25;
 	}
 	
-	override public function onFrame(timeInterval:Float):Void {
-		super.onFrame(timeInterval);
+	override public function onFrame(timestamp:Float):Void {
+		super.onFrame(timestamp);
 		
 		if (cursor.position != null) {
 			cursor.view.graphics.lineStyle(lineWeight, cursor.color, alpha);

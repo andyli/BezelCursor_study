@@ -16,6 +16,8 @@ class MouseMove extends Behavior<PointActivatedCursor> {
 	
 	public var constraint:Rectangle;
 	
+	var ptimestamp:Float;
+	
 	public function new(c:PointActivatedCursor, ?data:Dynamic):Void {
 		super(c, data);
 		
@@ -27,15 +29,20 @@ class MouseMove extends Behavior<PointActivatedCursor> {
 		constraint = data != null && Reflect.hasField(data, "constraint") ? data.constraint.toRectangle() : new Rectangle(0, 0, Lib.stage.stageWidth, Lib.stage.stageHeight);
 	}
 	
-	override public function onFrame(timeInterval:Float):Void {
-		super.onFrame(timeInterval);
+	override public function start():Void {
+		super.start();
+		ptimestamp = haxe.Timer.stamp();
+	}
+	
+	override public function onFrame(timestamp:Float):Void {
+		super.onFrame(timestamp);
 		
 		var targetPos;
 		if (cursor.position != null) {
 			var v = cursor.touchVelocity.clone();
 			var l = cursor.touchVelocity.length;
 			v.normalize(
-				timeInterval * l * l.map(minVelocityFactorTouchVelocity, maxVelocityFactorTouchVelocity, minVelocityFactor, maxVelocityFactor).constrain(minVelocityFactor, maxVelocityFactor)
+				(timestamp - ptimestamp) * l * l.map(minVelocityFactorTouchVelocity, maxVelocityFactorTouchVelocity, minVelocityFactor, maxVelocityFactor).constrain(minVelocityFactor, maxVelocityFactor)
 			);
 			targetPos = cursor.position.add(v);
 		} else {
@@ -48,6 +55,8 @@ class MouseMove extends Behavior<PointActivatedCursor> {
 		}
 		
 		cursor.position = targetPos;
+		
+		ptimestamp = timestamp;
 	}
 	
 	override public function getData():Dynamic {

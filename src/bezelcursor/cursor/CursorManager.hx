@@ -39,17 +39,7 @@ enum ConfigState {
 }
 
 class CursorManager {
-	public var onActivateSignaler(default, null):Signaler<Point>;
-	public var onMoveSignaler(default, null):Signaler<Point>;
-	public var onClickSignaler(default, null):Signaler<Point>;
-	public var onEndSignaler(default, null):Signaler<Void>;
-	
-	public var tapEnabled(default, null):Bool;
-	public var bezelCursorEnabled(default, null):Bool;
-	public var screenCursorEnabled(default, null):Bool;
-	public var thumbSpaceEnabled(default, set_thumbSpaceEnabled):Bool;
-	
-	static public var defaultCreateCursor = function(touch:TouchData, _for:CreateCursorFor):Cursor {
+	static public var defaultCreateCursor(default, null) = function(touch:TouchData, _for:CreateCursorFor):Cursor {
 		switch(_for) {
 			case ForBezel: 
 				return new bezelcursor.cursor.MouseCursor({touchPointID: touch.touchPointID});
@@ -60,12 +50,10 @@ class CursorManager {
 		}
 	}
 	
-	public var createCursor:TouchData->CreateCursorFor->Cursor;
-	
-	/**
-	* Basically Lib.stage.
-	*/
-	public var stage(default, null):Stage;
+	public var tapEnabled(default, null):Bool;
+	public var bezelCursorEnabled(default, null):Bool;
+	public var screenCursorEnabled(default, null):Bool;
+	public var thumbSpaceEnabled(default, set_thumbSpaceEnabled):Bool;
 
 	/**
 	* Width in inches to be considered as bezel.
@@ -77,6 +65,18 @@ class CursorManager {
 	public var thumbSpace(default, null):Rectangle;
 	public var thumbSpaceView(default, null):Bitmap;
 	public var thumbSpaceConfigState(default, null):ConfigState;
+	
+	public var createCursor:TouchData->CreateCursorFor->Cursor;
+	
+	public var onActivateSignaler(default, null):Signaler<Point>;
+	public var onMoveSignaler(default, null):Signaler<Point>;
+	public var onClickSignaler(default, null):Signaler<Point>;
+	public var onEndSignaler(default, null):Signaler<Void>;
+	
+	/**
+	* Basically Lib.stage.
+	*/
+	public var stage(default, null):Stage;
 	
 	function set_thumbSpaceEnabled(v:Bool):Bool {
 		if (thumbSpaceEnabled == v) return v;
@@ -123,16 +123,12 @@ class CursorManager {
 	*/
 	var pointActivatedCursors:IntHash<PointActivatedCursor>;
 	
-	/**
-	* Timestamp of previous frame.
-	*/
-	var pFrameTime:Float;
-	
 	public function new():Void {
 		stage = Lib.stage;
 		thumbSpace = new Rectangle(Math.NEGATIVE_INFINITY);
 		thumbSpaceView = new Bitmap(HXP.buffer, PixelSnapping.ALWAYS, true);//new Sprite();
-		thumbSpaceView.alpha = 0.85;
+		thumbSpaceView.alpha = 0.9;
+		//thumbSpaceView.filters = [new nme.filters.DropShadowFilter(0, 0, 0, 0.8, 0.05 * DeviceData.current.screenDPI, 0.05 * DeviceData.current.screenDPI)];
 		thumbSpaceConfigState = NotConfigured;
 		tapEnabled = true;
 		bezelCursorEnabled = true;
@@ -176,8 +172,6 @@ class CursorManager {
 		
 		stage.addEventListener(Event.ENTER_FRAME, onFrame);
 		stage.addEventListener(Event.RESIZE, onResize);
-		
-		pFrameTime = haxe.Timer.stamp();
 	}
 	
 	public function end():Void {
@@ -219,12 +213,10 @@ class CursorManager {
 	}
 	
 	function onFrame(evt:Event):Void {		
-		var time = haxe.Timer.stamp();
-		var timeInterval = time - pFrameTime;
+		var timestamp = haxe.Timer.stamp();
 		for (cursor in cursors) {
-			cursor.onFrame(timeInterval);
+			cursor.onFrame(timestamp);
 		}
-		pFrameTime = time;
 	}
 	
 	function insideBezel(touch:TouchData):Bool {

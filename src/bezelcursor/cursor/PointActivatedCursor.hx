@@ -41,6 +41,8 @@ class PointActivatedCursor extends Cursor {
 	*/
 	public var touchVelocity(default, null):Point;
 	
+	var ptimestamp:Float;
+	
 	public function new(data:Dynamic):Void {
 		super(data);
 		
@@ -51,16 +53,23 @@ class PointActivatedCursor extends Cursor {
 		activatedPoint = data != null && Reflect.hasField(data, "activatedPoint") ? data.activatedPoint.toPoint() : null;
 	}
 	
-	override public function onFrame(timeInterval:Float):Void {
-		super.onFrame(timeInterval);
+	override public function start():Void {
+		super.start();
+		ptimestamp = haxe.Timer.stamp();
+	}
+	
+	override public function onFrame(timestamp:Float):Void {
+		super.onFrame(timestamp);
 		
 		if (currentTouchPoint != null) {
 			if (pFrameTouchPoint != null) {
 				touchVelocity = currentTouchPoint.subtract(pFrameTouchPoint);
-				touchVelocity.normalize(touchVelocity.length/timeInterval);
+				touchVelocity.normalize(touchVelocity.length/(timestamp - ptimestamp));
 			}
 			pFrameTouchPoint = currentTouchPoint;
 		}
+		
+		ptimestamp = timestamp;
 	}
 	
 	override public function onTouchBegin(touch:TouchData):Void {
