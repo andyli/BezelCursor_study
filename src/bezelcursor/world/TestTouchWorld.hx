@@ -86,20 +86,28 @@ class TestTouchWorld extends GameWorld {
 		replaceTargets();
 		
 		
-		var target = new Target({width: _w - margin, height: _h - margin});
+		var target = new Target({
+			x: margin, 
+			y: HXP.stage.stageHeight - _h - margin * 0.5,
+			width: _w - margin, 
+			height: _h - margin
+		});
 		target.color = 0x0000FF;
 		target.color_hover = 0x3333FF;
-		target.moveTo(margin, HXP.stage.stageHeight - _h - margin * 0.5);
 		add(target);
 		
 		target.onClickSignaler.bindVoid(function() {
 			HXP.engine.asMain().cursorManager.createCursor = CursorManager.defaultCreateCursor;
 		});
 		
-		var target = new Target({width: _w - margin, height: _h - margin});
+		var target = new Target({
+			x:_w + margin, 
+			y:HXP.stage.stageHeight - _h - margin * 0.5, 
+			width: _w - margin, 
+			height: _h - margin
+		});
 		target.color = 0x0000FF;
 		target.color_hover = 0x3333FF;
-		target.moveTo(_w + margin, HXP.stage.stageHeight - _h - margin * 0.5);
 		add(target);
 		
 		target.onClickSignaler.bindVoid(function() {
@@ -115,10 +123,14 @@ class TestTouchWorld extends GameWorld {
 			}
 		});
 		
-		var target = new Target({width: _w - margin, height: _h - margin});
+		var target = new Target({
+			x: _w * 2 + margin,
+			y: HXP.stage.stageHeight - _h - margin * 0.5,
+			width: _w - margin, 
+			height: _h - margin
+		});
 		target.color = 0x0000FF;
 		target.color_hover = 0x3333FF;
-		target.moveTo(_w * 2 + margin, HXP.stage.stageHeight - _h - margin * 0.5);
 		add(target);
 		
 		target.onClickSignaler.bindVoid(function() {
@@ -136,10 +148,14 @@ class TestTouchWorld extends GameWorld {
 			}
 		});
 		
-		var target = new Target({width: _w - margin, height: _h - margin});
+		var target = new Target({
+			x: _w * 3 + margin, 
+			y: HXP.stage.stageHeight - _h - margin * 0.5, 
+			width: _w - margin, 
+			height: _h - margin
+		});
 		target.color = 0x00FFFF;
 		target.color_hover = 0x33FFFF;
-		target.moveTo(_w * 3 + margin, HXP.stage.stageHeight - _h - margin * 0.5);
 		add(target);
 		
 		target.onClickSignaler.bindVoid(function() {

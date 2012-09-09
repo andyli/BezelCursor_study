@@ -6,6 +6,7 @@ import hsl.haxe.Signal;
 import hsl.haxe.Signaler;
 import hsl.haxe.DirectSignaler;
 import nme.geom.Point;
+import nme.geom.Vector3D;
 import com.haxepunk.HXP;
 import com.haxepunk.Entity;
 import com.haxepunk.graphics.Image;
@@ -37,6 +38,8 @@ class Target extends Entity {
 	public var image_hover:Image;
 	public var state(default, null):Int;
 	public var isHoverBy(default, null):IntHash<Cursor>;
+	public var globalPosition:Vector3D;
+	public var globalSize:Vector3D;
 	
 	public function new(?data:Dynamic):Void {
 		super();
@@ -62,6 +65,8 @@ class Target extends Entity {
 			data != null && Reflect.hasField(data, "x") ? data.x : 0,
 			data != null && Reflect.hasField(data, "y") ? data.y : 0
 		);
+		globalPosition = new Vector3D(x, y);
+		globalSize = new Vector3D(width, height);
 	}
 	
 	override public function added():Void {
