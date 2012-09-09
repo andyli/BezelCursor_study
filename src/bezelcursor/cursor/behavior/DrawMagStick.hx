@@ -1,11 +1,13 @@
 package bezelcursor.cursor.behavior;
 
 import nme.geom.Point;
+import com.haxepunk.HXP;
 
 import bezelcursor.cursor.Cursor;
 import bezelcursor.cursor.MagStickCursor;
 import bezelcursor.cursor.behavior.DrawStick;
 import bezelcursor.model.DeviceData;
+using bezelcursor.world.GameWorld;
 
 class DrawMagStick extends Behavior<MagStickCursor> {
 	public var lineWidthThumb:Array<Float>;
@@ -44,7 +46,7 @@ class DrawMagStick extends Behavior<MagStickCursor> {
 			DrawStick.drawGradientLine(g, cursor.currentTouchPoint, cursor.activatedPoint, lineWidthThumb, colorThumb, alphaThumb);
 			
 			if (cursor.snapper.target != null) {
-				var tpt = new Point(cursor.snapper.target.centerX, cursor.snapper.target.centerY);
+				var tpt = HXP.world.asGameWorld().worldToScreen(new Point(cursor.snapper.target.centerX, cursor.snapper.target.centerY));
 				var v = tpt.subtract(cursor.activatedPoint);
 				v.normalize(cursor.currentTouchPoint.subtract(cursor.activatedPoint).length);
 				var end = cursor.activatedPoint.add(v);

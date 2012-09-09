@@ -1,18 +1,14 @@
 package bezelcursor.model;
 
-class TargetData extends Struct {
-	public var _class:String;
-	public var id:Int;
-	public var x:Float;
-	public var y:Float;
-	public var width:Float;
-	public var height:Float;
-	public var color:Int;
-	public var color_hover:Int;
-	public var image:Null<String>;
-	public var image_hover:Null<String>;
-	
-	public function new():Void {
-		
-	}
+typedef TargetData = {
+	@:optional public var _class:String;
+	@:optional public var id:Int;
+	@:optional public var x:Float;
+	@:optional public var y:Float;
+	@:optional public var width:Float;
+	@:optional public var height:Float;
+	@:optional public var color:Int;
+	@:optional public var color_hover:Int;
+	@:optional public var image:Null<String>;
+	@:optional public var image_hover:Null<String>;
 }

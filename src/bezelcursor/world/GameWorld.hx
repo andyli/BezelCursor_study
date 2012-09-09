@@ -17,4 +17,16 @@ import bezelcursor.model.EventRecord;
 
 class GameWorld extends World {
 	public var eventRecords(default, null):Array<EventRecord>;
+	
+	inline static public function asGameWorld(world:World):GameWorld {
+		return untyped world;
+	}
+	
+	inline public function worldToScreen(pt:Point):Point {
+		return pt.subtract(camera);
+	}
+	
+	inline public function screenToWorld(pt:Point):Point {
+		return pt.add(camera);
+	}
 }

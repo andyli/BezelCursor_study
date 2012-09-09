@@ -9,6 +9,7 @@ import nme.geom.Point;
 import hsl.haxe.Signaler;
 import hsl.haxe.DirectSignaler;
 using org.casalib.util.NumberUtil;
+import com.haxepunk.HXP;
 
 import bezelcursor.cursor.behavior.Behavior;
 import bezelcursor.cursor.snapper.Snapper;
@@ -16,6 +17,7 @@ import bezelcursor.cursor.snapper.SimpleSnapper;
 import bezelcursor.entity.Target;
 import bezelcursor.model.TouchData;
 using bezelcursor.model.Struct;
+using bezelcursor.world.GameWorld;
 
 class Cursor {
 	static var nextId = 0;
@@ -94,7 +96,7 @@ class Cursor {
 	public function dispatch(signaler:Signaler<Point>):Void {
 		var snapTarget = snapper.target;
 		if (snapTarget != null) {
-			signaler.dispatch(new Point(snapTarget.centerX, snapTarget.centerY));
+			signaler.dispatch(HXP.world.asGameWorld().worldToScreen(new Point(snapTarget.centerX, snapTarget.centerY)));
 		} else {
 			signaler.dispatch(current_position);
 		}
@@ -105,19 +107,12 @@ class Cursor {
 			
 		if (target_position != null) {
 			if (current_position == null) {
-				current_position = target_position;
 				onActivateSignaler.dispatch(current_position);
-			} else if (!current_position.equals(target_position)) {
-				/*
-				var pt = target_position.subtract(current_position);
-				pt.normalize(pt.length * timestamp.map(0, 1/30, 0, 0.8).constrain(0, 1));
-				current_position = current_position.add(pt);
-				*/
-				current_position = new Point(
-					positionXFilter.filter(target_position.x, timestamp),
-					positionYFilter.filter(target_position.y, timestamp)
-				);
 			}
+			current_position = new Point(
+				positionXFilter.filter(target_position.x, timestamp),
+				positionYFilter.filter(target_position.y, timestamp)
+			);
 			
 			dispatch(onMoveSignaler);
 		}

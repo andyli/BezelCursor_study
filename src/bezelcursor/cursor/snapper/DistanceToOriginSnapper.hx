@@ -7,6 +7,7 @@ import org.casalib.util.GeomUtil;
 import bezelcursor.cursor.Cursor;
 import bezelcursor.entity.Target;
 import bezelcursor.model.DeviceData;
+using bezelcursor.world.GameWorld;
 
 class DistanceToOriginSnapper extends Snapper<PointActivatedCursor> {	
 	override public function run():Void {
@@ -14,13 +15,16 @@ class DistanceToOriginSnapper extends Snapper<PointActivatedCursor> {
 		HXP.world.getType(Target.TYPE, targets);
 		
 		interestedTargets = [];
-		var minDistanceToOrigin = Point.distance(cursor.activatedPoint, cursor.currentTouchPoint) + DeviceData.current.screenDPI * cursor.radius;
+		var cursorInWorld = HXP.world.asGameWorld().screenToWorld(cursor.position);
+		var activatedPointInWorld = HXP.world.asGameWorld().screenToWorld(cursor.activatedPoint);
+		var currentTouchPointInWorld = HXP.world.asGameWorld().screenToWorld(cursor.currentTouchPoint);
+		var minDistanceToOrigin = Point.distance(activatedPointInWorld, currentTouchPointInWorld) + DeviceData.current.screenDPI * cursor.radius;
 		for (target in targets) {
-			var distance = target.distanceToPoint(cursor.position.x, cursor.position.y, true);
+			var distance = target.distanceToPoint(cursorInWorld.x, cursorInWorld.y, true);
 			if (distance > DeviceData.current.screenDPI * cursor.radius)
 				continue;
 				
-			var distance = target.distanceToPoint(cursor.activatedPoint.x, cursor.activatedPoint.y, true);
+			var distance = target.distanceToPoint(activatedPointInWorld.x, activatedPointInWorld.y, true);
 			if (distance > minDistanceToOrigin)
 				continue;
 			
@@ -31,8 +35,9 @@ class DistanceToOriginSnapper extends Snapper<PointActivatedCursor> {
 	}
 	
 	function sortTargets(t0:Target, t1:Target):Int {
-		var d0 = Point.distance(cursor.position, new Point(t0.centerX, t0.centerY));
-		var d1 = Point.distance(cursor.position, new Point(t1.centerX, t1.centerY));
+		var cursorInWorld = HXP.world.asGameWorld().screenToWorld(cursor.position);
+		var d0 = Point.distance(cursorInWorld, new Point(t0.centerX, t0.centerY));
+		var d1 = Point.distance(cursorInWorld, new Point(t1.centerX, t1.centerY));
 		
 		return if (d0 < d1)
 			-1;

@@ -50,6 +50,7 @@ class TestTouchWorld extends GameWorld {
 	public function replaceTargets():Void {
 		while(targets.length > 0) remove(targets.pop());
 		
+		/*
 		var _x = 0.5 * (HXP.stage.stageWidth - Math.floor(HXP.stage.stageWidth / _w) * _w);
 		while (_x + _w < HXP.stage.stageWidth) {
 			var _y = 0.5 * (HXP.stage.stageHeight - Math.floor(HXP.stage.stageHeight / _h) * _h);
@@ -65,6 +66,14 @@ class TestTouchWorld extends GameWorld {
 				_y += _h;
 			}
 			_x += _w;
+		}
+		*/
+			
+		var bdata = bezelcursor.model.TaskBlockData.generateTaskBlocks()[0];
+		for (tdata in bdata.targets) {
+			var target = new Target(tdata);
+			targets.push(target);
+			add(target);
 		}
 		
 		currentTarget = targets.random();
@@ -101,7 +110,7 @@ class TestTouchWorld extends GameWorld {
 					case ForScreen:
 						return new bezelcursor.cursor.MagStickCursor({touchPointID: touch.touchPointID});
 					case ForThumbSpace:
-						return new bezelcursor.cursor.StickCursor({touchPointID: touch.touchPointID});
+						return new bezelcursor.cursor.MouseCursor({touchPointID: touch.touchPointID});
 				}
 			}
 		});

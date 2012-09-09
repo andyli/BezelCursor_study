@@ -1,7 +1,10 @@
 package bezelcursor.cursor.behavior;
 
+import com.haxepunk.HXP;
+
 import bezelcursor.cursor.Cursor;
 import bezelcursor.model.DeviceData;
+using bezelcursor.world.GameWorld;
 
 class DrawBubble extends Behavior<PointActivatedCursor> {
 	public var lineWeight:Float;
@@ -20,12 +23,13 @@ class DrawBubble extends Behavior<PointActivatedCursor> {
 		super.onFrame(timestamp);
 		
 		if (cursor.snapper.target != null) {
-			var dist = 	cursor.snapper.target.distanceToPoint(cursor.position.x, cursor.position.y, true)
+			var cursorInWorld = HXP.world.asGameWorld().screenToWorld(cursor.position);
+			var dist = 	cursor.snapper.target.distanceToPoint(cursorInWorld.x, cursorInWorld.y, true)
 				 		+ Math.max(cursor.snapper.target.width, cursor.snapper.target.height);
 			
 			if (cursor.snapper.interestedTargets.length > 1) {
 				dist = Math.min(
-					cursor.snapper.interestedTargets[1].distanceToPoint(cursor.position.x, cursor.position.y, true),
+					cursor.snapper.interestedTargets[1].distanceToPoint(cursorInWorld.x, cursorInWorld.y, true),
 					dist
 				);
 			}

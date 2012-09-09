@@ -51,6 +51,7 @@ class Main extends Engine {
 		trace(isFirstRun ? "isFirstRun" : "not isFirstRun");
 		trace(DeviceData.current.id);
 		trace(UserData.current.id);
+		
 		/*
 		for (f in Type.getInstanceFields(DeviceData)) {
 			trace(f + " " + Reflect.getProperty(DeviceData.current, f));

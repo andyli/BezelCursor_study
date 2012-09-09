@@ -16,6 +16,7 @@ using bezelcursor.Main;
 import bezelcursor.cursor.Cursor;
 import bezelcursor.cursor.CursorManager;
 using bezelcursor.model.Struct;
+using bezelcursor.world.GameWorld;
 
 class Target extends Entity {
 	inline static public var TYPE = "Target";
@@ -53,12 +54,14 @@ class Target extends Entity {
 		isHoverBy = data != null && Reflect.hasField(data, "isHoverBy") ? data.isHoverBy.toIntHashCursor() : new IntHash<Cursor>();
 		
 		id = data != null && Reflect.hasField(data, "id") ? data.id : nextId++;
-		x = data != null && Reflect.hasField(data, "x") ? data.x : 0;
-		y = data != null && Reflect.hasField(data, "y") ? data.y : 0;
 		width = data != null && Reflect.hasField(data, "width") ? data.width : 100;
 		height = data != null && Reflect.hasField(data, "height") ? data.height : 100;
 		color = data != null && Reflect.hasField(data, "color") ? data.color : 0xFFFFFF;
 		color_hover = data != null && Reflect.hasField(data, "color_hover") ? data.color_hover : 0xFF6666;
+		moveTo(
+			data != null && Reflect.hasField(data, "x") ? data.x : 0,
+			data != null && Reflect.hasField(data, "y") ? data.y : 0
+		);
 	}
 	
 	override public function added():Void {
@@ -111,9 +114,8 @@ class Target extends Entity {
 	}
 	
 	function onClick(signal:Signal<Point>):Void {
-		
-		var pt = signal.data;
-		
+		var pt = HXP.world.asGameWorld().screenToWorld(signal.data);
+		//trace(pt.x + " " + pt.y + " " + x + " " + y);
 		if (collidePoint(x, y, pt.x, pt.y)) {
 			//trace("clicked");
 			onClickSignaler.dispatch(pt);
@@ -128,7 +130,7 @@ class Target extends Entity {
 	
 	function onCursorMove(signal:Signal<Point>):Void {
 		var cursor:Cursor = cast signal.origin;
-		var pt = signal.data;
+		var pt = world.asGameWorld().screenToWorld(signal.data);
 		
 		if (collidePoint(x, y, pt.x, pt.y)) {
 			if (!isHoverBy.exists(cursor.id)) {

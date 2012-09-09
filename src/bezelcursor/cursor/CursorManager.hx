@@ -241,6 +241,8 @@ class CursorManager {
 		var createFor = (bezelCursorEnabled && insideBezel(touch)) ? ForBezel : (thumbSpaceEnabled && insideThumbSpace(touch)) ? ForThumbSpace : ForScreen;
 		var cursor = createCursor(touch, createFor);
 		
+		if (cursor == null) return;
+		
 		//tests:
 		//cursor = Cursor.createFromData(cursor.getData());
 		//cursor = cursor.clone();
