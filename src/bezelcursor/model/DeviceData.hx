@@ -73,7 +73,11 @@ class DeviceData extends Struct {
 			current.screenResolutionX = Capabilities.screenResolutionX;
 			current.screenResolutionY = Capabilities.screenResolutionY;
 			
+			#if !mac
 			current.screenDPI = Capabilities.screenDPI;
+			#else
+			current.screenDPI = 129;	
+			#end
 			
 			current.lastLocalSyncTime = Date.now().getTime();
 			sharedObject.data.current = current.toObj();

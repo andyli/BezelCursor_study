@@ -11,8 +11,9 @@ using bezelcursor.world.GameWorld;
 
 class DistanceToOriginSnapper extends Snapper<PointActivatedCursor> {	
 	override public function run():Void {
-		var targets:Array<Target> = [];
-		HXP.world.getType(Target.TYPE, targets);
+		//var targets:Array<Target> = [];
+		//HXP.world.getType(Target.TYPE, targets);
+		var targets = HXP.world.asGameWorld().visibleTargets;
 		
 		interestedTargets = [];
 		var cursorInWorld = HXP.world.asGameWorld().screenToWorld(cursor.position);

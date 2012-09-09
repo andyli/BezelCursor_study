@@ -6,6 +6,7 @@
 		preloader="com.haxepunk.Preloader" />
 	
 	<window width="480" height="800" resizable="false" unless="mobile" />
+	<!--<window width="720" height="1280" resizable="false" unless="mobile" />-->
 	<window fps="30" orientation="portrait" />
 
 	<source path="src" />

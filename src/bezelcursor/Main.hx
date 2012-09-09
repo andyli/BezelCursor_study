@@ -1,5 +1,6 @@
 package bezelcursor;
 
+using Lambda;
 import com.haxepunk.Engine;
 import com.haxepunk.HXP;
 import nme.display.Sprite;
@@ -8,6 +9,7 @@ import nme.ui.Keyboard;
 import nme.Lib;
 
 import bezelcursor.cursor.CursorManager;
+import bezelcursor.entity.Target;
 import bezelcursor.model.BuildData;
 import bezelcursor.model.DeviceData;
 import bezelcursor.model.Env;
@@ -38,7 +40,8 @@ class Main extends Engine {
 		cursorManager = new CursorManager();
 		cursorManager.start();
 
-		HXP.world = new TestTouchWorld();
+		var taskblocks = bezelcursor.model.TaskBlockData.generateTaskBlocks();
+		HXP.world = new TestTouchWorld(taskblocks[0]);
 	}
 	
 	function initStorage():Void {

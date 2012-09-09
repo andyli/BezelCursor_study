@@ -3,6 +3,8 @@ package bezelcursor.model;
 using Lambda;
 import nme.Lib;
 import nme.geom.Rectangle;
+import nme.geom.Matrix3D;
+using org.casalib.util.ArrayUtil;
 using org.casalib.util.GeomUtil;
 using org.casalib.util.NumberUtil;
 import com.haxepunk.HXP;
@@ -10,8 +12,10 @@ import com.haxepunk.HXP;
 import bezelcursor.cursor.Cursor;
 import bezelcursor.cursor.CursorManager;
 import bezelcursor.cursor.behavior.DrawBubble;
+import bezelcursor.entity.Target;
 import bezelcursor.model.DeviceData;
 import bezelcursor.model.TouchData;
+using bezelcursor.util.RectangleUtil;
 using bezelcursor.util.UnitUtil;
 
 typedef InputMethod = {
@@ -90,6 +94,7 @@ class TaskBlockData extends Struct {
 	public var id(default,null):String;
 	
 	public var targets:Array<TargetData>;
+	public var targetQueue:Array<{target:Int, globalTransform:Matrix3D}>;
 	
 	public function new():Void {
 		id = org.casalib.util.StringUtil.uuid();
@@ -113,7 +118,7 @@ class TaskBlockData extends Struct {
 	*  5. ThumbSpace
 	* 
 	* Target size:
-	*  1. small - 0.2 * 0.15 inches
+	*  1. small - 5mm * 3.75mm
 	*  2. 12.8mm * 9.6mm (Target size study for one-handed thumb use on small touchscreen devices)
 	*  
 	* Target separation:
@@ -129,14 +134,16 @@ class TaskBlockData extends Struct {
 	*  1. 1
 	*/
 	static public function generateTaskBlocks():Array<TaskBlockData> {
+		var taskBlockDatas = [];
+		
+		var dpi = DeviceData.current.screenDPI;
+		
 		//Division of regions
 		var width = 3;
 		var height = 4;
 		
 		var numTargetsPerRegion = 1;
-		
-		var targetWidth = DeviceData.current.screenDPI * 0.2;
-		var targetHeight = DeviceData.current.screenDPI * 0.15;
+		var targetSeperation = 5.mm2inches() * dpi;
 		
 		var regions = [];
 		for (x in 0...width) {
@@ -154,24 +161,38 @@ class TaskBlockData extends Struct {
 		
 		var stageRect = new Rectangle(0, 0, Lib.stage.stageWidth, Lib.stage.stageHeight);
 		
-		var rects:Array<Rectangle>;
-		var rect:Rectangle;
-		do {
-			rects = [];
-			for (region in regions) {
-				for (i in 0...numTargetsPerRegion) {
-					do {
-						var pt = GeomUtil.randomlyPlacePoint(region, false);
-						rect = new Rectangle(pt.x, pt.y);
-						rect.inflate(targetWidth * 0.5, targetHeight * 0.5);
-					} while (!stageRect.containsRect(rect)); //should inside the screen
-					rects.push(rect);
-				}
-			}
-		} while ( //target separation constraint should be satisfied
-			rects.exists(function(rect) return 
-				rects.exists(function(rect2)
-					return rect != rect2 && HXP.distanceRects(
+		for (targetSize in [
+			{width:5.mm2inches() * dpi, height:3.75.mm2inches() * dpi}, 
+			//{width:12.8.mm2inches() * dpi, height:9.6.mm2inches() * dpi}
+		]) {
+			taskBlockDatas.push(generateTaskBlock(
+				targetSize,
+				targetSeperation,
+				regions,
+				stageRect
+			));			
+		}
+		
+		return taskBlockDatas; 
+	}
+	
+	static function generateTaskBlock(targetSize:{width:Float, height:Float}, targetSeperation:Float, regions:Array<Rectangle>, stageRect:Rectangle):TaskBlockData {
+		var numTargets = 2000;
+		var numTargetsSqrt = Math.round(Math.sqrt(numTargets));
+		var globalWorldRect = new Rectangle(0, 0, (targetSize.width + targetSeperation * 2) * numTargetsSqrt * 1.1, (targetSize.height + targetSeperation * 2) * numTargetsSqrt * 1.1);
+			
+		var rects:Array<Rectangle> = [];
+		for (i in 0...numTargets) {
+			var rect:Rectangle;
+			do {
+				rect = GeomUtil.randomlyPlaceRectangle(globalWorldRect, new Rectangle(0, 0, targetSize.width, targetSize.height), false);
+			} while (!(
+				//inside the globalWorldRect
+				(globalWorldRect.containsRect(rect))// || {trace(179);false;})
+					&&
+				//target separation constraint
+				(!rects.exists(function(rect2)
+					return HXP.distanceRects(
 						rect.x, 
 						rect.y,
 						rect.width,
@@ -180,21 +201,72 @@ class TaskBlockData extends Struct {
 						rect2.y,
 						rect2.width,
 						rect2.height
-					) < DeviceData.current.screenDPI * (10).mm2inches()
-				)
-			)
-		);
-		
+					) < targetSeperation
+				))// || {trace(193);false;})
+			));
+			trace(i);
+			rects.push(rect);
+		}
+			
+		var iter = 0;
+		var iterMax = 500;
+			
+		var specs = new Array<{target:Int, globalTransform:Matrix3D}>();
+		var focusRects = [];
+		var tranforms = [];
+		for (region in regions) {
+			var transform:Matrix3D;
+			var focusRect:Rectangle;
+			var focusTargets:List<Rectangle>;
+			do {
+				focusRect = GeomUtil.randomlyPlaceRectangle(globalWorldRect, stageRect, false);
+				transform = new Matrix3D();
+				transform.appendTranslation(-focusRect.x, -focusRect.y, 0);
+				focusTargets = rects.filter(function(rect) return rect.intersects(focusRect));
+				if (iter++ > iterMax) {
+					return generateTaskBlock(
+						targetSize,
+						targetSeperation,
+						regions,
+						stageRect
+					);
+				}
+			} while(!(
+				//at least one target is inside the region
+				(focusTargets.exists(function(rect) return region.containsRect(rect.transform3D(transform))) || {trace(214);false;})
+					&&
+				//no target is not completely inside the screen bound
+				//(!focusTargets.exists(function(rect) return !focusRect.containsRect(rect)) || {trace(217);false;})
+				//	&&
+				//no focusRects are intersecting
+				(!focusRects.exists(function(focusRect2)
+					return focusRect.intersects(focusRect2)
+				) || {trace(222);false;})
+					&&
+				//no queued target is inside the region
+				(!specs.exists(function(spec) return region.intersects(rects[spec.target])) || {trace(225);false;})
+			));
+				
+			focusRects.push(focusRect);
+			specs.push({
+				target: rects.indexOf(focusTargets.filter(function(rect) return region.containsRect(rect.transform3D(transform))).array().random()), 
+				globalTransform: transform
+			});
+		}
+				
+		trace(iter);
+				
 		var data = new TaskBlockData();
-		data.targets = cast rects.map(function(rect) {
-			return {
-				x:rect.x,
-				y:rect.y,
-				width:rect.width,
-				height:rect.height
-			}
+		data.targets = rects.map(function(rect) {
+			return new TargetData(
+				rect.x,
+				rect.y,
+				rect.width,
+				rect.height
+			);
 		}).array();
-		
-		return [data]; 
+		data.targetQueue = specs;
+			
+		return data;
 	}
 }

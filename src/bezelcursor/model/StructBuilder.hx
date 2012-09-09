@@ -27,11 +27,12 @@ class StructBuilder {
 				!f.access.has(AStatic) && !f.meta.exists(function(m) return m.name == ":skip");
 		});
 		
+		/*
 		for (f in instanceFields) {
 			switch(f.kind) {
 				case FVar(t, e):
 					if (e == null) continue;
-					else throw f;
+					
 					fields.remove(f);
 					fields.push({
 						name: f.name,
@@ -43,7 +44,7 @@ class StructBuilder {
 					});
 				case FProp(get, set, t, e):
 					if (e == null) continue;
-					else throw f;
+					
 					fields.remove(f);
 					fields.push({
 						name: f.name,
@@ -56,7 +57,7 @@ class StructBuilder {
 				default:
 			}
 		}
-		
+		*/
 		//trace("=============" + Context.getLocalClass().toString());
 		//trace(instanceFields.map(function(p) return p.name));
 		

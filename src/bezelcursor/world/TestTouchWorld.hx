@@ -6,6 +6,7 @@ import com.haxepunk.HXP;
 import nme.display.Sprite;
 import nme.events.TouchEvent;
 import nme.geom.Point;
+import nme.geom.Matrix3D;
 using org.casalib.util.ArrayUtil;
 
 import bezelcursor.cursor.Cursor;
@@ -17,75 +18,50 @@ import bezelcursor.entity.Target;
 import bezelcursor.entity.RandomMovingTarget;
 import bezelcursor.model.DeviceData;
 import bezelcursor.model.TouchData;
+import bezelcursor.model.TaskBlockData;
 using bezelcursor.Main;
 
 class TestTouchWorld extends GameWorld {
-	public var currentTarget(default, set_currentTarget):Target;
-	function set_currentTarget(t:Target):Target {
-		if (currentTarget != null){
-			currentTarget.color = 0xFFFFFF;
-			currentTarget.color_hover = 0xFF6666;
-		}
-		currentTarget = t;
-		currentTarget.color = 0xFF0000;
-		currentTarget.color_hover = 0x66FF66;
-		return t;
-	}
-
-	var targets:Array<Target>;
-	var _w:Int;
-	var _h:Int;
-	var margin:Int;
+	public var currentTarget:Target;	
+	public var targetQueue:Array<{target:Int, globalTransform:Matrix3D}>;
+	public var targets:Array<Target>;
 	
-	override public function new():Void {
+	override public function new(taskBlockData:TaskBlockData):Void {
 		super();
 		
-		var dpi = DeviceData.current.screenDPI;
-		_w = Std.int(0.4 * dpi);
-		_h = Std.int(0.3 * dpi);
-		margin = Std.int(dpi*0.1);
-		targets = [];
-	}
-	
-	public function replaceTargets():Void {
-		while(targets.length > 0) remove(targets.pop());
+		targets = taskBlockData.targets.map(function(td) return new Target(td.toObj())).array();
+		targetQueue = taskBlockData.targetQueue;
 		
-		/*
-		var _x = 0.5 * (HXP.stage.stageWidth - Math.floor(HXP.stage.stageWidth / _w) * _w);
-		while (_x + _w < HXP.stage.stageWidth) {
-			var _y = 0.5 * (HXP.stage.stageHeight - Math.floor(HXP.stage.stageHeight / _h) * _h);
-			while (_y + _h < HXP.stage.stageHeight - 100) {
-				
-				if (Math.random() < 0.25) {
-					var target = new Target({width: _w - margin, height: _h - margin});
-					target.moveTo(_x + margin*0.5, _y + margin*0.5);
-					targets.push(target);
-					add(target);
-				}
-				
-				_y += _h;
-			}
-			_x += _w;
-		}
-		*/
-			
-		var bdata = bezelcursor.model.TaskBlockData.generateTaskBlocks()[0];
-		for (tdata in bdata.targets) {
-			var target = new Target(tdata);
-			targets.push(target);
+		for (target in targets) {
 			add(target);
 		}
 		
-		currentTarget = targets.random();
-		currentTarget.onClickSignaler.bindVoid(replaceTargets).destroyOnUse();
+		for (spec in targetQueue) {
+			var target = targets[spec.target];
+			target.color = 0xFF0000;
+			target.color_hover = 0x66FF66;
+		}
+	}
+	
+	public function next():Void {
+		var nextSpec = targetQueue.shift();
+		
+		if (nextSpec == null) { //end
+			return;
+		}
+		
+		currentTarget = targets[nextSpec.target];
+		currentTarget.onClickSignaler.bindVoid(next).destroyOnUse();
+		
+		globalTransform = nextSpec.globalTransform;
 	}
 	
 	override public function begin():Void {
 		super.begin();
 		
-		replaceTargets();
+		next();
 		
-		
+		/*
 		var target = new Target({
 			x: margin, 
 			y: HXP.stage.stageHeight - _h - margin * 0.5,
@@ -166,5 +142,7 @@ class TestTouchWorld extends GameWorld {
 				cm.thumbSpaceEnabled = true;
 			}
 		});
+		
+		*/
 	}
 }
