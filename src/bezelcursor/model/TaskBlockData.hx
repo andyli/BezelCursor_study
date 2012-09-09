@@ -98,6 +98,8 @@ class TaskBlockData extends Struct {
 	
 	public function new():Void {
 		id = org.casalib.util.StringUtil.uuid();
+		targets = [];
+		targetQueue = [];
 	}
 	
 
@@ -143,7 +145,9 @@ class TaskBlockData extends Struct {
 		var height = 4;
 		
 		var numTargetsPerRegion = 1;
-		var targetSeperation = 5.mm2inches() * dpi;
+		var targetSeperation = 2.mm2inches() * dpi;
+		
+		var stageRect = new Rectangle(0, 0, Lib.stage.stageWidth, Lib.stage.stageHeight);
 		
 		var regions = [];
 		for (x in 0...width) {
@@ -151,15 +155,13 @@ class TaskBlockData extends Struct {
 				var region = new Rectangle(
 					x.map(0, width, 0, Lib.stage.stageWidth),
 					y.map(0, height, 0, Lib.stage.stageHeight),
-					Lib.stage.stageWidth / width,
-					Lib.stage.stageHeight / height
+					stageRect.width / width,
+					stageRect.height / height
 				);
 				
 				regions.push(region);
 			}
-		}
-		
-		var stageRect = new Rectangle(0, 0, Lib.stage.stageWidth, Lib.stage.stageHeight);
+		}		
 		
 		for (targetSize in [
 			{width:5.mm2inches() * dpi, height:3.75.mm2inches() * dpi}, 
@@ -177,96 +179,63 @@ class TaskBlockData extends Struct {
 	}
 	
 	static function generateTaskBlock(targetSize:{width:Float, height:Float}, targetSeperation:Float, regions:Array<Rectangle>, stageRect:Rectangle):TaskBlockData {
-		var numTargets = 2000;
-		var numTargetsSqrt = Math.round(Math.sqrt(numTargets));
-		var globalWorldRect = new Rectangle(0, 0, (targetSize.width + targetSeperation * 2) * numTargetsSqrt * 1.1, (targetSize.height + targetSeperation * 2) * numTargetsSqrt * 1.1);
-			
-		var rects:Array<Rectangle> = [];
-		for (i in 0...numTargets) {
-			var rect:Rectangle;
-			do {
-				rect = GeomUtil.randomlyPlaceRectangle(globalWorldRect, new Rectangle(0, 0, targetSize.width, targetSize.height), false);
-			} while (!(
-				//inside the globalWorldRect
-				(globalWorldRect.containsRect(rect))// || {trace(179);false;})
-					&&
-				//target separation constraint
-				(!rects.exists(function(rect2)
-					return HXP.distanceRects(
-						rect.x, 
-						rect.y,
-						rect.width,
-						rect.height,
-						rect2.x,
-						rect2.y,
-						rect2.width,
-						rect2.height
-					) < targetSeperation
-				))// || {trace(193);false;})
-			));
-			trace(i);
-			rects.push(rect);
-		}
-			
-		var iter = 0;
-		var iterMax = 500;
-			
-		var specs = new Array<{target:Int, globalTransform:Matrix3D}>();
-		var focusRects = [];
-		var tranforms = [];
-		for (region in regions) {
-			var transform:Matrix3D;
-			var focusRect:Rectangle;
-			var focusTargets:List<Rectangle>;
-			do {
-				focusRect = GeomUtil.randomlyPlaceRectangle(globalWorldRect, stageRect, false);
-				transform = new Matrix3D();
-				transform.appendTranslation(-focusRect.x, -focusRect.y, 0);
-				focusTargets = rects.filter(function(rect) return rect.intersects(focusRect));
-				if (iter++ > iterMax) {
-					return generateTaskBlock(
-						targetSize,
-						targetSeperation,
-						regions,
-						stageRect
-					);
-				}
-			} while(!(
-				//at least one target is inside the region
-				(focusTargets.exists(function(rect) return region.containsRect(rect.transform3D(transform))) || {trace(214);false;})
-					&&
-				//no target is not completely inside the screen bound
-				//(!focusTargets.exists(function(rect) return !focusRect.containsRect(rect)) || {trace(217);false;})
-				//	&&
-				//no focusRects are intersecting
-				(!focusRects.exists(function(focusRect2)
-					return focusRect.intersects(focusRect2)
-				) || {trace(222);false;})
-					&&
-				//no queued target is inside the region
-				(!specs.exists(function(spec) return region.intersects(rects[spec.target])) || {trace(225);false;})
-			));
-				
-			focusRects.push(focusRect);
-			specs.push({
-				target: rects.indexOf(focusTargets.filter(function(rect) return region.containsRect(rect.transform3D(transform))).array().random()), 
-				globalTransform: transform
-			});
-		}
-				
-		trace(iter);
-				
 		var data = new TaskBlockData();
-		data.targets = rects.map(function(rect) {
-			return new TargetData(
-				rect.x,
-				rect.y,
-				rect.width,
-				rect.height
-			);
-		}).array();
-		data.targetQueue = specs;
+
+		var targetSizeRect = new Rectangle(0, 0, targetSize.width, targetSize.height);
+		var numTargets = Math.round(Math.max((stageRect.width / (targetSize.width + targetSeperation)) * (stageRect.height / (targetSize.height + targetSeperation)) * 0.5, regions.length));
+		
+		var regions = regions.randomize();
+		for (r in 0...regions.length) {
+			var region = regions[r];
 			
+			var transform = new Matrix3D();
+			transform.appendTranslation(r * stageRect.width, 0, 0);
+			
+			var globalTransform = transform.clone();
+			globalTransform.invert();
+			
+			var rects:Array<Rectangle> = [];
+			
+			var rect:Rectangle = GeomUtil.randomlyPlaceRectangle(region, targetSizeRect, false).transform3D(transform);
+			rects.push(rect);
+			
+			data.targetQueue.push({
+				target: data.targets.length, 
+				globalTransform: globalTransform
+			});
+				
+			for (i in 1...numTargets) {
+				do {
+					rect = GeomUtil.randomlyPlaceRectangle(stageRect, targetSizeRect, false).transform3D(transform);
+				} while (!(
+					//target separation constraint
+					rects.foreach(function(rect2)
+						return HXP.distanceRects(
+							rect.x, 
+							rect.y,
+							rect.width,
+							rect.height,
+							rect2.x,
+							rect2.y,
+							rect2.width,
+							rect2.height
+						) > targetSeperation
+					)
+				));
+				//trace(i + "/" + numTargets);
+				rects.push(rect);
+			}
+			
+			data.targets = data.targets.concat(rects.map(function(rect) {
+				return new TargetData(
+					rect.x,
+					rect.y,
+					rect.width,
+					rect.height
+				);
+			}).array());
+		}
+		
 		return data;
 	}
 }

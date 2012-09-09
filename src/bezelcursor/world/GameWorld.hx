@@ -64,7 +64,7 @@ class GameWorld extends World {
 	}
 	
 	function isTargetInBound(target:Target):Bool {
-		return HXP.bounds.containsRect(new Rectangle(target.x, target.y, target.width, target.height));
+		return HXP.bounds.intersects(new Rectangle(target.x, target.y, target.width, target.height));
 	}
 	
 	override public function begin():Void {
