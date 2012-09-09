@@ -28,7 +28,8 @@ class Main extends Engine {
 		HXP.screen.color = 0x333333;
 		HXP.screen.scale = 1;
 		
-		Lib.current.stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
+		Lib.current.stage.addEventListener(KeyboardEvent.KEY_UP, onKey);
+		Lib.current.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKey);
 		
 		#if !js
 		HXP.console.enable();
@@ -62,16 +63,19 @@ class Main extends Engine {
 		*/
 	}
 	
-	function onKeyUp(evt:KeyboardEvent):Void {
+	function onKey(evt:KeyboardEvent):Void {
 		switch(evt.keyCode) {
 			#if android
 				case Keyboard.ESCAPE:
 					Sys.exit(0);
+				case 0x01000012: //MENU
+					
 			#else
 				case Keyboard.ESCAPE:
 					HXP.console.visible = !HXP.console.visible;
 			#end
 		}
+		evt.stopImmediatePropagation();
 	}
 	
 	static public function main():Void {
