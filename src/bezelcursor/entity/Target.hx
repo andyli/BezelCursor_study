@@ -29,6 +29,7 @@ class Target extends Entity {
 	
 	var cursorManager:CursorManager;
 	var graphicList:Graphiclist;
+	var graphicList_hover:Graphiclist;
 	
 	
 	public var id(default, null):Int;
@@ -38,6 +39,7 @@ class Target extends Entity {
 	public var image_hover:Image;
 	public var state(default, null):Int;
 	public var isHoverBy(default, null):IntHash<Cursor>;
+	public var useGlobalPosition:Bool;
 	public var globalPosition:Vector3D;
 	public var globalSize:Vector3D;
 	
@@ -51,7 +53,8 @@ class Target extends Entity {
 		onCursorOutSignaler = new DirectSignaler<Point>(this);
 		
 		cursorManager = HXP.engine.asMain().cursorManager;
-		graphic = graphicList = new Graphiclist();
+		graphicList = new Graphiclist();
+		graphicList_hover = new Graphiclist();
 
 		state = data != null && Reflect.hasField(data, "state") ? data.state : 0;
 		isHoverBy = data != null && Reflect.hasField(data, "isHoverBy") ? data.isHoverBy.toIntHashCursor() : new IntHash<Cursor>();
@@ -65,6 +68,7 @@ class Target extends Entity {
 			data != null && Reflect.hasField(data, "x") ? data.x : 0,
 			data != null && Reflect.hasField(data, "y") ? data.y : 0
 		);
+		useGlobalPosition = true;
 		globalPosition = new Vector3D(x, y);
 		globalSize = new Vector3D(width, height);
 	}
@@ -87,15 +91,11 @@ class Target extends Entity {
 		super.update();
 		
 		if (state != 0 && isHoverBy.empty()) {
-			graphic = image;
+			graphic = graphicList;
 			state = 0;
-			graphicList.removeAll();
-			graphicList.add(image);
 		} else if (state == 0 && !isHoverBy.empty()) {
-			graphic = image_hover;
+			graphic = graphicList_hover;
 			state = 1;
-			graphicList.removeAll();
-			graphicList.add(image_hover);
 		}
 	}
 	
@@ -111,11 +111,17 @@ class Target extends Entity {
 		return c;
 	}
 	
-	function resize(w:Int = -1, h:Int = -1):Void {
+	public function resize(w:Int = -1, h:Int = -1):Void {
 		image = Image.createRect(width = w == -1 ? width : w, height = h == -1 ? height : h, color);
 		image_hover = Image.createRect(width = w == -1 ? width : w, height = h == -1 ? height : h, color_hover);
+		
+		graphicList.removeAll();
+		graphicList.add(image);
+		
+		graphicList_hover.removeAll();
+		graphicList_hover.add(image_hover);
+		
 		state = -1;
-		update();
 	}
 	
 	function onClick(signal:Signal<Point>):Void {

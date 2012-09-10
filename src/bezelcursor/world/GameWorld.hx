@@ -23,48 +23,28 @@ import bezelcursor.entity.Target;
 import bezelcursor.model.EventRecord;
 
 class GameWorld extends World {
-	public var onEndTransformSignaler(default, null):Signaler<Void>;
-	var isGlobalTransforming:Bool;
+	var isCameraMoving:Bool;
+	var pCameraX:Float;
+	var pCameraY:Float;
 	
 	public var eventRecords(default, null):Array<EventRecord>;
-	public var globalTransform(get_globalTransform, set_globalTransform):Matrix3D;
-	public var target_globalTransform:Matrix3D;
-	public var current_globalTransform:Matrix3D;
-	function get_globalTransform():Matrix3D {
-		return current_globalTransform;
-	}
-	function set_globalTransform(v:Matrix3D):Matrix3D {
-		return target_globalTransform = v;
-	}
 	
 	public var visibleTargets:Array<Target>;
 	public var invisibleTargets:Array<Target>;
 	
 	public function new():Void {
 		super();
-		target_globalTransform = new Matrix3D();
-		current_globalTransform = new Matrix3D();
-		isGlobalTransforming = true;
-		//target_globalTransform.appendTranslation(100, 0, 0);
+		isCameraMoving = true;
 		
 		visibleTargets = [];
 		invisibleTargets = [];
-		onEndTransformSignaler = new DirectSignaler<Void>(this);
-	}
-	
-	function transformTarget(target:Target):Void {
-		var topLeft = target.globalPosition;
-		var bottomRight = target.globalPosition.add(target.globalSize);
-		topLeft = current_globalTransform.transformVector(topLeft);
-		bottomRight = current_globalTransform.transformVector(bottomRight);
-		target.x = Math.round(topLeft.x);
-		target.y = Math.round(topLeft.y);
-		target.width = Math.round(bottomRight.x - topLeft.x);
-		target.height = Math.round(bottomRight.y - topLeft.y);
+		
+		pCameraX = camera.x;
+		pCameraY = camera.y;
 	}
 	
 	function isTargetInBound(target:Target):Bool {
-		return HXP.bounds.intersects(new Rectangle(target.x, target.y, target.width, target.height));
+		return HXP.bounds.intersects(new Rectangle(target.x - camera.x, target.y - camera.y, target.width, target.height));
 	}
 	
 	override public function begin():Void {
@@ -73,79 +53,50 @@ class GameWorld extends World {
 		var targets:Array<Target> = [];
 		getType(Target.TYPE, targets);
 		for (target in targets) {
-			transformTarget(target);
 			if (isTargetInBound(target)) {
-				//target.visible = true;
 				add(target);
 				visibleTargets.push(target);
 			} else {
-				//target.visible = false;
 				remove(target);
 				invisibleTargets.push(target);
 			}
-
-			//add(target);
+		}
+	}
+	
+	public function clipTargets():Void {
+		var pInvisibleTargets = invisibleTargets.copy();
+		var pVisibleTargets = visibleTargets.copy();
+		
+		for (target in pInvisibleTargets) {
+			if (isTargetInBound(target)) {
+				invisibleTargets.remove(target);
+				add(target);
+				visibleTargets.push(target);
+			}
+		}
+				
+		for (target in pVisibleTargets) {
+			if (!isTargetInBound(target)) {
+				visibleTargets.remove(target);
+				remove(target);
+				invisibleTargets.push(target);
+			}
 		}
 	}
 	
 	override public function update():Void {
 		super.update();
-		
-		var diff = 0.0;
-		for (i in 0...current_globalTransform.rawData.length) {
-			diff += Math.abs(current_globalTransform.rawData[i] - target_globalTransform.rawData[i]);
+		clipTargets();
+		var diff = Math.abs(camera.x - pCameraX) + Math.abs(camera.y - pCameraY);
+		if (diff > 0.01) {			
+			isCameraMoving = true;
+			clipTargets();
+		} else if (isCameraMoving){
+			isCameraMoving = false;	
+			clipTargets();
 		}
-		if (diff > 0.01) {
-			var targets:Array<Target> = [];
-			getType(Target.TYPE, targets);
-			
-			isGlobalTransforming = true;
-			current_globalTransform = Matrix3D.interpolate(current_globalTransform, target_globalTransform, 0.5);
-
-			for (target in invisibleTargets.copy()) {
-				transformTarget(target);
-				if (isTargetInBound(target)) {
-					invisibleTargets.remove(target);
-					//target.visible = true;
-					add(target);
-					visibleTargets.push(target);
-				}
-			}
-				
-			for (target in visibleTargets.copy()) {
-				transformTarget(target);
-				if (!isTargetInBound(target)) {
-					visibleTargets.remove(target);
-					//target.visible = false;
-					remove(target);
-					invisibleTargets.push(target);
-				}
-			}
-		} else {
-			if (isGlobalTransforming) {
-				isGlobalTransforming = false;	
-				for (target in invisibleTargets) {
-					transformTarget(target);
-					if (isTargetInBound(target)) {
-						invisibleTargets.remove(target);
-						//target.visible = true;
-						add(target);
-						visibleTargets.push(target);
-					}
-				}
-				
-				for (target in visibleTargets) {
-					transformTarget(target);
-					if (!isTargetInBound(target)) {
-						visibleTargets.remove(target);
-						//target.visible = false;
-						remove(target);
-						invisibleTargets.push(target);
-					}
-				}			
-				onEndTransformSignaler.dispatch();
-			}
-		}
+		pCameraX = camera.x;
+		pCameraY = camera.y;
 	}
 	
 	static public function asGameWorld(world:World):GameWorld {

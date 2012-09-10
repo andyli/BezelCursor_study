@@ -14,6 +14,8 @@ import bezelcursor.cursor.CursorManager;
 import bezelcursor.cursor.behavior.DrawBubble;
 import bezelcursor.cursor.behavior.DynaScale;
 import bezelcursor.cursor.behavior.MouseMove;
+import bezelcursor.entity.Panel;
+import bezelcursor.entity.Button;
 import bezelcursor.entity.Target;
 import bezelcursor.entity.RandomMovingTarget;
 import bezelcursor.model.DeviceData;
@@ -23,7 +25,7 @@ using bezelcursor.Main;
 
 class TestTouchWorld extends GameWorld {
 	public var currentTarget:Target;	
-	public var targetQueue:Array<{target:Int, globalTransform:Matrix3D}>;
+	public var targetQueue:Array<{target:Int, camera:Point}>;
 	public var targets:Array<Target>;
 	
 	override public function new(taskBlockData:TaskBlockData):Void {
@@ -53,11 +55,25 @@ class TestTouchWorld extends GameWorld {
 		currentTarget = targets[nextSpec.target];
 		currentTarget.onClickSignaler.bindVoid(next).destroyOnUse();
 		
-		globalTransform = nextSpec.globalTransform;
+		HXP.setCamera(nextSpec.camera.x, nextSpec.camera.y);
 	}
 	
 	override public function begin():Void {
 		super.begin();
+		
+		/*
+		var panel = new Panel();
+		panel.layer = 1;
+		add(panel);
+		
+		var btn = new Button();
+		btn.useGlobalPosition = false;
+		panel.add(btn);
+		
+		var btn = new Button();
+		btn.useGlobalPosition = false;
+		panel.add(btn);
+		*/
 		
 		next();
 		

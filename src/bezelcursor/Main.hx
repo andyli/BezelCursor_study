@@ -27,9 +27,9 @@ class Main extends Engine {
 	override public function init():Void {		
 		HXP.screen.color = 0x333333;
 		HXP.screen.scale = 1;
-		
+
+		//Lib.current.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKey);
 		Lib.current.stage.addEventListener(KeyboardEvent.KEY_UP, onKey);
-		Lib.current.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKey);
 		
 		#if !js
 		HXP.console.enable();

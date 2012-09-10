@@ -3,7 +3,7 @@ package bezelcursor.model;
 using Lambda;
 import nme.Lib;
 import nme.geom.Rectangle;
-import nme.geom.Matrix3D;
+import nme.geom.Point;
 using org.casalib.util.ArrayUtil;
 using org.casalib.util.GeomUtil;
 using org.casalib.util.NumberUtil;
@@ -94,7 +94,7 @@ class TaskBlockData extends Struct {
 	public var id(default,null):String;
 	
 	public var targets:Array<TargetData>;
-	public var targetQueue:Array<{target:Int, globalTransform:Matrix3D}>;
+	public var targetQueue:Array<{target:Int, camera:Point}>;
 	
 	public function new():Void {
 		id = org.casalib.util.StringUtil.uuid();
@@ -188,25 +188,23 @@ class TaskBlockData extends Struct {
 		for (r in 0...regions.length) {
 			var region = regions[r];
 			
-			var transform = new Matrix3D();
-			transform.appendTranslation(r * stageRect.width, 0, 0);
-			
-			var globalTransform = transform.clone();
-			globalTransform.invert();
+			var camera = new Point(r * stageRect.width, 0);
 			
 			var rects:Array<Rectangle> = [];
 			
-			var rect:Rectangle = GeomUtil.randomlyPlaceRectangle(region, targetSizeRect, false).transform3D(transform);
+			var rect:Rectangle = GeomUtil.randomlyPlaceRectangle(region, targetSizeRect, false);
+			rect.offsetPoint(camera);
 			rects.push(rect);
 			
 			data.targetQueue.push({
 				target: data.targets.length, 
-				globalTransform: globalTransform
+				camera: camera
 			});
 				
 			for (i in 1...numTargets) {
 				do {
-					rect = GeomUtil.randomlyPlaceRectangle(stageRect, targetSizeRect, false).transform3D(transform);
+					rect = GeomUtil.randomlyPlaceRectangle(stageRect, targetSizeRect, false);
+					rect.offsetPoint(camera);
 				} while (!(
 					//target separation constraint
 					rects.foreach(function(rect2)
