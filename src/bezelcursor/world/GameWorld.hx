@@ -49,6 +49,7 @@ class GameWorld extends World {
 	
 	override public function add(e:Entity):Entity {
 		if (e.is(Target)) {
+			if (e.world == this) return e;
 			var target:Target = cast e;
 			if (isTargetInBound(target)) {
 				visibleTargets.push(target);

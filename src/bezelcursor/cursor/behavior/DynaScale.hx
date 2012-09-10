@@ -20,7 +20,7 @@ class DynaScale extends Behavior<PointActivatedCursor> {
 	public function new(c:PointActivatedCursor, ?data):Void {
 		super(c, data);
 		
-		collapseVelocity = data != null && Reflect.hasField(data, "collapseVelocity") ? data.collapseVelocity : DeviceData.current.screenDPI * 0.015 * 30;
+		collapseVelocity = data != null && Reflect.hasField(data, "collapseVelocity") ? data.collapseVelocity : DeviceData.current.screenDPI * 0.005 * 30;
 		expendVelocity = data != null && Reflect.hasField(data, "expendVelocity") ? data.expendVelocity : DeviceData.current.screenDPI * 0.035 * 30;
 		collapseLag = data != null && Reflect.hasField(data, "collapseLag") ? data.collapseLag : 0.6;
 		expendedSize = data != null && Reflect.hasField(data, "expendedSize") ? data.expendedSize : 0.15;
