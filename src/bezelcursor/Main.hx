@@ -10,15 +10,20 @@ import nme.Lib;
 
 import bezelcursor.cursor.CursorManager;
 import bezelcursor.entity.Target;
+import bezelcursor.entity.PowerMenu;
 import bezelcursor.model.BuildData;
 import bezelcursor.model.DeviceData;
 import bezelcursor.model.Env;
+import bezelcursor.model.TaskBlockData;
 import bezelcursor.model.UserData;
+import bezelcursor.world.PowerMenuWorld;
 import bezelcursor.world.TestTouchWorld;
 
 class Main extends Engine {
 	public var cursorManager:CursorManager;
 	public var isFirstRun:Bool;
+	public var powerMenu:PowerMenu;
+	public var taskblocks:Array<TaskBlockData>;
 	
 	public function new():Void {
 		super(Lib.current.stage.stageWidth, Lib.current.stage.stageHeight, 30, true);
@@ -27,22 +32,27 @@ class Main extends Engine {
 	override public function init():Void {		
 		HXP.screen.color = 0x333333;
 		HXP.screen.scale = 1;
-
-		//Lib.current.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKey);
-		Lib.current.stage.addEventListener(KeyboardEvent.KEY_UP, onKey);
 		
 		#if !js
 		HXP.console.enable();
 		#end
-		//HXP.console.visible = false;
+		#if !debug
+		HXP.console.visible = false;
+		#end
 		
 		initStorage();
 
 		cursorManager = new CursorManager();
 		cursorManager.start();
+		
+		powerMenu = new PowerMenu();
 
-		var taskblocks = bezelcursor.model.TaskBlockData.generateTaskBlocks();
-		HXP.world = new TestTouchWorld(taskblocks[0]);
+		taskblocks = bezelcursor.model.TaskBlockData.generateTaskBlocks();
+		//HXP.world = new TestTouchWorld(taskblocks[0]);
+		HXP.world = new PowerMenuWorld();
+
+		//Lib.current.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKey);
+		Lib.current.stage.addEventListener(KeyboardEvent.KEY_UP, onKey);
 	}
 	
 	function initStorage():Void {
@@ -67,12 +77,18 @@ class Main extends Engine {
 		switch(evt.keyCode) {
 			#if android
 				case Keyboard.ESCAPE:
-					Sys.exit(0);
+					if (Std.is(HXP.world, PowerMenuWorld)){
+						Sys.exit(0);
+					} else {
+						HXP.world = new PowerMenuWorld();
+					}
 				case 0x01000012: //MENU
-					
+					HXP.world = new PowerMenuWorld();
 			#else
-				case Keyboard.ESCAPE:
+				case Keyboard.SPACE:
 					HXP.console.visible = !HXP.console.visible;
+				case Keyboard.ESCAPE:
+					HXP.world = new PowerMenuWorld();
 			#end
 		}
 		evt.stopImmediatePropagation();

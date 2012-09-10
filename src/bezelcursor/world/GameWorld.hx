@@ -23,7 +23,7 @@ import bezelcursor.entity.Target;
 import bezelcursor.model.EventRecord;
 
 class GameWorld extends World {
-	var isCameraMoving:Bool;
+	public var isCameraMoving(default, null):Bool;
 	var pCameraX:Float;
 	var pCameraY:Float;
 	
@@ -47,20 +47,18 @@ class GameWorld extends World {
 		return HXP.bounds.intersects(new Rectangle(target.x - camera.x, target.y - camera.y, target.width, target.height));
 	}
 	
-	override public function begin():Void {
-		super.begin();
-		
-		var targets:Array<Target> = [];
-		getType(Target.TYPE, targets);
-		for (target in targets) {
+	override public function add(e:Entity):Entity {
+		if (e.is(Target)) {
+			var target:Target = cast e;
 			if (isTargetInBound(target)) {
-				add(target);
 				visibleTargets.push(target);
+				return super.add(e);
 			} else {
-				remove(target);
 				invisibleTargets.push(target);
+				return e;
 			}
 		}
+		return super.add(e);
 	}
 	
 	public function clipTargets():Void {
@@ -70,7 +68,7 @@ class GameWorld extends World {
 		for (target in pInvisibleTargets) {
 			if (isTargetInBound(target)) {
 				invisibleTargets.remove(target);
-				add(target);
+				super.add(target);
 				visibleTargets.push(target);
 			}
 		}
@@ -86,7 +84,7 @@ class GameWorld extends World {
 	
 	override public function update():Void {
 		super.update();
-		clipTargets();
+		
 		var diff = Math.abs(camera.x - pCameraX) + Math.abs(camera.y - pCameraY);
 		if (diff > 0.01) {			
 			isCameraMoving = true;

@@ -6,7 +6,6 @@ import hsl.haxe.Signal;
 import hsl.haxe.Signaler;
 import hsl.haxe.DirectSignaler;
 import nme.geom.Point;
-import nme.geom.Vector3D;
 import com.haxepunk.HXP;
 import com.haxepunk.Entity;
 import com.haxepunk.graphics.Image;
@@ -39,9 +38,8 @@ class Target extends Entity {
 	public var image_hover:Image;
 	public var state(default, null):Int;
 	public var isHoverBy(default, null):IntHash<Cursor>;
-	public var useGlobalPosition:Bool;
-	public var globalPosition:Vector3D;
-	public var globalSize:Vector3D;
+	
+	public var isJustClicked(default, null):Bool;
 	
 	public function new(?data:Dynamic):Void {
 		super();
@@ -58,6 +56,7 @@ class Target extends Entity {
 
 		state = data != null && Reflect.hasField(data, "state") ? data.state : 0;
 		isHoverBy = data != null && Reflect.hasField(data, "isHoverBy") ? data.isHoverBy.toIntHashCursor() : new IntHash<Cursor>();
+		isJustClicked = false;
 		
 		id = data != null && Reflect.hasField(data, "id") ? data.id : nextId++;
 		width = data != null && Reflect.hasField(data, "width") ? data.width : 100;
@@ -68,9 +67,6 @@ class Target extends Entity {
 			data != null && Reflect.hasField(data, "x") ? data.x : 0,
 			data != null && Reflect.hasField(data, "y") ? data.y : 0
 		);
-		useGlobalPosition = true;
-		globalPosition = new Vector3D(x, y);
-		globalSize = new Vector3D(width, height);
 	}
 	
 	override public function added():Void {
@@ -93,9 +89,10 @@ class Target extends Entity {
 		if (state != 0 && isHoverBy.empty()) {
 			graphic = graphicList;
 			state = 0;
-		} else if (state == 0 && !isHoverBy.empty()) {
+		} else if (isJustClicked || state == 0 && !isHoverBy.empty()) {
 			graphic = graphicList_hover;
 			state = 1;
+			isJustClicked = false;
 		}
 	}
 	
@@ -129,6 +126,7 @@ class Target extends Entity {
 		//trace(pt.x + " " + pt.y + " " + x + " " + y);
 		if (collidePoint(x, y, pt.x, pt.y)) {
 			//trace("clicked");
+			isJustClicked = true;
 			onClickSignaler.dispatch(pt);
 			
 			try {

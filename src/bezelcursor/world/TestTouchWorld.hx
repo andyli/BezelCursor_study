@@ -3,6 +3,7 @@ package bezelcursor.world;
 using Lambda;
 import hsl.haxe.Signal;
 import com.haxepunk.HXP;
+using com.eclecticdesignstudio.motion.Actuate;
 import nme.display.Sprite;
 import nme.events.TouchEvent;
 import nme.geom.Point;
@@ -31,8 +32,11 @@ class TestTouchWorld extends GameWorld {
 	override public function new(taskBlockData:TaskBlockData):Void {
 		super();
 		
-		targets = taskBlockData.targets.map(function(td) return new Target(td.toObj())).array();
-		targetQueue = taskBlockData.targetQueue;
+		targets = [];
+		for (td in taskBlockData.targets) {
+			targets.push(new Target(td.toObj()));
+		}
+		targetQueue = taskBlockData.targetQueue.copy();
 		
 		for (target in targets) {
 			add(target);
@@ -49,13 +53,14 @@ class TestTouchWorld extends GameWorld {
 		var nextSpec = targetQueue.shift();
 		
 		if (nextSpec == null) { //end
+			HXP.world = new bezelcursor.world.PowerMenuWorld();
 			return;
 		}
 		
 		currentTarget = targets[nextSpec.target];
 		currentTarget.onClickSignaler.bindVoid(next).destroyOnUse();
 		
-		HXP.setCamera(nextSpec.camera.x, nextSpec.camera.y);
+		camera.tween(0.5, nextSpec.camera);
 	}
 	
 	override public function begin():Void {

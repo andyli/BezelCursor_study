@@ -7,11 +7,11 @@ import bezelcursor.model.DeviceData;
 
 class Button extends Target {
 	public var text:Text;
-	public function new(?data:Dynamic):Void {
-		text = new Text("testing", {resizable: true});
+	public function new(labelText:String):Void {
+		text = new Text(labelText, {resizable: true});
 		text.color = 0x000000;
-		text.size = Math.round(DeviceData.current.screenDPI * 0.1);
-		super(data);
+		text.size = Math.round(DeviceData.current.screenDPI * 0.08);
+		super();
 	}
 	
 	override function resize(w:Int = -1, h:Int = -1):Void {

@@ -1,6 +1,9 @@
 package bezelcursor.entity;
 
+import com.haxepunk.HXP;
 import com.haxepunk.Entity;
+
+import bezelcursor.model.DeviceData;
 
 enum PanelLayout {
 	Verticle(vAlign:VerticleAlignment);
@@ -53,9 +56,23 @@ class Panel extends Entity {
 		return layout;
 	}
 	function set_layout(v:PanelLayout):PanelLayout {
-		switch(v) {
+		layout = v;
+		resetLayout();
+		return v;
+	}
+	
+	public function new():Void {
+		paddingTop = paddingRight = paddingBottom = paddingLeft = gapWidth = DeviceData.current.screenDPI * 0.1;
+		children = [];
+		super();
+		layout = Verticle(Left);
+		resetLayout();
+	}
+	
+	public function resetLayout():Void {
+		switch(layout) {
 			case Verticle(vAlign):
-				if (children.length > 1) {
+				if (children.length > 0) {
 					var child = children[0];
 					verticleAlign(this, child, vAlign);
 					var _y = child.y = y + paddingTop;
@@ -68,7 +85,7 @@ class Panel extends Entity {
 					}
 				}
 			case Horizontal(hAlign):
-				if (children.length > 1) {
+				if (children.length > 0) {
 					var child = children[0];
 					horizontalAlign(this, child, hAlign);
 					var _x = child.x = x + paddingTop;
@@ -81,15 +98,6 @@ class Panel extends Entity {
 					}
 				}
 		}
-		
-		return layout = v;
-	}
-	
-	public function new():Void {
-		paddingTop = paddingRight = paddingBottom = paddingLeft = gapWidth = 0;
-		children = [];
-		super();
-		layout = Verticle(Left);
 	}
 	
 	override function update():Void {
@@ -129,11 +137,13 @@ class Panel extends Entity {
 	
 	override function added():Void {
 		super.added();
-		world.addList(children);
+		if (world != null) {
+			world.addList(children);
+		}
 	}
 	
 	override function removed():Void {
-		super.added();
-		world.removeList(children);
+		HXP.world.removeList(children);
+		super.removed();
 	}
 }
