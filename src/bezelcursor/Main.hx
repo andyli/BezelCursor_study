@@ -48,7 +48,6 @@ class Main extends Engine {
 		powerMenu = new PowerMenu();
 
 		taskblocks = bezelcursor.model.TaskBlockData.generateTaskBlocks();
-		//HXP.world = new TestTouchWorld(taskblocks[0]);
 		HXP.world = new PowerMenuWorld();
 
 		//Lib.current.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKey);

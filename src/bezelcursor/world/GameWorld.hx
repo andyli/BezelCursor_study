@@ -20,6 +20,7 @@ using bezelcursor.Main;
 import bezelcursor.cursor.Cursor;
 import bezelcursor.cursor.CursorManager;
 import bezelcursor.entity.Target;
+import bezelcursor.entity.StartButton;
 import bezelcursor.model.EventRecord;
 
 class GameWorld extends World {
@@ -32,6 +33,8 @@ class GameWorld extends World {
 	public var visibleTargets:Array<Target>;
 	public var invisibleTargets:Array<Target>;
 	
+	public var startBtn:StartButton;
+	
 	public function new():Void {
 		super();
 		isCameraMoving = true;
@@ -41,6 +44,9 @@ class GameWorld extends World {
 		
 		pCameraX = camera.x;
 		pCameraY = camera.y;
+		
+		startBtn = new StartButton("Start");
+		add(startBtn);
 	}
 	
 	function isTargetInBound(target:Target):Bool {
@@ -48,7 +54,7 @@ class GameWorld extends World {
 	}
 	
 	override public function add(e:Entity):Entity {
-		if (e.is(Target)) {
+		if (e.type == Target.TYPE) {
 			if (e.world == this) return e;
 			var target:Target = cast e;
 			if (isTargetInBound(target)) {

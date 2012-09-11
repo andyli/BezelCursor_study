@@ -110,7 +110,7 @@ class Panel extends Entity {
 		if (world != null) {
 			world.add(e);
 		}
-		layout = layout;
+		resetLayout();
 		return e;
 	}
 	
@@ -119,7 +119,7 @@ class Panel extends Entity {
 		if (world != null) {
 			world.remove(e);
 		}
-		layout = layout;
+		resetLayout();
 		return e;
 	}
 	

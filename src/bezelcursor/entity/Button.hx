@@ -14,7 +14,7 @@ class Button extends Target {
 		super();
 	}
 	
-	override function resize(w:Int = -1, h:Int = -1):Void {
+	override public function resize(w:Int = -1, h:Int = -1):Void {
 		image = Image.createRect(width = w == -1 ? width : w, height = h == -1 ? height : h, color);
 		image_hover = Image.createRect(width = w == -1 ? width : w, height = h == -1 ? height : h, color_hover);
 		

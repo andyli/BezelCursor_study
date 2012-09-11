@@ -50,9 +50,10 @@ class CursorManager {
 		}
 	}
 	
-	public var tapEnabled(default, null):Bool;
-	public var bezelCursorEnabled(default, null):Bool;
-	public var screenCursorEnabled(default, null):Bool;
+	public var tapEnabled:Bool;
+	public var cursorsEnabled:Bool;
+	public var bezelCursorEnabled:Bool;
+	public var screenCursorEnabled:Bool;
 	public var thumbSpaceEnabled(default, set_thumbSpaceEnabled):Bool;
 
 	/**
@@ -131,6 +132,7 @@ class CursorManager {
 		//thumbSpaceView.filters = [new nme.filters.DropShadowFilter(0, 0, 0, 0.8, 0.05 * DeviceData.current.screenDPI, 0.05 * DeviceData.current.screenDPI)];
 		thumbSpaceConfigState = NotConfigured;
 		tapEnabled = true;
+		cursorsEnabled = true;
 		bezelCursorEnabled = true;
 		screenCursorEnabled = true;
 		thumbSpaceEnabled = true;
@@ -237,6 +239,8 @@ class CursorManager {
 				return;
 			default:
 		}
+		
+		if (!cursorsEnabled) return;
 		
 		var createFor = (bezelCursorEnabled && insideBezel(touch)) ? ForBezel : (thumbSpaceEnabled && insideThumbSpace(touch)) ? ForThumbSpace : ForScreen;
 		var cursor = createCursor(touch, createFor);

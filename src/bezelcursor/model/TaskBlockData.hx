@@ -24,6 +24,7 @@ class TaskBlockData extends Struct {
 	*/
 	public var id(default,null):String;
 	
+	public var targetSize:{width:Float, height:Float};
 	public var targets:Array<TargetData>;
 	public var targetQueue:Array<{target:Int, camera:Point}>;
 	
@@ -40,6 +41,24 @@ class TaskBlockData extends Struct {
 			return sharedObject;
 		else
 			return sharedObject = nme.net.SharedObject.getLocal("TaskBlockData");
+	}
+	
+	static function genRegions(width:Int, height:Int):Array<Rectangle> {		
+		var regions = [];
+		for (x in 0...width) {
+			for (y in 0...height) {
+				var region = new Rectangle(
+					x.map(0, width, 0, stageRect.width),
+					y.map(0, height, 0, stageRect.height),
+					stageRect.width / width,
+					stageRect.height / height
+				);
+				trace(region.bottom + " " + stageRect.height);
+				regions.push(region);
+			}
+		}
+		
+		return regions;
 	}
 	
 	/**
@@ -69,51 +88,62 @@ class TaskBlockData extends Struct {
 	static public function generateTaskBlocks():Array<TaskBlockData> {
 		var taskBlockDatas = [];
 		
-		var dpi = DeviceData.current.screenDPI;
-		
-		//Division of regions
-		var width = 3;
-		var height = 4;
-		
 		var numTargetsPerRegion = 1;
-		var targetSeperation = 2.mm2inches() * dpi;
 		
-		var stageRect = new Rectangle(0, 0, Lib.stage.stageWidth, Lib.stage.stageHeight);
-		
-		var regions = [];
-		for (x in 0...width) {
-			for (y in 0...height) {
-				var region = new Rectangle(
-					x.map(0, width, 0, Lib.stage.stageWidth),
-					y.map(0, height, 0, Lib.stage.stageHeight),
-					stageRect.width / width,
-					stageRect.height / height
-				);
-				
-				regions.push(region);
-			}
-		}		
-		
-		for (targetSize in [
-			{width:5.mm2inches() * dpi, height:3.75.mm2inches() * dpi}, 
-			//{width:12.8.mm2inches() * dpi, height:9.6.mm2inches() * dpi}
-		]) {
+		for (regions in regionss)
+		for (targetSeperation in targetSeperations)
+		for (targetSize in targetSizes) 
+		{
 			taskBlockDatas.push(generateTaskBlock(
 				targetSize,
 				targetSeperation,
-				regions,
-				stageRect
+				regions
 			));			
 		}
 		
 		return taskBlockDatas; 
 	}
 	
-	static function generateTaskBlock(targetSize:{width:Float, height:Float}, targetSeperation:Float, regions:Array<Rectangle>, stageRect:Rectangle):TaskBlockData {
+	static public var targetSizes(get_targetSizes, null):Array<{width:Float, height:Float, name:String}>;
+	static function get_targetSizes(){
+		return targetSizes != null ? targetSizes : targetSizes = [
+			{
+				width:5.mm2inches() * DeviceData.current.screenDPI, 
+				height:3.75.mm2inches() * DeviceData.current.screenDPI,
+				name: "5mm * 3.75mm"
+			}, 
+			{
+				width:9.6.mm2inches() * DeviceData.current.screenDPI, 
+				height:9.6.mm2inches() * DeviceData.current.screenDPI,
+				name: "9.6mm * 9.6mm"
+			}
+		];
+	}
+	
+	static public var targetSeperations(get_targetSeperations, null):Array<Float>;
+	static function get_targetSeperations() {
+		return targetSeperations != null ? targetSeperations : targetSeperations = [
+			2.mm2inches() * DeviceData.current.screenDPI
+		];
+	}
+	
+	static public var regionss(get_regionss, null):Array<Array<Rectangle>>;
+	static function get_regionss() {
+		return regionss != null ? regionss : regionss = [
+			genRegions(3, 4)
+		];
+	}
+	
+	static public var stageRect(get_stageRect, null):Rectangle;
+	static function get_stageRect() {
+		return stageRect != null ? stageRect : stageRect = new Rectangle(0, 0, Lib.stage.stageWidth, Lib.stage.stageHeight - DeviceData.current.screenDPI * bezelcursor.entity.StartButton.HEIGHT);
+	}
+	
+	static public function generateTaskBlock(targetSize:{width:Float, height:Float}, targetSeperation:Float, regions:Array<Rectangle>):TaskBlockData {
 		var data = new TaskBlockData();
 
 		var targetSizeRect = new Rectangle(0, 0, targetSize.width, targetSize.height);
-		var numTargets = Math.round(Math.max((stageRect.width / (targetSize.width + targetSeperation)) * (stageRect.height / (targetSize.height + targetSeperation)) * 0.5, regions.length));
+		var numTargets = Math.round(Math.max((stageRect.width / (targetSize.width + targetSeperation)) * (stageRect.height / (targetSize.height + targetSeperation)) * 0.4, regions.length));
 		
 		var regions = regions.randomize();
 		for (r in 0...regions.length) {
@@ -131,11 +161,19 @@ class TaskBlockData extends Struct {
 				target: data.targets.length, 
 				camera: camera
 			});
-				
+			
+			
 			for (i in 1...numTargets) {
+		
+				var itr = 0;
+				var itrMax = 400;
 				do {
 					rect = GeomUtil.randomlyPlaceRectangle(stageRect, targetSizeRect, false);
 					rect.offsetPoint(camera);
+					
+					if (itr++ > itrMax){
+						return generateTaskBlock(targetSize, targetSeperation, regions);
+					}
 				} while (!(
 					//target separation constraint
 					rects.foreach(function(rect2)
@@ -163,6 +201,8 @@ class TaskBlockData extends Struct {
 					rect.height
 				);
 			}).array());
+			
+			data.targetSize = targetSize;
 		}
 		
 		return data;

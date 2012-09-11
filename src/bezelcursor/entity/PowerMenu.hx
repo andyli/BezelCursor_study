@@ -14,10 +14,7 @@ class PowerMenu extends Panel {
 	}
 	
 	override public function added():Void {
-		x = world.camera.x;
-		y = world.camera.y;
 		resetLayout();
-		
 		super.added();
 	}
 }

@@ -50,6 +50,9 @@ class TestTouchWorld extends GameWorld {
 	}
 	
 	public function next():Void {
+		remove(startBtn);
+		HXP.engine.asMain().cursorManager.cursorsEnabled = false;
+		
 		var nextSpec = targetQueue.shift();
 		
 		if (nextSpec == null) { //end
@@ -60,7 +63,7 @@ class TestTouchWorld extends GameWorld {
 		currentTarget = targets[nextSpec.target];
 		currentTarget.onClickSignaler.bindVoid(next).destroyOnUse();
 		
-		camera.tween(0.5, nextSpec.camera);
+		camera.tween(0.5, nextSpec.camera).onComplete(function(){ add(startBtn); });
 	}
 	
 	override public function begin():Void {

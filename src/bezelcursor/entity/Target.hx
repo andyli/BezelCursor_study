@@ -22,6 +22,7 @@ class Target extends Entity {
 	inline static public var TYPE = "Target";
 	static var nextId = 0;
 	
+	public var onAddedSignaler(default, null):Signaler<Void>;
 	public var onClickSignaler(default, null):Signaler<Point>;
 	public var onCursorInSignaler(default, null):Signaler<Point>;
 	public var onCursorOutSignaler(default, null):Signaler<Point>;
@@ -46,6 +47,7 @@ class Target extends Entity {
 		
 		type = Target.TYPE;
 		
+		onAddedSignaler = new DirectSignaler<Void>(this);
 		onClickSignaler = new DirectSignaler<Point>(this);
 		onCursorInSignaler = new DirectSignaler<Point>(this);
 		onCursorOutSignaler = new DirectSignaler<Point>(this);
@@ -74,6 +76,8 @@ class Target extends Entity {
 		
 		cursorManager.onClickSignaler.bindAdvanced(onClick);
 		cursorManager.onMoveSignaler.bindAdvanced(onCursorMove);
+		
+		onAddedSignaler.dispatch();
 	}
 	
 	override public function removed():Void {
@@ -138,6 +142,8 @@ class Target extends Entity {
 	}
 	
 	function onCursorMove(signal:Signal<Point>):Void {
+		if (world == null) return;
+		
 		var cursor:Cursor = cast signal.origin;
 		var pt = world.asGameWorld().screenToWorld(signal.data);
 		

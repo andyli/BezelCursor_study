@@ -1,47 +1,51 @@
 package bezelcursor.entity;
 
+using Std;
 import hsl.haxe.Signal;
 import nme.geom.Point;
+import nme.geom.Rectangle;
 import com.haxepunk.HXP;
 import com.haxepunk.Entity;
 import com.haxepunk.graphics.Image;
+import org.casalib.util.GeomUtil;
 using org.casalib.util.NumberUtil;
-using Std;
 
 import bezelcursor.cursor.Cursor;
 import bezelcursor.model.DeviceData;
 
 class RandomMovingTarget extends Target {
 	
-	public function new():Void {
-		super();
+	public var posRect:Rectangle;
+	
+	public function new(posRect:Rectangle, ?data:Dynamic):Void {
+		super(data);
 		
-		color = (Math.random() * 0xFFFFFF).int();
+		this.posRect = posRect;
 		rndSize();
 		rndPos();
 	}
 	
-	function rndSize():Void {
+	public function rndSize():Void {
+		return;
 		var toInch = DeviceData.current.screenDPI;
 		resize(
-			NumberUtil.randomIntegerWithinRange((0.5 * toInch).int(), (1 * toInch).int()),
-			NumberUtil.randomIntegerWithinRange((0.5 * toInch).int(), (1 * toInch).int())
+			NumberUtil.randomIntegerWithinRange((0.2 * toInch).int(), (1 * toInch).int()),
+			NumberUtil.randomIntegerWithinRange((0.2 * toInch).int(), (1 * toInch).int())
 		);
 	}
 	
-	function rndPos():Void {
-		x = NumberUtil.randomIntegerWithinRange(0, HXP.stage.stageWidth - width);
-		y = NumberUtil.randomIntegerWithinRange(0, HXP.stage.stageHeight - height);
+	public function rndPos():Void {
+		var rect = GeomUtil.randomlyPlaceRectangle(posRect, new Rectangle(0, 0, width, height), false);
+		x = rect.x;
+		y = rect.y;
 	}
 	
 	override function onClick(signal:Signal<Point>):Void {
 		super.onClick(signal);
 		
-		var cursor:Cursor = cast signal.origin;
-		var pt = cursor.position;
+		var pt = signal.data;
 		
 		if (collidePoint(x, y, pt.x, pt.y)) {
-			color = (Math.random() * 0xFFFFFF).int();
 			rndSize();
 			rndPos();
 		}
