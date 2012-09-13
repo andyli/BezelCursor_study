@@ -7,7 +7,7 @@ import bezelcursor.model.TouchData;
 
 class ClickWhenTouchEnd extends Behavior<PointActivatedCursor> {	
 	override public function onTouchEnd(touch:TouchData):Void {
-		cursor.dispatch(cursor.onClickSignaler);
+		cursor.click();
 		
 		super.onTouchEnd(touch);
 		

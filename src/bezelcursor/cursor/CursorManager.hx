@@ -69,7 +69,7 @@ class CursorManager {
 	
 	public var createCursor:TouchData->CreateCursorFor->Cursor;
 	
-	public var onActivateSignaler(default, null):Signaler<Point>;
+	public var onStartSignaler(default, null):Signaler<Point>;
 	public var onMoveSignaler(default, null):Signaler<Point>;
 	public var onClickSignaler(default, null):Signaler<Point>;
 	public var onEndSignaler(default, null):Signaler<Void>;
@@ -138,7 +138,7 @@ class CursorManager {
 		thumbSpaceEnabled = true;
 		createCursor = defaultCreateCursor;
 		
-		onActivateSignaler = new DirectSignaler<Point>(this);
+		onStartSignaler = new DirectSignaler<Point>(this);
 		onMoveSignaler = new DirectSignaler<Point>(this);
 		onClickSignaler = new DirectSignaler<Point>(this);
 		onEndSignaler = new DirectSignaler<Void>(this);
@@ -274,7 +274,7 @@ class CursorManager {
 				thumbSpaceEnabled = false;
 		}
 		
-		cursor.onActivateSignaler.addBubblingTarget(onActivateSignaler);
+		cursor.onStartSignaler.addBubblingTarget(onStartSignaler);
 		cursor.onMoveSignaler.addBubblingTarget(onMoveSignaler);
 		cursor.onClickSignaler.addBubblingTarget(onClickSignaler);
 		cursor.onEndSignaler.addBubblingTarget(onEndSignaler);
@@ -282,7 +282,7 @@ class CursorManager {
 		cursor.onEndSignaler.bindAdvanced(function(signal:Signal<Void>):Void {
 			var cursor:Cursor = cast signal.origin;
 				
-			cursor.onActivateSignaler.removeBubblingTarget(onActivateSignaler);
+			cursor.onStartSignaler.removeBubblingTarget(onStartSignaler);
 			cursor.onMoveSignaler.removeBubblingTarget(onMoveSignaler);
 			cursor.onClickSignaler.removeBubblingTarget(onClickSignaler);
 			cursor.onEndSignaler.removeBubblingTarget(onEndSignaler);

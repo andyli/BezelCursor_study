@@ -40,14 +40,9 @@ class RandomMovingTarget extends Target {
 		y = rect.y;
 	}
 	
-	override function onClick(signal:Signal<Point>):Void {
-		super.onClick(signal);
-		
-		var pt = signal.data;
-		
-		if (collidePoint(x, y, pt.x, pt.y)) {
-			rndSize();
-			rndPos();
-		}
+	override function click(?cursor:Cursor):Void {
+		super.click(cursor);
+		rndSize();
+		rndPos();
 	}
 }

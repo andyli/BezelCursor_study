@@ -53,7 +53,6 @@ class TaskBlockData extends Struct {
 					stageRect.width / width,
 					stageRect.height / height
 				);
-				trace(region.bottom + " " + stageRect.height);
 				regions.push(region);
 			}
 		}

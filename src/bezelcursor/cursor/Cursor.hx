@@ -22,7 +22,7 @@ using bezelcursor.world.GameWorld;
 class Cursor {
 	static var nextId = 0;
 	
-	public var onActivateSignaler(default, null):Signaler<Point>;
+	public var onStartSignaler(default, null):Signaler<Point>;
 	public var onMoveSignaler(default, null):Signaler<Point>;
 	public var onClickSignaler(default, null):Signaler<Point>;
 	public var onEndSignaler(default, null):Signaler<Void>;
@@ -83,7 +83,7 @@ class Cursor {
 		snapper = data != null && Reflect.hasField(data, "snapper") ? Snapper.createFromData(this, data.snapper) : new SimpleSnapper(this);
 		behaviors = data != null && Reflect.hasField(data, "behaviors") ? Behavior.createFromDatas(this, data.behaviors) : [];
 		
-		onActivateSignaler = new DirectSignaler<Point>(this);
+		onStartSignaler = new DirectSignaler<Point>(this);
 		onMoveSignaler = new DirectSignaler<Point>(this);
 		onClickSignaler = new DirectSignaler<Point>(this);
 		onEndSignaler = new DirectSignaler<Void>(this);
@@ -93,7 +93,14 @@ class Cursor {
 		radiusFilter = new OneEuroFilter(Lib.stage.frameRate);
 	}
 	
-	public function dispatch(signaler:Signaler<Point>):Void {
+	public function click():Void {
+		dispatch(onClickSignaler);
+		if (snapper.target != null) {
+			snapper.target.click(this);
+		}
+	}
+	
+	function dispatch(signaler:Signaler<Point>):Void {
 		var snapTarget = snapper.target;
 		if (snapTarget != null) {
 			signaler.dispatch(HXP.world.asGameWorld().worldToScreen(new Point(snapTarget.centerX, snapTarget.centerY)));
@@ -103,11 +110,20 @@ class Cursor {
 	}
 	
 	public function onFrame(timestamp:Float):Void {
+		var lastTarget = snapper.target;
 		snapper.run();
+		if (snapper.target != lastTarget) {
+			if (lastTarget != null) {
+				lastTarget.rollOut(this);
+			}
+			if (snapper.target != null) {
+				snapper.target.rollOver(this);
+			}
+		}
 			
 		if (target_position != null) {
 			if (current_position == null) {
-				onActivateSignaler.dispatch(current_position);
+				onStartSignaler.dispatch(current_position);
 			}
 			current_position = new Point(
 				positionXFilter.filter(target_position.x, timestamp),
@@ -118,7 +134,6 @@ class Cursor {
 		}
 		
 		current_radius = radiusFilter.filter(target_radius, timestamp);
-		//current_radius += (target_radius - current_radius) * timestamp.map(0, 1/30, 0, 0.3).constrain(0, 1);
 		
 		view.graphics.clear();
 		for (behavior in behaviors) {
@@ -160,6 +175,9 @@ class Cursor {
 	public function end():Void {
 		for (behavior in behaviors) {
 			behavior.end();
+		}
+		if (snapper.target != null) {
+			snapper.target.rollOut(this);
 		}
 		Lib.stage.removeChild(view);
 		current_position = target_position = null;

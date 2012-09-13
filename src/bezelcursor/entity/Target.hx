@@ -11,6 +11,7 @@ import com.haxepunk.Entity;
 import com.haxepunk.graphics.Image;
 import com.haxepunk.graphics.Text;
 import com.haxepunk.graphics.Graphiclist;
+using com.eclecticdesignstudio.motion.Actuate;
 
 using bezelcursor.Main;
 import bezelcursor.cursor.Cursor;
@@ -23,9 +24,10 @@ class Target extends Entity {
 	static var nextId = 0;
 	
 	public var onAddedSignaler(default, null):Signaler<Void>;
-	public var onClickSignaler(default, null):Signaler<Point>;
-	public var onCursorInSignaler(default, null):Signaler<Point>;
-	public var onCursorOutSignaler(default, null):Signaler<Point>;
+	public var onRemovedSignaler(default, null):Signaler<Void>;
+	public var onClickSignaler(default, null):Signaler<Void>;
+	public var onRollOverSignaler(default, null):Signaler<Void>;
+	public var onRollOutSignaler(default, null):Signaler<Void>;
 	
 	var cursorManager:CursorManager;
 	var graphicList:Graphiclist;
@@ -37,10 +39,7 @@ class Target extends Entity {
 	public var color_hover(default, set_color_hover):Int;
 	public var image:Image;
 	public var image_hover:Image;
-	public var state(default, null):Int;
 	public var isHoverBy(default, null):IntHash<Cursor>;
-	
-	public var isJustClicked(default, null):Bool;
 	
 	public function new(?data:Dynamic):Void {
 		super();
@@ -48,17 +47,16 @@ class Target extends Entity {
 		type = Target.TYPE;
 		
 		onAddedSignaler = new DirectSignaler<Void>(this);
-		onClickSignaler = new DirectSignaler<Point>(this);
-		onCursorInSignaler = new DirectSignaler<Point>(this);
-		onCursorOutSignaler = new DirectSignaler<Point>(this);
+		onRemovedSignaler = new DirectSignaler<Void>(this);
+		onClickSignaler = new DirectSignaler<Void>(this);
+		onRollOverSignaler = new DirectSignaler<Void>(this);
+		onRollOutSignaler = new DirectSignaler<Void>(this);
 		
 		cursorManager = HXP.engine.asMain().cursorManager;
-		graphicList = new Graphiclist();
+		graphic = graphicList = new Graphiclist();
 		graphicList_hover = new Graphiclist();
-
-		state = data != null && Reflect.hasField(data, "state") ? data.state : 0;
+		
 		isHoverBy = data != null && Reflect.hasField(data, "isHoverBy") ? data.isHoverBy.toIntHashCursor() : new IntHash<Cursor>();
-		isJustClicked = false;
 		
 		id = data != null && Reflect.hasField(data, "id") ? data.id : nextId++;
 		width = data != null && Reflect.hasField(data, "width") ? data.width : 100;
@@ -74,30 +72,13 @@ class Target extends Entity {
 	override public function added():Void {
 		super.added();
 		
-		cursorManager.onClickSignaler.bindAdvanced(onClick);
-		cursorManager.onMoveSignaler.bindAdvanced(onCursorMove);
-		
 		onAddedSignaler.dispatch();
 	}
 	
 	override public function removed():Void {
-		cursorManager.onClickSignaler.unbindAdvanced(onClick);
-		cursorManager.onMoveSignaler.unbindAdvanced(onCursorMove);
-		
 		super.removed();
-	}
-	
-	override public function update():Void {
-		super.update();
 		
-		if (state != 0 && isHoverBy.empty()) {
-			graphic = graphicList;
-			state = 0;
-		} else if (isJustClicked || state == 0 && !isHoverBy.empty()) {
-			graphic = graphicList_hover;
-			state = 1;
-			isJustClicked = false;
-		}
+		onRemovedSignaler.dispatch();
 	}
 	
 	function set_color(c:Int):Int {
@@ -121,43 +102,26 @@ class Target extends Entity {
 		
 		graphicList_hover.removeAll();
 		graphicList_hover.add(image_hover);
-		
-		state = -1;
 	}
 	
-	function onClick(signal:Signal<Point>):Void {
-		var pt = HXP.world.asGameWorld().screenToWorld(signal.data);
-		//trace(pt.x + " " + pt.y + " " + x + " " + y);
-		if (collidePoint(x, y, pt.x, pt.y)) {
-			//trace("clicked");
-			isJustClicked = true;
-			onClickSignaler.dispatch(pt);
-			
-			try {
-				var cursor:Cursor = cast signal.origin;
-				if (cursor != null)
-					isHoverBy.remove(cursor.id);
-			} catch(e:Dynamic){}
-		}
+	public function click(?cursor:Cursor):Void {
+		onClickSignaler.dispatch();
+		
+		image.alpha = 0.5;
+		image.tween(0.1, {alpha: 1.0});
+		
+		image_hover.alpha = 0.5;
+		image_hover.tween(0.1, {alpha: 1.0});
 	}
 	
-	function onCursorMove(signal:Signal<Point>):Void {
-		if (world == null) return;
-		
-		var cursor:Cursor = cast signal.origin;
-		var pt = world.asGameWorld().screenToWorld(signal.data);
-		
-		if (collidePoint(x, y, pt.x, pt.y)) {
-			if (!isHoverBy.exists(cursor.id)) {
-				isHoverBy.set(cursor.id, cursor);
-				onCursorInSignaler.dispatch(pt);
-			}
-		} else {
-			if (isHoverBy.exists(cursor.id)) {
-				isHoverBy.remove(cursor.id);
-				onCursorOutSignaler.dispatch(pt);
-			}
-		}
+	public function rollOver(?cursor:Cursor):Void {
+		isHoverBy.set(cursor == null ? -1 : cursor.id, cursor);
+		graphic = graphicList_hover;
+	}
+	
+	public function rollOut(?cursor:Cursor):Void {
+		isHoverBy.remove(cursor == null ? -1 : cursor.id);
+		graphic = graphicList;
 	}
 
     function hxSerialize(s:haxe.Serializer) {
@@ -180,7 +144,6 @@ class Target extends Entity {
 		data.height = height;
 		data.color = color;
 		data.color_hover = color_hover;
-		data.state = state;
 		data.isHoverBy = isHoverBy.toObj();
 		
 		return data;
@@ -199,7 +162,6 @@ class Target extends Entity {
 		height = data.height;
 		color = data.color;
 		color_hover = data.color_hover;
-		state = data.state;
 		isHoverBy = data.isHoverBy.toIntHashCursor();
 	}
 	

@@ -53,7 +53,7 @@ class GameWorld extends World {
 		return HXP.bounds.intersects(new Rectangle(target.x - camera.x, target.y - camera.y, target.width, target.height));
 	}
 	
-	override public function add(e:Entity):Entity {
+	override public function add<E:Entity>(e:E):E {
 		if (e.type == Target.TYPE) {
 			if (e.world == this) return e;
 			var target:Target = cast e;

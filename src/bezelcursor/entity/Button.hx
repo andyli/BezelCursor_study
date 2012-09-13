@@ -28,7 +28,5 @@ class Button extends Target {
 		graphicList_hover.removeAll();
 		graphicList_hover.add(image_hover);
 		graphicList_hover.add(text);
-		
-		state = -1;
 	}
 }
