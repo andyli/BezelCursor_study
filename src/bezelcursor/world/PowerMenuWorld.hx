@@ -10,7 +10,7 @@ using bezelcursor.Main;
 import bezelcursor.entity.Button;
 import bezelcursor.entity.PowerMenu;
 import bezelcursor.entity.RandomMovingTarget;
-import bezelcursor.model.InputMethods;
+import bezelcursor.model.InputMethod;
 import bezelcursor.model.TaskBlockData;
 import bezelcursor.model.DeviceData;
 using bezelcursor.world.GameWorld;
@@ -70,18 +70,17 @@ class PowerMenuWorld extends GameWorld {
 			var btn = new Button(method.name);
 			btn.resize(btn.text.width + 20, btn.text.height + 20);
 			btn.onClickSignaler.bindVoid(function() {
-				selectedMethod = method;
-				HXP.engine.asMain().cursorManager.createCursor = selectedMethod.createCursor;
+				HXP.engine.asMain().cursorManager.inputMethod = selectedMethod = method;
 				camera.tween(0.5, { x: powerMenu.x + powerMenu.width });
 			});
 			return btn;
 		}
 
-		powerMenu.add(createBtnForMethod(InputMethods.BezelCursor_acceleratedBubbleCursor));
-		powerMenu.add(createBtnForMethod(InputMethods.BezelCursor_acceleratedDynaSpot));
-		powerMenu.add(createBtnForMethod(InputMethods.BezelCursor_directMappingDynaSpot));
-		powerMenu.add(createBtnForMethod(InputMethods.MagStick));
-		powerMenu.add(createBtnForMethod(InputMethods.ThumbSpace));
+		powerMenu.add(createBtnForMethod(InputMethod.BezelCursor_acceleratedBubbleCursor));
+		powerMenu.add(createBtnForMethod(InputMethod.BezelCursor_acceleratedDynaSpot));
+		powerMenu.add(createBtnForMethod(InputMethod.BezelCursor_directMappingDynaSpot));
+		powerMenu.add(createBtnForMethod(InputMethod.MagStick));
+		powerMenu.add(createBtnForMethod(InputMethod.ThumbSpace));
 		
 		_x += HXP.stage.stageWidth;
 		

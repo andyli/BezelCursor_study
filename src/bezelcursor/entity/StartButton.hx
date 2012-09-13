@@ -35,6 +35,7 @@ class StartButton extends Button {
 		
 		var cm = HXP.engine.asMain().cursorManager;
 		cm.cursorsEnabled = false;
+		cm.thumbSpaceEnabled = false;
 		
 		HXP.stage.addEventListener(MouseEvent.MOUSE_DOWN, onPressed);
 	}
@@ -43,7 +44,12 @@ class StartButton extends Button {
 		super.removed();
 		
 		var cm = HXP.engine.asMain().cursorManager;
-		cm.cursorsEnabled = true;
+		if (cm.inputMethod.forBezel != null || cm.inputMethod.forScreen != null || cm.inputMethod.forThumbSpace != null) {
+			cm.cursorsEnabled = true;
+		}
+		if (cm.inputMethod.forThumbSpace != null) {
+			cm.thumbSpaceEnabled = true;
+		}
 		
 		HXP.stage.removeEventListener(MouseEvent.MOUSE_DOWN, onPressed);
 	}

@@ -94,11 +94,17 @@ class Target extends Entity, implements IStruct {
 		
 		resize();
 		
+		image.alpha = 0.0;
+		image_hover.alpha = 0.0;
+		
 		return this;
 	}
 	
 	override public function added():Void {
 		super.added();
+		
+		image.tween(0.5, {alpha: 1.0});
+		image_hover.tween(0.5, {alpha: 1.0});
 		
 		onAddedSignaler.dispatch();
 	}

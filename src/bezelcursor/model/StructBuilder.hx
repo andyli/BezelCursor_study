@@ -200,6 +200,8 @@ class StructBuilder {
 					}],
 					ret: clsComplex,
 					expr: isDirectImpl ? macro {
+						if (obj == null) return this;
+						
 						for (f in Reflect.fields(obj)) {
 							Reflect.setProperty(this, f, Reflect.field(obj, f));
 						}

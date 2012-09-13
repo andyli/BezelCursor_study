@@ -22,11 +22,13 @@ import hsl.haxe.DirectSignaler;
 using org.casalib.util.NumberUtil;
 using org.casalib.util.RatioUtil;
 import com.haxepunk.HXP;
+using com.eclecticdesignstudio.motion.Actuate;
 
 import bezelcursor.cursor.behavior.DrawStick;
 import bezelcursor.model.DeviceData;
 import bezelcursor.model.TouchData;
 import bezelcursor.model.IStruct;
+import bezelcursor.model.InputMethod;
 import bezelcursor.entity.Target;
 using bezelcursor.world.GameWorld;
 
@@ -43,7 +45,7 @@ enum ConfigState {
 }
 
 class CursorManager implements IStruct {
-	@:skip static public var defaultCreateCursor(default, null) = function(touch:TouchData, _for:CreateCursorFor):Cursor {
+	static public var defaultCreateCursor(default, null) = function(touch:TouchData, _for:CreateCursorFor):Cursor {
 		switch(_for) {
 			case ForBezel: 
 				return new bezelcursor.cursor.MouseCursor().fromObj({touchPointID: touch.touchPointID});
@@ -54,16 +56,16 @@ class CursorManager implements IStruct {
 		}
 	}
 	
+	public var inputMethod:InputMethod;
+	
 	public var tapEnabled:Bool;
 	public var cursorsEnabled(default, set_cursorsEnabled):Bool;
-	public var bezelCursorEnabled:Bool;
-	public var screenCursorEnabled:Bool;
 	public var thumbSpaceEnabled(default, set_thumbSpaceEnabled):Bool;
 
 	/**
 	* Width in inches to be considered as bezel.
 	*/
-	public var bezelWidth(default, null):Float = 0.15;
+	public var bezelWidth(default, null):Float;
 	var bezelOut:Rectangle;
 	var bezelIn:Rectangle;
 	
@@ -97,9 +99,12 @@ class CursorManager implements IStruct {
 		
 		if (v) {
 			thumbSpaceViewDraw();
+			thumbSpaceView.tween(0.5, { alpha: 1.0 }).autoVisible(true);
+		} else {
+			thumbSpaceView.tween(0.5, { alpha: 0.0 }).autoVisible(true);
 		}
 		
-		return thumbSpaceView.visible = thumbSpaceEnabled = v;
+		return thumbSpaceEnabled = v;
 	}
 	
 	function thumbSpaceViewDraw():Void {
@@ -139,29 +144,34 @@ class CursorManager implements IStruct {
 	var pointActivatedCursors:IntHash<PointActivatedCursor>;
 	
 	public function new():Void {
-		stage = Lib.stage;
 		thumbSpace = new Rectangle(Math.NEGATIVE_INFINITY);
-		thumbSpaceViewBitmap = new Bitmap(HXP.buffer, PixelSnapping.ALWAYS, true);//new Sprite();
-		thumbSpaceViewBitmap.alpha = 0.9;
-		//thumbSpaceViewBitmap.filters = [new nme.filters.DropShadowFilter(0, 0, 0, 0.8, 0.05 * DeviceData.current.screenDPI, 0.05 * DeviceData.current.screenDPI)];
-		thumbSpaceView = new Sprite();
-		thumbSpaceView.addChild(thumbSpaceViewBitmap);
 		thumbSpaceConfigState = NotConfigured;
-		tapEnabled = true;
-		cursorsEnabled = true;
-		bezelCursorEnabled = true;
-		screenCursorEnabled = true;
-		thumbSpaceEnabled = false;
-		createCursor = defaultCreateCursor;
+		
+		bezelWidth = 0.15;
+		
+		inputMethod = InputMethod.None;
+		
+		cursors = new IntHash<Cursor>();
+		pointActivatedCursors = new IntHash<PointActivatedCursor>();
+		
+		init();
+	}
+	
+	public function init():CursorManager {
+		stage = Lib.stage;
 		
 		onStartSignaler = new DirectSignaler<Point>(this);
 		onMoveSignaler = new DirectSignaler<Point>(this);
 		onClickSignaler = new DirectSignaler<Point>(this);
 		onEndSignaler = new DirectSignaler<Point>(this);
 		
-		cursors = new IntHash<Cursor>();
-		pointActivatedCursors = new IntHash<PointActivatedCursor>();
+		thumbSpaceViewBitmap = new Bitmap(HXP.buffer, PixelSnapping.ALWAYS, true);//new Sprite();
+		thumbSpaceViewBitmap.alpha = 0.9;
+		//thumbSpaceViewBitmap.filters = [new nme.filters.DropShadowFilter(0, 0, 0, 0.8, 0.05 * DeviceData.current.screenDPI, 0.05 * DeviceData.current.screenDPI)];
+		thumbSpaceView = new Sprite();
+		thumbSpaceView.addChild(thumbSpaceViewBitmap);
 		
+		return this;
 	}
 	
 	public function onResize(evt:Event = null):Void {
@@ -256,10 +266,26 @@ class CursorManager implements IStruct {
 		
 		if (!cursorsEnabled) return;
 		
-		var createFor = (bezelCursorEnabled && insideBezel(touch)) ? ForBezel : (thumbSpaceEnabled && insideThumbSpace(touch)) ? ForThumbSpace : ForScreen;
-		var cursor = createCursor(touch, createFor);
+		var createFor = if (inputMethod.forBezel != null && insideBezel(touch)) {
+			ForBezel;
+		} else if (thumbSpaceEnabled && inputMethod.forThumbSpace != null && insideThumbSpace(touch)) {
+			ForThumbSpace;
+		} else if (inputMethod.forScreen != null) {
+			ForScreen;
+		} else {
+			null;
+		}
 		
-		if (cursor == null) return;
+		if (createFor == null) return;
+		
+		var cursor = (switch (createFor) {
+			case ForBezel:
+				Type.createInstance(inputMethod.forBezel._class, []).fromObj(inputMethod.forBezel.data);
+			case ForThumbSpace:
+				Type.createInstance(inputMethod.forThumbSpace._class, []).fromObj(inputMethod.forThumbSpace.data);
+			case ForScreen:
+				Type.createInstance(inputMethod.forScreen._class, []).fromObj(inputMethod.forScreen.data);
+		}).fromObj({touchPointID: touch.touchPointID});
 		
 		//tests:
 		//cursor = Cursor.createFromData(cursor.getData());

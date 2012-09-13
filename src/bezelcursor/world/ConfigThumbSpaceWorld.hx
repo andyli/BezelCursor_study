@@ -24,6 +24,7 @@ class ConfigThumbSpaceWorld extends GameWorld {
 		var cm = HXP.engine.asMain().cursorManager;
 		switch (cm.thumbSpaceConfigState) {
 			case Configured:
+				HXP.engine.asMain().cursorManager.thumbSpaceEnabled = false;
 				HXP.world = HXP.engine.asMain().worldQueue.pop();
 				return;
 			default:
