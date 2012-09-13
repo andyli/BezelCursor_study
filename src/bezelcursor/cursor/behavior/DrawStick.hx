@@ -10,11 +10,11 @@ class DrawStick extends Behavior<PointActivatedCursor> {
 	public var lineWidth:Array<Float>;
 	public var alpha:Array<Float>;
 	
-	public function new(c:PointActivatedCursor, ?data:Dynamic):Void {
-		super(c, data);
+	public function new(c:PointActivatedCursor):Void {
+		super(c);
 		
-		lineWidth = data != null && Reflect.hasField(data, "lineWidth") ? data.lineWidth : [3.5, 3.0, 2.2, 2.0, 1.5];
-		alpha = data != null && Reflect.hasField(data, "alpha") ? data.alpha : [1.0, 1.0, 1.0, 1.0, 1.0];
+		lineWidth = [3.5, 3.0, 2.2, 2.0, 1.5];
+		alpha = [1.0, 1.0, 1.0, 1.0, 1.0];
 	}
 	
 	override public function onFrame(timestamp:Float):Void {
@@ -38,25 +38,5 @@ class DrawStick extends Behavior<PointActivatedCursor> {
 			var mid = Point.interpolate(end, start, (i+1)/steps);
 			g.lineTo(mid.x, mid.y);
 		}
-	}
-	
-	override public function getData():Dynamic {
-		var data:Dynamic = super.getData();
-		
-		data.lineWidth = lineWidth.copy();
-		data.alpha = alpha.copy();
-		
-		return data;
-	}
-	
-	override public function setData(data:Dynamic):Void {
-		super.setData(data);
-		
-		lineWidth = data.lineWidth;
-		alpha = data.alpha;
-	}
-	
-	override public function clone(?c:PointActivatedCursor):DrawStick {
-		return new DrawStick(c == null ? cursor : c, getData());
 	}
 }

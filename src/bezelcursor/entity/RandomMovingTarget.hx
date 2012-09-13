@@ -17,12 +17,10 @@ class RandomMovingTarget extends Target {
 	
 	public var posRect:Rectangle;
 	
-	public function new(posRect:Rectangle, ?data:Dynamic):Void {
-		super(data);
+	public function new(posRect:Rectangle):Void {
+		super();
 		
 		this.posRect = posRect;
-		rndSize();
-		rndPos();
 	}
 	
 	public function rndSize():Void {

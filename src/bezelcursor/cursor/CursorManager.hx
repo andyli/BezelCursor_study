@@ -26,7 +26,7 @@ import com.haxepunk.HXP;
 import bezelcursor.cursor.behavior.DrawStick;
 import bezelcursor.model.DeviceData;
 import bezelcursor.model.TouchData;
-import bezelcursor.model.Struct;
+import bezelcursor.model.IStruct;
 import bezelcursor.entity.Target;
 using bezelcursor.world.GameWorld;
 
@@ -42,15 +42,15 @@ enum ConfigState {
 	Configured;
 }
 
-class CursorManager extends Struct {
+class CursorManager implements IStruct {
 	@:skip static public var defaultCreateCursor(default, null) = function(touch:TouchData, _for:CreateCursorFor):Cursor {
 		switch(_for) {
 			case ForBezel: 
-				return new bezelcursor.cursor.MouseCursor({touchPointID: touch.touchPointID});
+				return new bezelcursor.cursor.MouseCursor().fromObj({touchPointID: touch.touchPointID});
 			case ForScreen:
-				return new bezelcursor.cursor.MagStickCursor({touchPointID: touch.touchPointID});
+				return new bezelcursor.cursor.MagStickCursor().fromObj({touchPointID: touch.touchPointID});
 			case ForThumbSpace:
-				return new bezelcursor.cursor.MouseCursor({touchPointID: touch.touchPointID});
+				return new bezelcursor.cursor.MouseCursor().fromObj({touchPointID: touch.touchPointID});
 		}
 	}
 	

@@ -17,17 +17,17 @@ class DynaScale extends Behavior<PointActivatedCursor> {
 	public var collapseVelocity:Float;
 	public var collapseLag:Float;
 	
-	public function new(c:PointActivatedCursor, ?data):Void {
-		super(c, data);
+	public function new(c:PointActivatedCursor):Void {
+		super(c);
 		
-		collapseVelocity = data != null && Reflect.hasField(data, "collapseVelocity") ? data.collapseVelocity : DeviceData.current.screenDPI * 0.005 * 30;
-		expendVelocity = data != null && Reflect.hasField(data, "expendVelocity") ? data.expendVelocity : DeviceData.current.screenDPI * 0.035 * 30;
-		collapseLag = data != null && Reflect.hasField(data, "collapseLag") ? data.collapseLag : 0.6;
-		expendedSize = data != null && Reflect.hasField(data, "expendedSize") ? data.expendedSize : 0.15;
-		collapsedSize = data != null && Reflect.hasField(data, "collapsedSize") ? data.collapsedSize : 0.0;
+		collapseVelocity = DeviceData.current.screenDPI * 0.005 * 30;
+		expendVelocity = DeviceData.current.screenDPI * 0.035 * 30;
+		collapseLag = 0.6;
+		expendedSize = 0.15;
+		collapsedSize = 0.0;
 		
-		expended = data != null && Reflect.hasField(data, "expended") ? data.expended : false;
-		expendedTime = data != null && Reflect.hasField(data, "expendedTime") ? data.expendedTime : 0;
+		expended = false;
+		expendedTime = 0;
 	}
 	
 	override function start():Void {
@@ -57,37 +57,5 @@ class DynaScale extends Behavior<PointActivatedCursor> {
 			cursor.radius = expendedSize;
 			expended = true;
 		}
-	}
-	
-	override public function getData():Dynamic {
-		var data:Dynamic = super.getData();
-		
-		data.collapseVelocity = collapseVelocity;
-		data.expendVelocity = expendVelocity;
-		data.collapseLag = collapseLag;
-		data.expendedSize = expendedSize;
-		data.collapsedSize = collapsedSize;
-		
-		data.expended = expended;
-		data.expendedTime = expendedTime;
-		
-		return data;
-	}
-	
-	override public function setData(data:Dynamic):Void {
-		super.setData(data);
-		
-		collapseVelocity = data.collapseVelocity;
-		expendVelocity = data.expendVelocity;
-		collapseLag = data.collapseLag;
-		expendedSize = data.expendedSize;
-		collapsedSize = data.collapsedSize;
-		
-		expended = data.expended;
-		expendedTime = data.expendedTime;
-	}
-	
-	override public function clone(?c:PointActivatedCursor):DynaScale {
-		return new DynaScale(c == null ? cursor : c, getData());
 	}
 }

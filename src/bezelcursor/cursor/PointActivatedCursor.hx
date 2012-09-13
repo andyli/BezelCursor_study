@@ -10,7 +10,7 @@ import nme.ui.Multitouch;
 import nme.ui.MultitouchInputMode;
 
 import bezelcursor.model.TouchData;
-using bezelcursor.model.Struct;
+using bezelcursor.model.IStruct;
 
 /**
 * Cursor that is activated and controlled by a single touch.
@@ -43,14 +43,13 @@ class PointActivatedCursor extends Cursor {
 	
 	var ptimestamp:Float;
 	
-	public function new(data:Dynamic):Void {
-		super(data);
+	public function new():Void {
+		super();
 		
-		touchPointID = data.touchPointID;
-		touchVelocity = data != null && Reflect.hasField(data, "touchVelocity") ? data.touchVelocity.toPoint() : new Point();
-		pFrameTouchPoint = data != null && Reflect.hasField(data, "pFrameTouchPoint") ? data.pFrameTouchPoint.toPoint() : null;
-		currentTouchPoint = data != null && Reflect.hasField(data, "currentTouchPoint") ? data.currentTouchPoint.toPoint() : null;
-		activatedPoint = data != null && Reflect.hasField(data, "activatedPoint") ? data.activatedPoint.toPoint() : null;
+		touchVelocity = new Point();
+		pFrameTouchPoint = null;
+		currentTouchPoint = null;
+		activatedPoint = null;
 	}
 	
 	override public function start():Void {
@@ -105,31 +104,5 @@ class PointActivatedCursor extends Cursor {
 		
 		pFrameTouchPoint = currentTouchPoint = activatedPoint = null;
 		touchVelocity.x = touchVelocity.y = 0;
-	}
-	
-	override public function getData():Dynamic {
-		var data:Dynamic = super.getData();
-		
-		data.touchPointID = touchPointID;
-		data.activatedPoint = activatedPoint.toObj();
-		data.pFrameTouchPoint = pFrameTouchPoint.toObj();
-		data.currentTouchPoint = currentTouchPoint.toObj();
-		data.touchVelocity = touchVelocity.toObj();
-		
-		return data;
-	}
-	
-	override public function setData(data:Dynamic):Void {
-		super.setData(data);
-		
-		touchPointID = data.touchPointID;
-		activatedPoint = data.activatedPoint.toPoint();
-		pFrameTouchPoint = data.pFrameTouchPoint.toPoint();
-		currentTouchPoint = data.currentTouchPoint.toPoint();
-		touchVelocity = data.touchVelocity.toPoint();
-	}
-	
-	override public function clone():PointActivatedCursor {
-		return new PointActivatedCursor(getData());
 	}
 }

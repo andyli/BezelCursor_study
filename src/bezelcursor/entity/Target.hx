@@ -16,57 +16,84 @@ using com.eclecticdesignstudio.motion.Actuate;
 using bezelcursor.Main;
 import bezelcursor.cursor.Cursor;
 import bezelcursor.cursor.CursorManager;
-using bezelcursor.model.Struct;
+using bezelcursor.model.IStruct;
 using bezelcursor.world.GameWorld;
 
-class Target extends Entity {
+class Target extends Entity, implements IStruct {
 	inline static public var TYPE = "Target";
 	static var nextId = 0;
 	
-	public var onAddedSignaler(default, null):Signaler<Void>;
-	public var onRemovedSignaler(default, null):Signaler<Void>;
-	public var onClickSignaler(default, null):Signaler<Void>;
-	public var onRollOverSignaler(default, null):Signaler<Void>;
-	public var onRollOutSignaler(default, null):Signaler<Void>;
+	@:skip public var onAddedSignaler(default, null):Signaler<Void>;
+	@:skip public var onRemovedSignaler(default, null):Signaler<Void>;
+	@:skip public var onClickSignaler(default, null):Signaler<Void>;
+	@:skip public var onRollOverSignaler(default, null):Signaler<Void>;
+	@:skip public var onRollOutSignaler(default, null):Signaler<Void>;
 	
-	var cursorManager:CursorManager;
-	var graphicList:Graphiclist;
-	var graphicList_hover:Graphiclist;
+	@:skip var cursorManager:CursorManager;
+	@:skip var graphicList:Graphiclist;
+	@:skip var graphicList_hover:Graphiclist;
 	
 	
 	public var id(default, null):Int;
-	public var color(default, set_color):Int;
-	public var color_hover(default, set_color_hover):Int;
-	public var image:Image;
-	public var image_hover:Image;
+	
+	@:skip public var color(get_color, set_color):Int;
+	var _color:Int;
+	function get_color() { return _color; }
+	function set_color(c:Int):Int {
+		_color = c;
+		resize();
+		return c;
+	}
+		
+	@:skip public var color_hover(get_color_hover, set_color_hover):Int;
+	var _color_hover:Int;
+	function get_color_hover() { return _color_hover; }
+	function set_color_hover(c:Int):Int {
+		_color_hover = c;
+		resize();
+		return c;
+	}
+	
+	@:skip public var image:Image;
+	@:skip public var image_hover:Image;
 	public var isHoverBy(default, null):IntHash<Cursor>;
 	
-	public function new(?data:Dynamic):Void {
+	@:remove public var type:String;
+	@:remove public var x:Float;
+	@:remove public var y:Float;
+	@:remove public var width:Int;
+	@:remove public var height:Int;
+	
+	public function new():Void {
 		super();
 		
 		type = Target.TYPE;
 		
+		isHoverBy = new IntHash<Cursor>();
+		
+		id = nextId++;
+		width = 100;
+		height = 100;
+		_color = 0xFFFFFF;
+		_color_hover = 0xFF6666;
+		
+		init();
+	}
+	
+	public function init():Target {
 		onAddedSignaler = new DirectSignaler<Void>(this);
 		onRemovedSignaler = new DirectSignaler<Void>(this);
 		onClickSignaler = new DirectSignaler<Void>(this);
 		onRollOverSignaler = new DirectSignaler<Void>(this);
 		onRollOutSignaler = new DirectSignaler<Void>(this);
-		
 		cursorManager = HXP.engine.asMain().cursorManager;
+		
 		graphic = graphicList = new Graphiclist();
 		graphicList_hover = new Graphiclist();
 		
-		isHoverBy = data != null && Reflect.hasField(data, "isHoverBy") ? data.isHoverBy.toIntHashCursor() : new IntHash<Cursor>();
+		resize();
 		
-		id = data != null && Reflect.hasField(data, "id") ? data.id : nextId++;
-		width = data != null && Reflect.hasField(data, "width") ? data.width : 100;
-		height = data != null && Reflect.hasField(data, "height") ? data.height : 100;
-		color = data != null && Reflect.hasField(data, "color") ? data.color : 0xFFFFFF;
-		color_hover = data != null && Reflect.hasField(data, "color_hover") ? data.color_hover : 0xFF6666;
-		moveTo(
-			data != null && Reflect.hasField(data, "x") ? data.x : 0,
-			data != null && Reflect.hasField(data, "y") ? data.y : 0
-		);
+		return this;
 	}
 	
 	override public function added():Void {
@@ -79,18 +106,6 @@ class Target extends Entity {
 		super.removed();
 		
 		onRemovedSignaler.dispatch();
-	}
-	
-	function set_color(c:Int):Int {
-		color = c;
-		resize();
-		return c;
-	}
-	
-	function set_color_hover(c:Int):Int {
-		color_hover = c;
-		resize();
-		return c;
 	}
 	
 	public function resize(w:Int = -1, h:Int = -1):Void {
@@ -126,54 +141,5 @@ class Target extends Entity {
 		if (isHoverBy.empty()) {
 			graphic = graphicList;
 		}
-	}
-
-    function hxSerialize(s:haxe.Serializer) {
-		s.serialize(getData());
-    }
-	
-    function hxUnserialize(s:haxe.Unserializer) {
-		setData(s.unserialize());
-    }
-	
-	public function getData():Dynamic {
-		var data:Dynamic = {};
-		
-		data._class = Type.getClassName(Type.getClass(this));
-		
-		data.id = id;
-		data.x = x;
-		data.y = y;
-		data.width = width;
-		data.height = height;
-		data.color = color;
-		data.color_hover = color_hover;
-		data.isHoverBy = isHoverBy.toObj();
-		
-		return data;
-	}
-	
-	public function setData(data:Dynamic):Void {
-		#if debug
-		if (data._class != Type.getClassName(Type.getClass(this)))
-			throw "Should not set " + Type.getClassName(Type.getClass(this)) + "from a data of " + data._class;
-		#end
-		
-		id = data.id;
-		x = data.x;
-		y = data.y;
-		width = data.width;
-		height = data.height;
-		color = data.color;
-		color_hover = data.color_hover;
-		isHoverBy = data.isHoverBy.toIntHashCursor();
-	}
-	
-	public function clone():Target {
-		return new Target(getData());
-	}
-	
-	static public function createFromData<T:Target>(data:Dynamic):T {
-		return Type.createInstance(Type.resolveClass(data._class), [data]);
 	}
 }

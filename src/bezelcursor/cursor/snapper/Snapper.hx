@@ -2,9 +2,9 @@ package bezelcursor.cursor.snapper;
 
 import bezelcursor.cursor.Cursor;
 import bezelcursor.entity.Target;
-import bezelcursor.model.Struct;
+import bezelcursor.model.IStruct;
 
-class Snapper<C:Cursor> extends Struct {
+class Snapper<C:Cursor> implements IStruct {
 	public var cursor(default, null):C;
 	
 	/**
@@ -21,7 +21,7 @@ class Snapper<C:Cursor> extends Struct {
 	*/
 	public var interestedTargets(default, null):Array<Target>;
 	
-	public function new(c:C, ?data:Dynamic):Void {
+	public function new(c:C):Void {
 		cursor = c;
 		target = null;
 		interestedTargets = [];
@@ -29,28 +29,5 @@ class Snapper<C:Cursor> extends Struct {
 	
 	public function run():Void {
 		interestedTargets = [];
-	}
-	
-	public function getData():Dynamic {
-		var data:Dynamic = {};
-		
-		data._class = Type.getClassName(Type.getClass(this));
-				
-		return data;
-	}
-	
-	public function setData(data:Dynamic):Void {
-		#if debug
-		if (data._class != Type.getClassName(Type.getClass(this)))
-			throw "Should not set " + Type.getClassName(Type.getClass(this)) + "from a data of " + data._class;
-		#end
-	}
-	
-	public function clone(?c:C):Snapper<C> {
-		return new Snapper<C>(c == null ? cursor : c, getData());
-	}
-	
-	static public function createFromData<C:Cursor, S:Snapper<Dynamic>>(c:C, data:Dynamic):S {
-		return Type.createInstance(Type.resolveClass(data._class), [c, data]);
 	}
 }

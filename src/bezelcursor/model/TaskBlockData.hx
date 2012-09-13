@@ -18,14 +18,14 @@ import bezelcursor.model.TouchData;
 using bezelcursor.util.RectangleUtil;
 using bezelcursor.util.UnitUtil;
 
-class TaskBlockData extends Struct {
+class TaskBlockData implements IStruct {
 	/**
 	* uuid of length 36
 	*/
 	public var id(default,null):String;
 	
 	public var targetSize:{width:Float, height:Float};
-	public var targets:Array<TargetData>;
+	public var targets:Array<Dynamic>;
 	public var targetQueue:Array<{target:Int, camera:Point}>;
 	
 	public function new():Void {
@@ -193,12 +193,12 @@ class TaskBlockData extends Struct {
 			}
 			
 			data.targets = data.targets.concat(rects.map(function(rect) {
-				return new TargetData(
-					rect.x,
-					rect.y,
-					rect.width,
-					rect.height
-				);
+				return {
+					x: rect.x,
+					y: rect.y,
+					width: rect.width,
+					height: rect.height
+				};
 			}).array());
 			
 			data.targetSize = targetSize;

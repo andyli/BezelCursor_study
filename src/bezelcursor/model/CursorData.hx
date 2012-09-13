@@ -22,12 +22,4 @@ class CursorData {
 	public function new():Void {
 		
 	}
-	
-	static public function fromCursor(cursor:Cursor):CursorData {
-		var data = new CursorData();
-		data.id = cursor.id;
-		data.currentPoint = cursor.currentPoint;
-		data.targetPoint = cursor.targetPoint;
-		data.cursorClass = Type.getClassName(Type.getClass(cursor));
-	}
 }

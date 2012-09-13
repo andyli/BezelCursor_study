@@ -13,6 +13,7 @@ class StructBuilder {
 		var pos = Context.currentPos();
 		var cls = Context.getLocalClass().get();
 		var clsComplex = Context.toComplexType(Context.getType(cls.pack.concat([cls.name]).join(".")));
+		var isDirectImpl = cls.interfaces.exists(function(i) return i.t.toString() == "bezelcursor.model.IStruct");
 		var fields = Context.getBuildFields();
 		
 		var instanceFields = fields.filter(function(f) return switch(f.kind){
@@ -102,13 +103,82 @@ class StructBuilder {
 		//init
 		if (!fields.exists(function(f) return f.name == "init")) {
 			fields.push({
-				access: [APublic, AOverride],
+				access: isDirectImpl ? [APublic] : [APublic, AOverride],
 				name: "init",
 				kind:FFun({
 					args: [],
 					ret: clsComplex,
-					expr: {
-						expr: EBlock( [macro super.init()].concat([macro return this])), 
+					expr: isDirectImpl ? macro return this : macro { super.init(); return this; },
+					params: []
+				}),
+				pos: cls.pos
+			});
+		}
+		
+		//function hxSerialize(s:haxe.Serializer):Void;
+		if (isDirectImpl && !fields.exists(function(f) return f.name == "hxSerialize")) {
+			fields.push({
+				access: [APublic],
+				name: "hxSerialize",
+				kind:FFun({
+					args: [{
+						name: "s",
+						opt: false,
+						type: TPath({pack:["haxe"], name:"Serializer", params: []})
+					}],
+					ret: TPath({pack:[], name:"Void", params: []}),
+					expr: macro s.serialize(toObj()),
+					params: []
+				}),
+				pos: cls.pos
+			});
+		}
+		
+		//function hxUnserialize(s:haxe.Unserializer)
+		if (isDirectImpl && !fields.exists(function(f) return f.name == "hxUnserialize")) {
+			fields.push({
+				access: [APublic],
+				name: "hxUnserialize",
+				kind:FFun({
+					args: [{
+						name: "s",
+						opt: false,
+						type: TPath({pack:["haxe"], name:"Unserializer", params: []})
+					}],
+					ret: TPath({pack:[], name:"Void", params: []}),
+					expr: macro {
+						fromObj(s.unserialize());
+						init();
+				    },
+					params: []
+				}),
+				pos: cls.pos
+			});
+		}
+		
+		//function toObj():Dynamic;
+		if (!fields.exists(function(f) return f.name == "toObj")) {
+			fields.push({
+				access: isDirectImpl ? [APublic] : [APublic, AOverride],
+				name: "toObj",
+				kind:FFun({
+					args: [],
+					ret: TPath({pack:[], name:"Dynamic", params: []}),
+					expr: { 
+						expr: EBlock((isDirectImpl ? [macro var obj:Dynamic = {}] : [macro var obj:Dynamic = super.toObj()]).concat(
+							instanceFields.map(function(f){
+								var fName = f.name;
+								var thisField = {
+									expr: EField(macro this, fName),
+									pos: pos
+								}
+								var objField = {
+									expr: EField(macro obj, fName),
+									pos: pos
+								}
+								return macro $objField = $thisField;
+							}).array()
+						).concat([macro return obj])), 
 						pos: pos
 					},
 					params: []
@@ -117,72 +187,31 @@ class StructBuilder {
 			});
 		}
 		
-		//function toObj():Dynamic;
-		fields.push({
-			access: [APublic, AOverride],
-			name: "toObj",
-			kind:FFun({
-				args: [],
-				ret: TPath({pack:[], name:"Dynamic", params: []}),
-				expr: { 
-					expr: EBlock([macro var obj = super.toObj()].concat(
-						instanceFields.map(function(f){
-							var fName = f.name;
-							var thisField = {
-								expr: EField(macro this, fName),
-								pos: pos
-							}
-							var objField = {
-								expr: EField(macro obj, fName),
-								pos: pos
-							}
-							return macro try {
-								$objField = $thisField;
-							} catch (e:Dynamic){ trace(e); }
-						}).array()
-					).concat([macro return obj])), 
-					pos: pos
-				},
-				params: []
-			}),
-			pos: cls.pos
-		});
-						
 		//function fromObj(obj:Dynamic) { ... }
-		fields.push({
-			access: [APublic, AOverride],
-			name: "fromObj",
-			kind:FFun({
-				args: [{
-					name: "obj",
-					opt: false,
-					type: TPath({pack:[], name:"Dynamic", params: []})
-				}],
-				ret: clsComplex,
-				expr: {
-					expr: EBlock( [macro super.fromObj(obj)].concat(
-						instanceFields.map(function(f){
-							var fName = f.name;
-							var thisField = {
-								expr: EField(macro this, fName),
-								pos: pos
-							}
-							var objField = {
-								expr: EField(macro obj, fName),
-								pos: pos
-							}
-							return macro try {
-								$thisField = $objField;
-							} catch (e:Dynamic){ trace(e); }
-						}).array().concat([macro return this])
-					)), 
-					pos: pos
-				},
-				params: []
-			}),
-			pos: cls.pos
-		});
+		if (!fields.exists(function(f) return f.name == "fromObj")) {
+			fields.push({
+				access: isDirectImpl ? [APublic] : [APublic, AOverride],
+				name: "fromObj",
+				kind:FFun({
+					args:  [{
+						name: "obj",
+						opt: false,
+						type: TPath({pack:[], name:"Dynamic", params: []})
+					}],
+					ret: clsComplex,
+					expr: isDirectImpl ? macro {
+						for (f in Reflect.fields(obj)) {
+							Reflect.setProperty(this, f, Reflect.field(obj, f));
+						}
 		
-		return fields;
+						return this;
+					} : macro { super.fromObj(obj); return this; },
+					params: []
+				}),
+				pos: cls.pos
+			});
+		}
+		
+		return fields.filter(function(f) return !(f.meta != null && f.meta.exists(function(m) return m.name == ":remove"))).array();
 	}
 }

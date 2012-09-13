@@ -37,7 +37,8 @@ class TestTouchWorld extends GameWorld {
 		
 		targets = [];
 		for (td in taskBlockData.targets) {
-			targets.push(new Target(td.toObj()));
+			var t = new Target().fromObj(td).init();
+			targets.push(t);
 		}
 		targetQueue = taskBlockData.targetQueue.copy();
 		

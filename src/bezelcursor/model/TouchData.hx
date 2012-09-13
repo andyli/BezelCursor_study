@@ -1,6 +1,6 @@
 package bezelcursor.model;
 
-class TouchData extends Struct {
+class TouchData implements IStruct {
 	public var touchPointID(default, null):Int;
 	public var x(default, null):Float;
 	public var y(default, null):Float;

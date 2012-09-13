@@ -5,7 +5,7 @@ import nme.system.Capabilities;
 import nme.JNI;
 #end
 
-class DeviceData extends Struct {
+class DeviceData implements IStruct {
 	/**
 	* uuid of length 36
 	*/

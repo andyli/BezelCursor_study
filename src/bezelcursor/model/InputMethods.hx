@@ -16,7 +16,7 @@ class InputMethods {
 		createCursor: function(touch:TouchData, _for:CreateCursorFor):Cursor {
 			switch(_for) {
 				case ForBezel: 
-					return new bezelcursor.cursor.MouseCursor({touchPointID: touch.touchPointID});
+					return new bezelcursor.cursor.MouseCursor().fromObj({touchPointID: touch.touchPointID});
 				default:
 					return null;
 			}
@@ -28,7 +28,7 @@ class InputMethods {
 		createCursor: function(touch:TouchData, _for:CreateCursorFor):Cursor {
 			switch(_for) {
 				case ForBezel: 
-					return new bezelcursor.cursor.StickCursor({touchPointID: touch.touchPointID});
+					return new bezelcursor.cursor.StickCursor().fromObj({touchPointID: touch.touchPointID});
 				default:
 					return null;
 			}
@@ -40,7 +40,7 @@ class InputMethods {
 		createCursor: function(touch:TouchData, _for:CreateCursorFor):Cursor {
 			switch(_for) {
 				case ForBezel: 
-					return new bezelcursor.cursor.BubbleMouseCursor({touchPointID: touch.touchPointID});
+					return new bezelcursor.cursor.BubbleMouseCursor().fromObj({touchPointID: touch.touchPointID});
 				default:
 					return null;
 			}
@@ -52,7 +52,7 @@ class InputMethods {
 		createCursor: function(touch:TouchData, _for:CreateCursorFor):Cursor {
 			switch(_for) {
 				case ForScreen: 
-					return new bezelcursor.cursor.MagStickCursor({touchPointID: touch.touchPointID});
+					return new bezelcursor.cursor.MagStickCursor().fromObj({touchPointID: touch.touchPointID});
 				default:
 					return null;
 			}
@@ -64,7 +64,7 @@ class InputMethods {
 		createCursor: function(touch:TouchData, _for:CreateCursorFor):Cursor {
 			switch(_for) {
 				case ForThumbSpace: 
-					var c = new bezelcursor.cursor.BubbleMouseCursor({touchPointID: touch.touchPointID});
+					var c = new bezelcursor.cursor.BubbleMouseCursor().fromObj({touchPointID: touch.touchPointID});
 					c.behaviors.remove(c.behaviors.filter(function(b) return Std.is(b, bezelcursor.cursor.behavior.DrawBubble)).first());
 					return c;
 				default:

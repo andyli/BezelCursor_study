@@ -11,12 +11,12 @@ class DrawBubble extends Behavior<PointActivatedCursor> {
 	public var alpha:Float;
 	public var centerSpotRadius:Float;
 	
-	public function new(c:PointActivatedCursor, ?data:Dynamic):Void {
-		super(c, data);
+	public function new(c:PointActivatedCursor):Void {
+		super(c);
 		
-		lineWeight = data != null && Reflect.hasField(data, "lineWeight") ? data.lineWeight : 2;
-		alpha = data != null && Reflect.hasField(data, "alpha") ? data.alpha : 1;
-		centerSpotRadius = data != null && Reflect.hasField(data, "centerSpotRadius") ? data.centerSpotRadius : 0.25;
+		lineWeight = 2;
+		alpha = 1;
+		centerSpotRadius = 0.25;
 	}
 	
 	override public function onFrame(timestamp:Float):Void {
@@ -38,27 +38,5 @@ class DrawBubble extends Behavior<PointActivatedCursor> {
 			cursor.view.graphics.drawCircle(cursor.position.x, cursor.position.y, centerSpotRadius);
 			cursor.view.graphics.drawCircle(cursor.position.x, cursor.position.y, dist);
 		}
-	}
-	
-	override public function getData():Dynamic {
-		var data:Dynamic = super.getData();
-		
-		data.lineWeight = lineWeight;
-		data.alpha = alpha;
-		data.centerSpotRadius = centerSpotRadius;
-		
-		return data;
-	}
-	
-	override public function setData(data:Dynamic):Void {
-		super.setData(data);
-		
-		lineWeight = data.lineWeight;
-		alpha = data.alpha;
-		centerSpotRadius = data.centerSpotRadius;
-	}
-	
-	override public function clone(?c:PointActivatedCursor):DrawBubble {
-		return new DrawBubble(c == null ? cursor : c, getData());
 	}
 }

@@ -1,6 +1,6 @@
 package bezelcursor.model;
 
-class UserData extends Struct {
+class UserData implements IStruct {
 	/**
 	* uuid of length 36
 	*/

@@ -40,8 +40,4 @@ class SimpleSnapper extends Snapper<Cursor> {
 		else
 			0;
 	}
-	
-	override public function clone(?c:Cursor):SimpleSnapper {
-		return new SimpleSnapper(c == null ? cursor : c, getData());
-	}
 }
