@@ -10,7 +10,7 @@ import nme.ui.Multitouch;
 import nme.ui.MultitouchInputMode;
 
 import bezelcursor.model.TouchData;
-using bezelcursor.model.IStruct;
+
 
 /**
 * Cursor that is activated and controlled by a single touch.

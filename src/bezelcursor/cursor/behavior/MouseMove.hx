@@ -6,7 +6,7 @@ using org.casalib.util.NumberUtil;
 
 import bezelcursor.cursor.PointActivatedCursor;
 import bezelcursor.model.DeviceData;
-using bezelcursor.model.IStruct;
+
 
 class MouseMove extends Behavior<PointActivatedCursor> {
 	public var minVelocityFactor:Float;

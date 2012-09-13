@@ -16,7 +16,8 @@ import bezelcursor.cursor.snapper.Snapper;
 import bezelcursor.cursor.snapper.SimpleSnapper;
 import bezelcursor.entity.Target;
 import bezelcursor.model.TouchData;
-using bezelcursor.model.IStruct;
+import bezelcursor.model.IStruct;
+
 using bezelcursor.world.GameWorld;
 
 class Cursor implements IStruct {

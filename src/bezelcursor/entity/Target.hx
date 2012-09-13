@@ -16,7 +16,8 @@ using com.eclecticdesignstudio.motion.Actuate;
 using bezelcursor.Main;
 import bezelcursor.cursor.Cursor;
 import bezelcursor.cursor.CursorManager;
-using bezelcursor.model.IStruct;
+import bezelcursor.model.IStruct;
+
 using bezelcursor.world.GameWorld;
 
 class Target extends Entity, implements IStruct {

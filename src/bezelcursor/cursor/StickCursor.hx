@@ -14,7 +14,7 @@ import bezelcursor.cursor.behavior.DrawRadius;
 import bezelcursor.cursor.snapper.SimpleSnapper;
 import bezelcursor.model.DeviceData;
 import bezelcursor.model.TouchData;
-using bezelcursor.model.IStruct;
+
 
 class StickCursor extends PointActivatedCursor {
 	public var joint:Null<Point>;
