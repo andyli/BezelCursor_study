@@ -5,7 +5,7 @@ import bezelcursor.model.TouchData;
 import bezelcursor.model.IStruct;
 
 class Behavior<C:Cursor> implements IStruct {
-	public var cursor(default, null):C;
+	@:skip public var cursor(default, null):C;
 	
 	public function new(c:C):Void {
 		cursor = c;

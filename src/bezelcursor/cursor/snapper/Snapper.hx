@@ -5,7 +5,7 @@ import bezelcursor.entity.Target;
 import bezelcursor.model.IStruct;
 
 class Snapper<C:Cursor> implements IStruct {
-	public var cursor(default, null):C;
+	@:skip public var cursor(default, null):C;
 	
 	/**
 	* The Target for a cursor. null if none is suitable.
