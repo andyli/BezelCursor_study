@@ -2,8 +2,9 @@ package bezelcursor.cursor.behavior;
 
 import bezelcursor.cursor.Cursor;
 import bezelcursor.model.TouchData;
+import bezelcursor.model.Struct;
 
-class Behavior<C:Cursor> {
+class Behavior<C:Cursor> extends Struct {
 	public var cursor(default, null):C;
 	
 	public function new(c:C, ?data:Dynamic):Void {
@@ -33,14 +34,6 @@ class Behavior<C:Cursor> {
 	public function onTouchEnd(touch:TouchData):Void {
 		
 	}
-
-    function hxSerialize(s:haxe.Serializer) {
-		s.serialize(getData());
-    }
-	
-    function hxUnserialize(s:haxe.Unserializer) {
-		setData(s.unserialize());
-    }
 	
 	public function getData():Dynamic {
 		var data:Dynamic = {};

@@ -14,7 +14,7 @@ class MouseCursor extends PointActivatedCursor {
 	public function new(data:Dynamic):Void {
 		super(data);
 		
-		behaviors = data != null && Reflect.hasField(data, "behaviors") ? Behavior.createFromDatas(this, data.behaviors) : [new DrawRadius(this), new MouseMove(this), new DynaScale(this), new ClickWhenTouchEnd(this)];
+		//behaviors = data != null && Reflect.hasField(data, "behaviors") ? Behavior.createFromDatas(this, data.behaviors) : [new DrawRadius(this), new MouseMove(this), new DynaScale(this), new ClickWhenTouchEnd(this)];
 	}
 	
 	override function onTouchBegin(touch:TouchData):Void {

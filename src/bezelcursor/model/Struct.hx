@@ -1,7 +1,7 @@
 package bezelcursor.model;
 
 @:keep
-@:autoBuild(bezelcursor.model.StructBuilder.build())
+@:autoBuild(bezelcursor.model.StructBuilder.buildClass())
 class Struct {
     function hxSerialize(s:haxe.Serializer) {
 		s.serialize(toObj());
@@ -9,13 +9,18 @@ class Struct {
 	
     function hxUnserialize(s:haxe.Unserializer) {
 		fromObj(s.unserialize());
+		init();
     }
 	
-	function fromObj(obj:Dynamic) {
-		
+	public function init() {
+		return this;
 	}
 	
-	function toObj():Dynamic {
+	public function fromObj(obj:Dynamic) {
+		return this;
+	}
+	
+	public function toObj():Dynamic {
 		return {};
 	}
 }

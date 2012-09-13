@@ -52,7 +52,6 @@ class TestTouchWorld extends GameWorld {
 		}
 		
 		startBtn = new StartButton("Start");
-		add(startBtn);
 	}
 	
 	public function next():Void {
@@ -75,19 +74,11 @@ class TestTouchWorld extends GameWorld {
 	override public function begin():Void {
 		super.begin();
 		
-		/*
-		var panel = new Panel();
-		panel.layer = 1;
-		add(panel);
+		add(startBtn);
 		
-		var btn = new Button();
-		btn.useGlobalPosition = false;
-		panel.add(btn);
-		
-		var btn = new Button();
-		btn.useGlobalPosition = false;
-		panel.add(btn);
-		*/
+		if (HXP.engine.asMain().cursorManager.thumbSpaceEnabled) {
+			HXP.stage.addChild(HXP.engine.asMain().cursorManager.thumbSpaceView);
+		}
 		
 		next();
 		

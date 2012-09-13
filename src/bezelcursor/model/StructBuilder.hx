@@ -7,18 +7,13 @@ import haxe.macro.Context;
 import haxe.macro.Compiler;
 import haxe.rtti.Meta;
 #end
+
 class StructBuilder {
-	@:macro static public function build():Array<Field> {
+	@:macro static public function buildClass():Array<Field> {
 		var pos = Context.currentPos();
+		var cls = Context.getLocalClass().get();
+		var clsComplex = Context.toComplexType(Context.getType(cls.pack.concat([cls.name]).join(".")));
 		var fields = Context.getBuildFields();
-		var constructor = fields.filter(function(f) return f.name == "new").first();
-		
-		switch (constructor.kind) {
-			case FFun(f):
-				
-			default:
-				throw "Constructor should be a function.";
-		}
 		
 		var instanceFields = fields.filter(function(f) return switch(f.kind){
 			case FFun(_):
@@ -26,7 +21,44 @@ class StructBuilder {
 			default:
 				!f.access.has(AStatic) && !f.meta.exists(function(m) return m.name == ":skip");
 		});
+		/*
+		var allInstanceFields = instanceFields.array();
 		
+		allInstanceFields.iter(function(f){
+			f.kind = switch(f.kind) {
+				case FVar(t, e):
+					FVar(Context.toComplexType(Context.typeof({ expr: ECheckType(macro null, t ), pos: f.pos })));
+				case FProp(get, set, t, e):
+					FVar(Context.toComplexType(Context.typeof({ expr: ECheckType(macro null, t ), pos: f.pos })));
+				default:
+			}
+			f.meta.push({ pos: f.pos, params: [], name : ":optional" });
+		});
+		
+		
+		var superCls = cls.superClass.t.get();
+		var superType = Context.typeof(Context.parse("{var a:" + superCls.pack.concat([superCls.name]).join(".") + (cls.superClass.params.length > 0 ? cls.superClass.params.map(Std.string).join(",") : "") + "; a;}", pos));
+		
+		switch(superType) {
+			case TInst
+		}
+		allInstanceFields.concat(superType.fields.get());
+		*/
+				
+		/*/Data typedef
+		var dataTypeDefinition = {
+			pack: cls.pack,
+			name: cls.name + "Data",
+			pos: cls.pos,
+			meta: [], //no need to copy metadata
+			params: cls.params.map(function(p) return {name: p.name, constraints:[], params:[]}).array(),
+			isExtern: false,
+			kind: TDStructure,
+			fields: allInstanceFields
+		};
+		
+		Context.defineType(dataTypeDefinition);
+		*/
 		/*
 		for (f in instanceFields) {
 			switch(f.kind) {
@@ -60,41 +92,30 @@ class StructBuilder {
 		*/
 		//trace("=============" + Context.getLocalClass().toString());
 		//trace(instanceFields.map(function(p) return p.name));
+		/*
+		var dataComplexType = if (superCls.name != "Struct") {
+			TExtend({ pack: superCls.pack, name: superCls.name + "Data", params:[] }, dataTypeDefinition.fields);
+		} else {
+			TPath(cast dataTypeDefinition);
+		}*/
 		
-		//function fromObj(obj:Dynamic) { ... }
-		fields.push({
-			access: [APublic, AOverride],
-			name: "fromObj",
-			kind:FFun({
-				args: [{
-					name: "obj",
-					opt: false,
-					type: TPath({pack:[], name:"Dynamic", params: []})
-				}],
-				ret: TPath({pack:[], name:"Void", params: []}),
-				expr: { 
-					expr: EBlock( [macro super.fromObj(obj)].concat(
-						instanceFields.map(function(f){
-							var fName = f.name;
-							var thisField = {
-								expr: EField(macro this, fName),
-								pos: pos
-							}
-							var objField = {
-								expr: EField(macro obj, fName),
-								pos: pos
-							}
-							return macro try {
-								$thisField = $objField;
-							} catch (e:Dynamic){ trace(e); }
-						}).array()
-					)), 
-					pos: pos
-				},
-				params: []
-			}),
-			pos: pos
-		});
+		//init
+		if (!fields.exists(function(f) return f.name == "init")) {
+			fields.push({
+				access: [APublic, AOverride],
+				name: "init",
+				kind:FFun({
+					args: [],
+					ret: clsComplex,
+					expr: {
+						expr: EBlock( [macro super.init()].concat([macro return this])), 
+						pos: pos
+					},
+					params: []
+				}),
+				pos: cls.pos
+			});
+		}
 		
 		//function toObj():Dynamic;
 		fields.push({
@@ -124,7 +145,42 @@ class StructBuilder {
 				},
 				params: []
 			}),
-			pos: pos
+			pos: cls.pos
+		});
+						
+		//function fromObj(obj:Dynamic) { ... }
+		fields.push({
+			access: [APublic, AOverride],
+			name: "fromObj",
+			kind:FFun({
+				args: [{
+					name: "obj",
+					opt: false,
+					type: TPath({pack:[], name:"Dynamic", params: []})
+				}],
+				ret: clsComplex,
+				expr: {
+					expr: EBlock( [macro super.fromObj(obj)].concat(
+						instanceFields.map(function(f){
+							var fName = f.name;
+							var thisField = {
+								expr: EField(macro this, fName),
+								pos: pos
+							}
+							var objField = {
+								expr: EField(macro obj, fName),
+								pos: pos
+							}
+							return macro try {
+								$thisField = $objField;
+							} catch (e:Dynamic){ trace(e); }
+						}).array().concat([macro return this])
+					)), 
+					pos: pos
+				},
+				params: []
+			}),
+			pos: cls.pos
 		});
 		
 		return fields;

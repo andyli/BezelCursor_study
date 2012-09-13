@@ -15,6 +15,7 @@ import bezelcursor.model.TaskBlockData;
 import bezelcursor.model.DeviceData;
 using bezelcursor.world.GameWorld;
 using bezelcursor.world.TestTouchWorld;
+using bezelcursor.world.ConfigThumbSpaceWorld;
 using bezelcursor.util.UnitUtil;
 
 class PowerMenuWorld extends GameWorld {
@@ -23,14 +24,31 @@ class PowerMenuWorld extends GameWorld {
 	
 	public function startTest():Void {
 		HXP.engine.asMain().cursorManager.tapEnabled = false;
-		HXP.world = new TestTouchWorld(HXP.engine.asMain().taskblocks.filter(function(tb){
+		
+		var testWorld = new TestTouchWorld(HXP.engine.asMain().taskblocks.filter(function(tb){
 			return tb.targetSize.width == selectedTargetSize.width && tb.targetSize.height == selectedTargetSize.height;
 		}).first());
+		
+		if (selectedMethod.name.indexOf("ThumbSpace") == -1) {
+			HXP.engine.asMain().cursorManager.thumbSpaceEnabled = false;
+			HXP.world = testWorld;
+		} else {
+			HXP.engine.asMain().cursorManager.thumbSpaceEnabled = true;
+			HXP.engine.asMain().worldQueue.add(testWorld);
+			HXP.world = new ConfigThumbSpaceWorld();
+		}
 	}
 	
 	public function startPractice():Void {
 		HXP.engine.asMain().cursorManager.tapEnabled = false;
-		HXP.world = new TestTouchWorld(TaskBlockData.generateTaskBlock(selectedTargetSize, TaskBlockData.targetSeperations[0], TaskBlockData.regionss[0]));
+		var testWorld = new TestTouchWorld(TaskBlockData.generateTaskBlock(selectedTargetSize, TaskBlockData.targetSeperations[0], TaskBlockData.regionss[0]));
+		
+		if (selectedMethod.name.indexOf("ThumbSpace") == -1) {
+			HXP.world = testWorld;
+		} else {
+			HXP.engine.asMain().worldQueue.add(testWorld);
+			HXP.world = new ConfigThumbSpaceWorld();
+		}
 	}
 	
 	public function new():Void {
@@ -63,7 +81,7 @@ class PowerMenuWorld extends GameWorld {
 		powerMenu.add(createBtnForMethod(InputMethods.BezelCursor_acceleratedDynaSpot));
 		powerMenu.add(createBtnForMethod(InputMethods.BezelCursor_directMappingDynaSpot));
 		powerMenu.add(createBtnForMethod(InputMethods.MagStick));
-		//powerMenu.add(createBtnForMethod(InputMethods.ThumbSpace));
+		powerMenu.add(createBtnForMethod(InputMethods.ThumbSpace));
 		
 		_x += HXP.stage.stageWidth;
 		

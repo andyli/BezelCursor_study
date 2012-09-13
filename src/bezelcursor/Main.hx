@@ -3,6 +3,7 @@ package bezelcursor;
 using Lambda;
 import com.haxepunk.Engine;
 import com.haxepunk.HXP;
+import com.haxepunk.World;
 import nme.display.Sprite;
 import nme.events.KeyboardEvent;
 import nme.ui.Keyboard;
@@ -24,6 +25,7 @@ class Main extends Engine {
 	public var isFirstRun:Bool;
 	public var powerMenu:PowerMenu;
 	public var taskblocks:Array<TaskBlockData>;
+	public var worldQueue:List<World>;
 	
 	public function new():Void {
 		super(Lib.current.stage.stageWidth, Lib.current.stage.stageHeight, 30, true);
@@ -41,11 +43,11 @@ class Main extends Engine {
 		#end
 		
 		initStorage();
-
+		
 		cursorManager = new CursorManager();
 		cursorManager.start();
-		
-		powerMenu = new PowerMenu();
+
+		worldQueue = new List<World>();
 
 		taskblocks = bezelcursor.model.TaskBlockData.generateTaskBlocks();
 		HXP.world = new PowerMenuWorld();
@@ -64,7 +66,6 @@ class Main extends Engine {
 		trace(isFirstRun ? "isFirstRun" : "not isFirstRun");
 		trace(DeviceData.current.id);
 		trace(UserData.current.id);
-		
 		/*
 		for (f in Type.getInstanceFields(DeviceData)) {
 			trace(f + " " + Reflect.getProperty(DeviceData.current, f));

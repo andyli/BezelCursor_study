@@ -19,20 +19,20 @@ import bezelcursor.model.TouchData;
 using bezelcursor.model.Struct;
 using bezelcursor.world.GameWorld;
 
-class Cursor {
+class Cursor extends Struct {
 	static var nextId = 0;
 	
-	public var onStartSignaler(default, null):Signaler<Point>;
-	public var onMoveSignaler(default, null):Signaler<Point>;
-	public var onClickSignaler(default, null):Signaler<Point>;
-	public var onEndSignaler(default, null):Signaler<Point>;
+	@:skip public var onStartSignaler(default, null):Signaler<Point>;
+	@:skip public var onMoveSignaler(default, null):Signaler<Point>;
+	@:skip public var onClickSignaler(default, null):Signaler<Point>;
+	@:skip public var onEndSignaler(default, null):Signaler<Point>;
 	
 	public var id(default, null):Int;
 	
 	/**
 	* Position of where the cursor is pointing to.
 	*/
-	public var position(get_position, set_position):Point;
+	@:skip public var position(get_position, set_position):Point;
 	var target_position:Point;
 	var current_position:Point;
 	function get_position():Point { return current_position; }
@@ -41,7 +41,7 @@ class Cursor {
 	/**
 	* The radius(in inch) of this cursor, which define the interest area used by snapper.
 	*/
-	public var radius(get_radius, set_radius):Float;
+	@:skip public var radius(get_radius, set_radius):Float;
 	var default_radius:Float;
 	var target_radius:Float;
 	var current_radius:Float;
@@ -64,7 +64,7 @@ class Cursor {
 	* The visual graphics of the cursor.
 	* It is automatically added to the stage on `start` and removed on `end`.
 	*/
-	public var view(default, null):Sprite;
+	@:skip public var view(default, null):Sprite;
 	
 	var positionXFilter:OneEuroFilter;
 	var positionYFilter:OneEuroFilter;
@@ -79,18 +79,26 @@ class Cursor {
 		target_radius = data != null && Reflect.hasField(data, "target_radius") ? data.target_radius :  0.001;
 		default_radius = data != null && Reflect.hasField(data, "default_radius") ? data.default_radius : 0.001;
 		
-		//behaviors = data != null && Reflect.hasField(data, "behaviors") ? data.behaviors : [];
+		behaviors = data != null && Reflect.hasField(data, "behaviors") ? data.behaviors : [];
 		snapper = data != null && Reflect.hasField(data, "snapper") ? Snapper.createFromData(this, data.snapper) : new SimpleSnapper(this);
 		behaviors = data != null && Reflect.hasField(data, "behaviors") ? Behavior.createFromDatas(this, data.behaviors) : [];
+		
+		positionXFilter = new OneEuroFilter(Lib.stage.frameRate, 1, 0.2);
+		positionYFilter = new OneEuroFilter(Lib.stage.frameRate, 1, 0.2);
+		radiusFilter = new OneEuroFilter(Lib.stage.frameRate);
+		
+		init();
+	}
+	
+	override public function init():Cursor {
+		super.init();
 		
 		onStartSignaler = new DirectSignaler<Point>(this);
 		onMoveSignaler = new DirectSignaler<Point>(this);
 		onClickSignaler = new DirectSignaler<Point>(this);
 		onEndSignaler = new DirectSignaler<Point>(this);
 		
-		positionXFilter = new OneEuroFilter(Lib.stage.frameRate, 1, 0.2);
-		positionYFilter = new OneEuroFilter(Lib.stage.frameRate, 1, 0.2);
-		radiusFilter = new OneEuroFilter(Lib.stage.frameRate);
+		return this;
 	}
 	
 	public function click():Void {
@@ -183,14 +191,6 @@ class Cursor {
 		current_position = target_position = null;
 		onEndSignaler.dispatch(position);
 	}
-
-    function hxSerialize(s:haxe.Serializer) {
-		s.serialize(getData());
-    }
-	
-    function hxUnserialize(s:haxe.Unserializer) {
-		setData(s.unserialize());
-    }
 	
 	public function getData():Dynamic {
 		var data:Dynamic = {};

@@ -7,6 +7,7 @@ import nme.display.BitmapData;
 import nme.display.PixelSnapping;
 import nme.display.Sprite;
 import nme.display.Stage;
+import nme.display.LineScaleMode;
 import nme.events.Event;
 import nme.events.TouchEvent;
 import nme.events.MouseEvent;
@@ -25,6 +26,7 @@ import com.haxepunk.HXP;
 import bezelcursor.cursor.behavior.DrawStick;
 import bezelcursor.model.DeviceData;
 import bezelcursor.model.TouchData;
+import bezelcursor.model.Struct;
 import bezelcursor.entity.Target;
 using bezelcursor.world.GameWorld;
 
@@ -40,8 +42,8 @@ enum ConfigState {
 	Configured;
 }
 
-class CursorManager {
-	static public var defaultCreateCursor(default, null) = function(touch:TouchData, _for:CreateCursorFor):Cursor {
+class CursorManager extends Struct {
+	@:skip static public var defaultCreateCursor(default, null) = function(touch:TouchData, _for:CreateCursorFor):Cursor {
 		switch(_for) {
 			case ForBezel: 
 				return new bezelcursor.cursor.MouseCursor({touchPointID: touch.touchPointID});
@@ -53,7 +55,7 @@ class CursorManager {
 	}
 	
 	public var tapEnabled:Bool;
-	public var cursorsEnabled:Bool;
+	public var cursorsEnabled(default, set_cursorsEnabled):Bool;
 	public var bezelCursorEnabled:Bool;
 	public var screenCursorEnabled:Bool;
 	public var thumbSpaceEnabled(default, set_thumbSpaceEnabled):Bool;
@@ -66,20 +68,29 @@ class CursorManager {
 	var bezelIn:Rectangle;
 	
 	public var thumbSpace(default, null):Rectangle;
-	public var thumbSpaceView(default, null):Bitmap;
-	public var thumbSpaceConfigState(default, null):ConfigState;
+	@:skip public var thumbSpaceView(default, null):Sprite;
+	@:skip public var thumbSpaceViewBitmap(default, null):Bitmap;
+	@:skip public var thumbSpaceConfigState(default, null):ConfigState;
 	
-	public var createCursor:TouchData->CreateCursorFor->Cursor;
+	@:skip public var createCursor:TouchData->CreateCursorFor->Cursor;
 	
-	public var onStartSignaler(default, null):Signaler<Point>;
-	public var onMoveSignaler(default, null):Signaler<Point>;
-	public var onClickSignaler(default, null):Signaler<Point>;
-	public var onEndSignaler(default, null):Signaler<Point>;
+	@:skip public var onStartSignaler(default, null):Signaler<Point>;
+	@:skip public var onMoveSignaler(default, null):Signaler<Point>;
+	@:skip public var onClickSignaler(default, null):Signaler<Point>;
+	@:skip public var onEndSignaler(default, null):Signaler<Point>;
 	
 	/**
 	* Basically Lib.stage.
 	*/
-	public var stage(default, null):Stage;
+	@:skip public var stage(default, null):Stage;
+	
+	function set_cursorsEnabled(v:Bool):Bool {
+		if (cursorsEnabled == v) return v;
+		
+		thumbSpaceView.visible = v && thumbSpaceEnabled;
+		
+		return cursorsEnabled = v;
+	}
 	
 	function set_thumbSpaceEnabled(v:Bool):Bool {
 		if (thumbSpaceEnabled == v) return v;
@@ -105,15 +116,16 @@ class CursorManager {
 			thumbSpace.left = left;
 		}
 		
-		thumbSpaceView.x = thumbSpace.x;
-		thumbSpaceView.y = thumbSpace.y;
-		thumbSpaceView.width = thumbSpace.width;
-		thumbSpaceView.height = thumbSpace.height;
-		/*
+		thumbSpaceViewBitmap.x = thumbSpace.x;
+		thumbSpaceViewBitmap.y = thumbSpace.y;
+		thumbSpaceViewBitmap.width = thumbSpace.width;
+		thumbSpaceViewBitmap.height = thumbSpace.height;
+		
 		thumbSpaceView.graphics.clear();
-		thumbSpaceView.graphics.beginFill(0xFFFFFF, 0.1);
+		thumbSpaceView.graphics.lineStyle(1, 0x000000, 1, true, LineScaleMode.NONE);
 		thumbSpaceView.graphics.drawRect(thumbSpace.x, thumbSpace.y, thumbSpace.width, thumbSpace.height);
-		*/
+		thumbSpaceView.graphics.lineStyle(1, 0xFFFFFF, 1, true, LineScaleMode.NONE);
+		thumbSpaceView.graphics.drawRect(thumbSpace.x - 1, thumbSpace.y - 1, thumbSpace.width + 2, thumbSpace.height + 2);
 	}
 	
 	/**
@@ -129,15 +141,17 @@ class CursorManager {
 	public function new():Void {
 		stage = Lib.stage;
 		thumbSpace = new Rectangle(Math.NEGATIVE_INFINITY);
-		thumbSpaceView = new Bitmap(HXP.buffer, PixelSnapping.ALWAYS, true);//new Sprite();
-		thumbSpaceView.alpha = 0.9;
-		//thumbSpaceView.filters = [new nme.filters.DropShadowFilter(0, 0, 0, 0.8, 0.05 * DeviceData.current.screenDPI, 0.05 * DeviceData.current.screenDPI)];
+		thumbSpaceViewBitmap = new Bitmap(HXP.buffer, PixelSnapping.ALWAYS, true);//new Sprite();
+		thumbSpaceViewBitmap.alpha = 0.9;
+		//thumbSpaceViewBitmap.filters = [new nme.filters.DropShadowFilter(0, 0, 0, 0.8, 0.05 * DeviceData.current.screenDPI, 0.05 * DeviceData.current.screenDPI)];
+		thumbSpaceView = new Sprite();
+		thumbSpaceView.addChild(thumbSpaceViewBitmap);
 		thumbSpaceConfigState = NotConfigured;
 		tapEnabled = true;
 		cursorsEnabled = true;
 		bezelCursorEnabled = true;
 		screenCursorEnabled = true;
-		thumbSpaceEnabled = true;
+		thumbSpaceEnabled = false;
 		createCursor = defaultCreateCursor;
 		
 		onStartSignaler = new DirectSignaler<Point>(this);
@@ -160,7 +174,6 @@ class CursorManager {
 	
 	public function start():Void {
 		onResize();
-		stage.addChild(thumbSpaceView);
 		
 		if (Multitouch.supportsTouchEvents) {
 			stage.addEventListener(TouchEvent.TOUCH_BEGIN, onTouchBegin);
@@ -191,7 +204,6 @@ class CursorManager {
 			stage.removeEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
 			stage.removeEventListener(MouseEvent.MOUSE_UP, onMouseUp);
 		}
-		stage.removeChild(thumbSpaceView);
 	}
 	
 	public function startThumbSpaceConfig():Void {
@@ -331,7 +343,7 @@ class CursorManager {
 		}
 	}
 	
-	function onEnd(touch:TouchData):Void {trace("end");
+	function onEnd(touch:TouchData):Void {
 		switch (thumbSpaceConfigState) {
 			case Configuring:
 				endThumbSpaceConfig();
@@ -342,7 +354,7 @@ class CursorManager {
 		if (pointActivatedCursors.exists(touch.touchPointID)) {
 			var cursor = pointActivatedCursors.get(touch.touchPointID);
 			cursor.onTouchEnd(touch);
-		} else if (tapEnabled) {trace("tap");
+		} else if (tapEnabled) {
 			var touchPt = new Point(touch.x, touch.y);
 			onClickSignaler.dispatch(touchPt);
 			var touchPtInWorld = HXP.world.asGameWorld().screenToWorld(touchPt);

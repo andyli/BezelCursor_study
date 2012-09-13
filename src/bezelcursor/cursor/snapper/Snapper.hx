@@ -2,8 +2,9 @@ package bezelcursor.cursor.snapper;
 
 import bezelcursor.cursor.Cursor;
 import bezelcursor.entity.Target;
+import bezelcursor.model.Struct;
 
-class Snapper<C:Cursor> {
+class Snapper<C:Cursor> extends Struct {
 	public var cursor(default, null):C;
 	
 	/**
@@ -29,14 +30,6 @@ class Snapper<C:Cursor> {
 	public function run():Void {
 		interestedTargets = [];
 	}
-
-    function hxSerialize(s:haxe.Serializer) {
-		s.serialize(getData());
-    }
-	
-    function hxUnserialize(s:haxe.Unserializer) {
-		setData(s.unserialize());
-    }
 	
 	public function getData():Dynamic {
 		var data:Dynamic = {};

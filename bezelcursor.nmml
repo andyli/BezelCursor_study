@@ -2,8 +2,7 @@
 <project>
 	<app 
 		title="BezelCursor" package="net.onthewings.bezelcursor" version="1.0.0" company="onthewings"
-		main="bezelcursor.Main" file="BezelCursor" path="bin" 
-		preloader="com.haxepunk.Preloader" />
+		main="bezelcursor.Main" file="BezelCursor" path="bin" />
 	
 	<window width="480" height="800" resizable="false" unless="mobile" />
 	<!--<window width="720" height="1280" resizable="false" unless="mobile" />-->
