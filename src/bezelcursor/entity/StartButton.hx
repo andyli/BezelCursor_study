@@ -16,7 +16,7 @@ class StartButton extends Button {
 	
 	public function new(labelText:String):Void {
 		super(labelText);
-		type = "StartButton";
+		type = "StartButton"; //so it is not snapped by cursor
 		
 		resize(HXP.stage.stageWidth, Math.round(DeviceData.current.screenDPI * HEIGHT));
 		
@@ -35,7 +35,6 @@ class StartButton extends Button {
 		
 		var cm = HXP.engine.asMain().cursorManager;
 		cm.cursorsEnabled = false;
-		cm.tapEnabled = false;
 		
 		HXP.stage.addEventListener(MouseEvent.MOUSE_DOWN, onPressed);
 	}
@@ -45,7 +44,6 @@ class StartButton extends Button {
 		
 		var cm = HXP.engine.asMain().cursorManager;
 		cm.cursorsEnabled = true;
-		cm.tapEnabled = true;
 		
 		HXP.stage.removeEventListener(MouseEvent.MOUSE_DOWN, onPressed);
 	}

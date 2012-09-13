@@ -25,7 +25,7 @@ class Cursor {
 	public var onStartSignaler(default, null):Signaler<Point>;
 	public var onMoveSignaler(default, null):Signaler<Point>;
 	public var onClickSignaler(default, null):Signaler<Point>;
-	public var onEndSignaler(default, null):Signaler<Void>;
+	public var onEndSignaler(default, null):Signaler<Point>;
 	
 	public var id(default, null):Int;
 	
@@ -86,7 +86,7 @@ class Cursor {
 		onStartSignaler = new DirectSignaler<Point>(this);
 		onMoveSignaler = new DirectSignaler<Point>(this);
 		onClickSignaler = new DirectSignaler<Point>(this);
-		onEndSignaler = new DirectSignaler<Void>(this);
+		onEndSignaler = new DirectSignaler<Point>(this);
 		
 		positionXFilter = new OneEuroFilter(Lib.stage.frameRate, 1, 0.2);
 		positionYFilter = new OneEuroFilter(Lib.stage.frameRate, 1, 0.2);
@@ -181,7 +181,7 @@ class Cursor {
 		}
 		Lib.stage.removeChild(view);
 		current_position = target_position = null;
-		onEndSignaler.dispatch();
+		onEndSignaler.dispatch(position);
 	}
 
     function hxSerialize(s:haxe.Serializer) {

@@ -33,8 +33,6 @@ class GameWorld extends World {
 	public var visibleTargets:Array<Target>;
 	public var invisibleTargets:Array<Target>;
 	
-	public var startBtn:StartButton;
-	
 	public function new():Void {
 		super();
 		isCameraMoving = true;
@@ -44,9 +42,6 @@ class GameWorld extends World {
 		
 		pCameraX = camera.x;
 		pCameraY = camera.y;
-		
-		startBtn = new StartButton("Start");
-		add(startBtn);
 	}
 	
 	function isTargetInBound(target:Target):Bool {

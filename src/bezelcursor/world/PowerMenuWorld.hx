@@ -20,15 +20,27 @@ using bezelcursor.util.UnitUtil;
 class PowerMenuWorld extends GameWorld {
 	var selectedMethod:InputMethod;
 	var selectedTargetSize:{width:Float, height:Float};
+	
+	public function startTest():Void {
+		HXP.engine.asMain().cursorManager.tapEnabled = false;
+		HXP.world = new TestTouchWorld(HXP.engine.asMain().taskblocks.filter(function(tb){
+			return tb.targetSize.width == selectedTargetSize.width && tb.targetSize.height == selectedTargetSize.height;
+		}).first());
+	}
+	
+	public function startPractice():Void {
+		HXP.engine.asMain().cursorManager.tapEnabled = false;
+		HXP.world = new TestTouchWorld(TaskBlockData.generateTaskBlock(selectedTargetSize, TaskBlockData.targetSeperations[0], TaskBlockData.regionss[0]));
+	}
+	
 	public function new():Void {
 		super();
 		
-		var cm = HXP.engine.asMain().cursorManager;
-		cm.cursorsEnabled = true;
-		cm.tapEnabled = true;
-		
 		var dpi = DeviceData.current.screenDPI;
-		remove(startBtn);
+		
+		var cm = HXP.engine.asMain().cursorManager;
+		cm.cursorsEnabled = false;
+		cm.tapEnabled = true;
 		
 		var _x = 0;
 		
@@ -74,10 +86,7 @@ class PowerMenuWorld extends GameWorld {
 			btn.resize(btn.text.width + 20, btn.text.height + 20);
 			btn.onClickSignaler.bindVoid(function(){
 				selectedTargetSize = targetSize;
-				camera.tween(0.5, { x: powerMenu.x + powerMenu.width })
-					.onComplete(function(){
-						add(startBtn);
-					});
+				camera.tween(0.5, { x: powerMenu.x + powerMenu.width });
 			});
 			powerMenu.add(btn);
 		}
@@ -86,51 +95,32 @@ class PowerMenuWorld extends GameWorld {
 		
 		
 		
-		for (i in 0...5) {
-			var powerMenu = new PowerMenu();
-			powerMenu.x = _x;
-			add(powerMenu);
 		
-			var btn = new Button("Back");
-			btn.resize(btn.text.width + 5, btn.text.height + 5);
-			btn.onClickSignaler.bindVoid(function(){
-				remove(startBtn);
-				camera.tween(0.5, { x: powerMenu.x - powerMenu.width })
-					.onComplete(function(){
-						if(i > 0)
-							add(startBtn);
-					});
-			});
-			powerMenu.add(btn);
+		var powerMenu = new PowerMenu();
+		powerMenu.x = _x;
+		add(powerMenu);
 		
-			var rect = new Rectangle(0, 0, HXP.stage.stageWidth * 0.8, dpi * 2.5);
-			rect.x = (HXP.stage.stageWidth - rect.width) * 0.5 + _x;
-			rect.y = btn.text.height + 20;
+		var btn = new Button("Back");
+		btn.resize(btn.text.width + 5, btn.text.height + 5);
+		btn.onClickSignaler.bindVoid(function(){
+			camera.tween(0.5, { x: powerMenu.x - powerMenu.width });
+		});
+		powerMenu.add(btn);
 		
-			var btn = new RandomMovingTarget( rect, {
-				color: 0xFF0000,
-				color_hover: 0x00FF00
-			});
-			btn.onAddedSignaler.bindVoid(function(){
-				btn.resize(Math.round(selectedTargetSize.width), Math.round(selectedTargetSize.height));	
-			});
-			btn.onClickSignaler.bindVoid(function(){
-				if (i == 4) {
-					HXP.world = new TestTouchWorld(HXP.engine.asMain().taskblocks.filter(function(tb){
-						return tb.targetSize.width == selectedTargetSize.width && tb.targetSize.height == selectedTargetSize.height;
-					}).first());
-					return;
-				}
-				remove(startBtn);
-				
-				camera.tween(0.5, { x: powerMenu.x + powerMenu.width })
-					.onComplete(function(){
-						add(startBtn);
-					});
-			});
-			add(btn);
+		var btn = new Button("Practice");
+		btn.resize(btn.text.width + 20, btn.text.height + 20);
+		btn.onClickSignaler.bindVoid(function(){
+			startPractice();
+		});
+		powerMenu.add(btn);
 		
-			_x += HXP.stage.stageWidth;
-		}
+		var btn = new Button("Start");
+		btn.resize(btn.text.width + 20, btn.text.height + 20);
+		btn.onClickSignaler.bindVoid(function(){
+			startTest();
+		});
+		powerMenu.add(btn);
+		
+		_x += HXP.stage.stageWidth;
 	}
 }

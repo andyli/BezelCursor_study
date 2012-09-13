@@ -19,6 +19,7 @@ import bezelcursor.entity.Panel;
 import bezelcursor.entity.Button;
 import bezelcursor.entity.Target;
 import bezelcursor.entity.RandomMovingTarget;
+import bezelcursor.entity.StartButton;
 import bezelcursor.model.DeviceData;
 import bezelcursor.model.TouchData;
 import bezelcursor.model.TaskBlockData;
@@ -28,6 +29,8 @@ class TestTouchWorld extends GameWorld {
 	public var currentTarget:Target;	
 	public var targetQueue:Array<{target:Int, camera:Point}>;
 	public var targets:Array<Target>;
+	
+	public var startBtn:StartButton;
 	
 	override public function new(taskBlockData:TaskBlockData):Void {
 		super();
@@ -47,6 +50,9 @@ class TestTouchWorld extends GameWorld {
 			target.color = 0xFF0000;
 			target.color_hover = 0x66FF66;
 		}
+		
+		startBtn = new StartButton("Start");
+		add(startBtn);
 	}
 	
 	public function next():Void {

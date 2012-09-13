@@ -25,6 +25,8 @@ import com.haxepunk.HXP;
 import bezelcursor.cursor.behavior.DrawStick;
 import bezelcursor.model.DeviceData;
 import bezelcursor.model.TouchData;
+import bezelcursor.entity.Target;
+using bezelcursor.world.GameWorld;
 
 enum CreateCursorFor {
 	ForBezel;
@@ -72,7 +74,7 @@ class CursorManager {
 	public var onStartSignaler(default, null):Signaler<Point>;
 	public var onMoveSignaler(default, null):Signaler<Point>;
 	public var onClickSignaler(default, null):Signaler<Point>;
-	public var onEndSignaler(default, null):Signaler<Void>;
+	public var onEndSignaler(default, null):Signaler<Point>;
 	
 	/**
 	* Basically Lib.stage.
@@ -141,7 +143,7 @@ class CursorManager {
 		onStartSignaler = new DirectSignaler<Point>(this);
 		onMoveSignaler = new DirectSignaler<Point>(this);
 		onClickSignaler = new DirectSignaler<Point>(this);
-		onEndSignaler = new DirectSignaler<Void>(this);
+		onEndSignaler = new DirectSignaler<Point>(this);
 		
 		cursors = new IntHash<Cursor>();
 		pointActivatedCursors = new IntHash<PointActivatedCursor>();
@@ -279,7 +281,7 @@ class CursorManager {
 		cursor.onClickSignaler.addBubblingTarget(onClickSignaler);
 		cursor.onEndSignaler.addBubblingTarget(onEndSignaler);
 		
-		cursor.onEndSignaler.bindAdvanced(function(signal:Signal<Void>):Void {
+		cursor.onEndSignaler.bindAdvanced(function(signal:Signal<Point>):Void {
 			var cursor:Cursor = cast signal.origin;
 				
 			cursor.onStartSignaler.removeBubblingTarget(onStartSignaler);
@@ -329,7 +331,7 @@ class CursorManager {
 		}
 	}
 	
-	function onEnd(touch:TouchData):Void {
+	function onEnd(touch:TouchData):Void {trace("end");
 		switch (thumbSpaceConfigState) {
 			case Configuring:
 				endThumbSpaceConfig();
@@ -340,8 +342,14 @@ class CursorManager {
 		if (pointActivatedCursors.exists(touch.touchPointID)) {
 			var cursor = pointActivatedCursors.get(touch.touchPointID);
 			cursor.onTouchEnd(touch);
-		} else if (tapEnabled) {
-			onClickSignaler.dispatch(new Point(touch.x, touch.y));
+		} else if (tapEnabled) {trace("tap");
+			var touchPt = new Point(touch.x, touch.y);
+			onClickSignaler.dispatch(touchPt);
+			var touchPtInWorld = HXP.world.asGameWorld().screenToWorld(touchPt);
+			var target:Target = cast HXP.world.collidePoint(Target.TYPE, touchPtInWorld.x, touchPtInWorld.y);
+			if (target != null){
+				target.click();
+			}
 		}
 	}
 	
