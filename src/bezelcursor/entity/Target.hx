@@ -116,12 +116,16 @@ class Target extends Entity {
 	
 	public function rollOver(?cursor:Cursor):Void {
 		isHoverBy.set(cursor == null ? -1 : cursor.id, cursor);
+		
 		graphic = graphicList_hover;
 	}
 	
 	public function rollOut(?cursor:Cursor):Void {
 		isHoverBy.remove(cursor == null ? -1 : cursor.id);
-		graphic = graphicList;
+		
+		if (isHoverBy.empty()) {
+			graphic = graphicList;
+		}
 	}
 
     function hxSerialize(s:haxe.Serializer) {

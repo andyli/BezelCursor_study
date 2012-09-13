@@ -23,6 +23,10 @@ class PowerMenuWorld extends GameWorld {
 	public function new():Void {
 		super();
 		
+		var cm = HXP.engine.asMain().cursorManager;
+		cm.cursorsEnabled = true;
+		cm.tapEnabled = true;
+		
 		var dpi = DeviceData.current.screenDPI;
 		remove(startBtn);
 		
