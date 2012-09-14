@@ -51,8 +51,8 @@ class PowerMenuWorld extends GameWorld {
 		}
 	}
 	
-	public function new():Void {
-		super();
+	override public function begin():Void {
+		super.begin();
 		
 		var dpi = DeviceData.current.screenDPI;
 		

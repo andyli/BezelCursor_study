@@ -30,6 +30,7 @@ import bezelcursor.model.TouchData;
 import bezelcursor.model.IStruct;
 import bezelcursor.model.InputMethod;
 import bezelcursor.entity.Target;
+import bezelcursor.entity.StartButton;
 using bezelcursor.world.GameWorld;
 
 enum CreateCursorFor {
@@ -99,9 +100,16 @@ class CursorManager implements IStruct {
 		
 		if (v) {
 			thumbSpaceViewDraw();
-			thumbSpaceView.tween(0.5, { alpha: 1.0 }).autoVisible(true);
+			thumbSpaceView.tween(0.25, { alpha: 1.0 }).autoVisible(true);
 		} else {
-			thumbSpaceView.tween(0.5, { alpha: 0.0 }).autoVisible(true);
+			thumbSpaceView.tween(0.25, { alpha: 0.0 }).autoVisible(true);
+			
+			if (inputMethod.forThumbSpace != null) {
+				var startBtn:StartButton = HXP.world.classFirst(StartButton);
+				if (startBtn != null) {
+					startBtn.visible = true;
+				}
+			}
 		}
 		
 		return thumbSpaceEnabled = v;

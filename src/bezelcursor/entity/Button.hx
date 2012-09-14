@@ -15,15 +15,15 @@ class Button extends Target {
 	}
 	
 	override public function resize(w:Int = -1, h:Int = -1):Void {
-		image = Image.createRect(width = w == -1 ? width : w, height = h == -1 ? height : h, color);
+		image_default = Image.createRect(width = w == -1 ? width : w, height = h == -1 ? height : h, color);
 		image_hover = Image.createRect(width = w == -1 ? width : w, height = h == -1 ? height : h, color_hover);
 		
 		text.x = (width - text.width) * 0.5;
 		text.y = (height - text.height) * 0.5;
 			
-		graphicList.removeAll();
-		graphicList.add(image);
-		graphicList.add(text);
+		graphicList_default.removeAll();
+		graphicList_default.add(image_default);
+		graphicList_default.add(text);
 		
 		graphicList_hover.removeAll();
 		graphicList_hover.add(image_hover);

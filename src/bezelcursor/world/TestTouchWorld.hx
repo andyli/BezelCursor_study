@@ -56,8 +56,12 @@ class TestTouchWorld extends GameWorld {
 	}
 	
 	public function next():Void {
-		remove(startBtn);
-		HXP.engine.asMain().cursorManager.cursorsEnabled = false;
+		startBtn.visible = false;
+		
+		var cm = HXP.engine.asMain().cursorManager;
+		cm.cursorsEnabled = false;
+		cm.thumbSpaceEnabled = false;
+		cm.tapEnabled = false;
 		
 		var nextSpec = targetQueue.shift();
 		
@@ -69,7 +73,7 @@ class TestTouchWorld extends GameWorld {
 		currentTarget = targets[nextSpec.target];
 		currentTarget.onClickSignaler.bindVoid(next).destroyOnUse();
 		
-		camera.tween(0.5, nextSpec.camera).onComplete(function(){ add(startBtn); });
+		camera.tween(0.5, nextSpec.camera).onComplete(function() startBtn.visible = true);
 	}
 	
 	override public function begin():Void {
@@ -82,89 +86,5 @@ class TestTouchWorld extends GameWorld {
 		}
 		
 		next();
-		
-		/*
-		var target = new Target({
-			x: margin, 
-			y: HXP.stage.stageHeight - _h - margin * 0.5,
-			width: _w - margin, 
-			height: _h - margin
-		});
-		target.color = 0x0000FF;
-		target.color_hover = 0x3333FF;
-		add(target);
-		
-		target.onClickSignaler.bindVoid(function() {
-			HXP.engine.asMain().cursorManager.createCursor = CursorManager.defaultCreateCursor;
-		});
-		
-		var target = new Target({
-			x:_w + margin, 
-			y:HXP.stage.stageHeight - _h - margin * 0.5, 
-			width: _w - margin, 
-			height: _h - margin
-		});
-		target.color = 0x0000FF;
-		target.color_hover = 0x3333FF;
-		add(target);
-		
-		target.onClickSignaler.bindVoid(function() {
-			HXP.engine.asMain().cursorManager.createCursor = function(touch:TouchData, _for:CreateCursorFor):Cursor {
-				switch(_for) {
-					case ForBezel: 
-						return new bezelcursor.cursor.StickCursor({touchPointID: touch.touchPointID});
-					case ForScreen:
-						return new bezelcursor.cursor.MagStickCursor({touchPointID: touch.touchPointID});
-					case ForThumbSpace:
-						return new bezelcursor.cursor.MouseCursor({touchPointID: touch.touchPointID});
-				}
-			}
-		});
-		
-		var target = new Target({
-			x: _w * 2 + margin,
-			y: HXP.stage.stageHeight - _h - margin * 0.5,
-			width: _w - margin, 
-			height: _h - margin
-		});
-		target.color = 0x0000FF;
-		target.color_hover = 0x3333FF;
-		add(target);
-		
-		target.onClickSignaler.bindVoid(function() {
-			HXP.engine.asMain().cursorManager.createCursor = function(touch:TouchData, _for:CreateCursorFor):Cursor {
-				switch(_for) {
-					case ForBezel: 
-						return new bezelcursor.cursor.BubbleMouseCursor({touchPointID: touch.touchPointID});
-					case ForScreen:
-						return new bezelcursor.cursor.MagStickCursor({touchPointID: touch.touchPointID});
-					case ForThumbSpace:
-						var c = new bezelcursor.cursor.BubbleMouseCursor({touchPointID: touch.touchPointID});
-						c.behaviors.remove(c.behaviors.filter(function(b) return Std.is(b, DrawBubble)).first());
-						return c;
-				}
-			}
-		});
-		
-		var target = new Target({
-			x: _w * 3 + margin, 
-			y: HXP.stage.stageHeight - _h - margin * 0.5, 
-			width: _w - margin, 
-			height: _h - margin
-		});
-		target.color = 0x00FFFF;
-		target.color_hover = 0x33FFFF;
-		add(target);
-		
-		target.onClickSignaler.bindVoid(function() {
-			var cm = HXP.engine.asMain().cursorManager;
-			if(cm.thumbSpace.x == Math.NEGATIVE_INFINITY) {
-				cm.startThumbSpaceConfig();
-			} else {
-				cm.thumbSpaceEnabled = true;
-			}
-		});
-		
-		*/
 	}
 }

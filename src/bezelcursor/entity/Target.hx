@@ -31,7 +31,7 @@ class Target extends Entity, implements IStruct {
 	@:skip public var onRollOutSignaler(default, null):Signaler<Void>;
 	
 	@:skip var cursorManager:CursorManager;
-	@:skip var graphicList:Graphiclist;
+	@:skip var graphicList_default:Graphiclist;
 	@:skip var graphicList_hover:Graphiclist;
 	
 	
@@ -55,7 +55,7 @@ class Target extends Entity, implements IStruct {
 		return c;
 	}
 	
-	@:skip public var image:Image;
+	@:skip public var image_default:Image;
 	@:skip public var image_hover:Image;
 	public var isHoverBy(default, null):IntHash<Cursor>;
 	
@@ -89,12 +89,12 @@ class Target extends Entity, implements IStruct {
 		onRollOutSignaler = new DirectSignaler<Void>(this);
 		cursorManager = HXP.engine.asMain().cursorManager;
 		
-		graphic = graphicList = new Graphiclist();
+		graphic = graphicList_default = new Graphiclist();
 		graphicList_hover = new Graphiclist();
 		
 		resize();
 		
-		image.alpha = 0.0;
+		image_default.alpha = 0.0;
 		image_hover.alpha = 0.0;
 		
 		return this;
@@ -103,7 +103,7 @@ class Target extends Entity, implements IStruct {
 	override public function added():Void {
 		super.added();
 		
-		image.tween(0.5, {alpha: 1.0});
+		image_default.tween(0.5, {alpha: 1.0});
 		image_hover.tween(0.5, {alpha: 1.0});
 		
 		onAddedSignaler.dispatch();
@@ -116,11 +116,11 @@ class Target extends Entity, implements IStruct {
 	}
 	
 	public function resize(w:Int = -1, h:Int = -1):Void {
-		image = Image.createRect(width = w == -1 ? width : w, height = h == -1 ? height : h, color);
+		image_default = Image.createRect(width = w == -1 ? width : w, height = h == -1 ? height : h, color);
 		image_hover = Image.createRect(width = w == -1 ? width : w, height = h == -1 ? height : h, color_hover);
 		
-		graphicList.removeAll();
-		graphicList.add(image);
+		graphicList_default.removeAll();
+		graphicList_default.add(image_default);
 		
 		graphicList_hover.removeAll();
 		graphicList_hover.add(image_hover);
@@ -129,8 +129,8 @@ class Target extends Entity, implements IStruct {
 	public function click(?cursor:Cursor):Void {
 		onClickSignaler.dispatch();
 		
-		image.alpha = 0.5;
-		image.tween(0.1, {alpha: 1.0});
+		image_default.alpha = 0.5;
+		image_default.tween(0.1, {alpha: 1.0});
 		
 		image_hover.alpha = 0.5;
 		image_hover.tween(0.1, {alpha: 1.0});
@@ -146,7 +146,7 @@ class Target extends Entity, implements IStruct {
 		isHoverBy.remove(cursor == null ? -1 : cursor.id);
 		
 		if (isHoverBy.empty()) {
-			graphic = graphicList;
+			graphic = graphicList_default;
 		}
 	}
 }
