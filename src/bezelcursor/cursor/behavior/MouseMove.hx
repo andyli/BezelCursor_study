@@ -21,8 +21,8 @@ class MouseMove extends Behavior<PointActivatedCursor> {
 	public function new(c:PointActivatedCursor):Void {
 		super(c);
 		
-		minVelocityFactor = 1;
-		maxVelocityFactor = 3;
+		minVelocityFactor = 1.5;
+		maxVelocityFactor = 3.5;
 		minVelocityFactorTouchVelocity = DeviceData.current.screenDPI * 0.01 * 30;
 		maxVelocityFactorTouchVelocity = DeviceData.current.screenDPI * 0.05 * 30;
 		

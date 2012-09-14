@@ -41,7 +41,7 @@ class StructBuilder {
 
 		var cls = Type.getClass(t);
 		for (f in Reflect.fields(obj)) {
-			var field = Reflect.getProperty(obj, f);//Reflect.field(obj, f);
+			var field = Reflect.getProperty(obj, f);
 			if (field != null && hasMetaRecurive(cls, f, "deep")) {
 				fromObj(Reflect.field(t,f), field);
 			} else {

@@ -48,7 +48,6 @@ enum ConfigState {
 class CursorManager implements IStruct {
 	public var inputMethod:InputMethod;
 	
-	public var tapEnabled:Bool;
 	public var cursorsEnabled(default, set_cursorsEnabled):Bool;
 	public var thumbSpaceEnabled(default, set_thumbSpaceEnabled):Bool;
 
@@ -144,7 +143,7 @@ class CursorManager implements IStruct {
 		
 		bezelWidth = 0.15;
 		
-		inputMethod = InputMethod.None;
+		inputMethod = InputMethod.DirectTouch;
 		
 		cursors = new IntHash<Cursor>();
 		pointActivatedCursors = new IntHash<PointActivatedCursor>();
@@ -178,6 +177,8 @@ class CursorManager implements IStruct {
 	}
 	
 	public function start():Void {
+		cursorsEnabled = true;
+		
 		onResize();
 		
 		if (Multitouch.supportsTouchEvents) {
@@ -375,14 +376,6 @@ class CursorManager implements IStruct {
 		if (pointActivatedCursors.exists(touch.touchPointID)) {
 			var cursor = pointActivatedCursors.get(touch.touchPointID);
 			cursor.onTouchEnd(touch);
-		} else if (tapEnabled) {
-			var touchPt = new Point(touch.x, touch.y);
-			onClickSignaler.dispatch(touchPt);
-			var touchPtInWorld = HXP.world.asGameWorld().screenToWorld(touchPt);
-			var target:Target = cast HXP.world.collidePoint(Target.TYPE, touchPtInWorld.x, touchPtInWorld.y);
-			if (target != null){
-				target.click();
-			}
 		}
 	}
 	

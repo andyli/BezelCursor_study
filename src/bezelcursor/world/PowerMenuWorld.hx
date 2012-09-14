@@ -22,9 +22,7 @@ class PowerMenuWorld extends GameWorld {
 	var selectedMethod:InputMethod;
 	var selectedTargetSize:{width:Float, height:Float};
 	
-	public function startTest():Void {
-		HXP.engine.asMain().cursorManager.tapEnabled = false;
-		
+	public function startTest():Void {		
 		var testWorld = new TestTouchWorld(HXP.engine.asMain().taskblocks.filter(function(tb){
 			return tb.targetSize.width == selectedTargetSize.width && tb.targetSize.height == selectedTargetSize.height;
 		}).first());
@@ -40,12 +38,13 @@ class PowerMenuWorld extends GameWorld {
 	}
 	
 	public function startPractice():Void {
-		HXP.engine.asMain().cursorManager.tapEnabled = false;
 		var testWorld = new TestTouchWorld(TaskBlockData.generateTaskBlock(selectedTargetSize, TaskBlockData.targetSeperations[0], TaskBlockData.regionss[0]));
 		
 		if (selectedMethod.name.indexOf("ThumbSpace") == -1) {
+			HXP.engine.asMain().cursorManager.thumbSpaceEnabled = false;
 			HXP.world = testWorld;
 		} else {
+			HXP.engine.asMain().cursorManager.thumbSpaceEnabled = true;
 			HXP.engine.asMain().worldQueue.add(testWorld);
 			HXP.world = new ConfigThumbSpaceWorld();
 		}
@@ -56,9 +55,8 @@ class PowerMenuWorld extends GameWorld {
 		
 		var dpi = DeviceData.current.screenDPI;
 		
-		var cm = HXP.engine.asMain().cursorManager;
-		cm.cursorsEnabled = false;
-		cm.tapEnabled = true;
+		HXP.engine.asMain().cursorManager.inputMethod = InputMethod.DirectTouch;
+		HXP.engine.asMain().cursorManager.cursorsEnabled = true;
 		
 		var _x = 0;
 		
@@ -70,7 +68,7 @@ class PowerMenuWorld extends GameWorld {
 			var btn = new Button(method.name);
 			btn.resize(btn.text.width + 20, btn.text.height + 20);
 			btn.onClickSignaler.bindVoid(function() {
-				HXP.engine.asMain().cursorManager.inputMethod = selectedMethod = method;
+				selectedMethod = method;
 				camera.tween(0.5, { x: powerMenu.x + powerMenu.width });
 			});
 			return btn;
@@ -139,5 +137,11 @@ class PowerMenuWorld extends GameWorld {
 		powerMenu.add(btn);
 		
 		_x += HXP.stage.stageWidth;
+	}
+	
+	override public function end():Void {
+		super.end();
+		
+		HXP.engine.asMain().cursorManager.inputMethod = selectedMethod;
 	}
 }

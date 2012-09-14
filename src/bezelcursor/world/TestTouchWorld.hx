@@ -61,7 +61,6 @@ class TestTouchWorld extends GameWorld {
 		var cm = HXP.engine.asMain().cursorManager;
 		cm.cursorsEnabled = false;
 		cm.thumbSpaceEnabled = false;
-		cm.tapEnabled = false;
 		
 		var nextSpec = targetQueue.shift();
 		

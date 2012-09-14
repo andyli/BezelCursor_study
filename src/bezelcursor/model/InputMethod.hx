@@ -30,6 +30,19 @@ class InputMethod implements IStruct {
 		null
 	);
 	
+	static public var DirectTouch:InputMethod = new InputMethod(
+		"Direct touch",
+		{ _class: bezelcursor.cursor.StickCursor, data: {
+			drawRadius: null,
+			scaleFactor: 1,
+			jointActivateDistance: Math.POSITIVE_INFINITY,
+			dynaScale: null,
+			default_radius: 0
+		} },
+		null,
+		null
+	);
+	
 	static public var BezelCursor_acceleratedDynaSpot:InputMethod = new InputMethod(
 		"BezelCursor - accelerated DynaSpot",
 		null,
