@@ -15,6 +15,7 @@ class ConfigThumbSpaceWorld extends GameWorld {
 		super.begin();
 		
 		var cm = HXP.engine.asMain().cursorManager;
+		cm.cursorsEnabled = true;
 		cm.thumbSpaceEnabled = true;
 		cm.startThumbSpaceConfig();
 		Lib.stage.addChild(cm.thumbSpaceView);

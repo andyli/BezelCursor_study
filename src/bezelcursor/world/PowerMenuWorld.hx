@@ -28,10 +28,8 @@ class PowerMenuWorld extends GameWorld {
 		}).first());
 		
 		if (selectedMethod.name.indexOf("ThumbSpace") == -1) {
-			HXP.engine.asMain().cursorManager.thumbSpaceEnabled = false;
 			HXP.world = testWorld;
 		} else {
-			HXP.engine.asMain().cursorManager.thumbSpaceEnabled = true;
 			HXP.engine.asMain().worldQueue.add(testWorld);
 			HXP.world = new ConfigThumbSpaceWorld();
 		}
@@ -41,10 +39,8 @@ class PowerMenuWorld extends GameWorld {
 		var testWorld = new TestTouchWorld(TaskBlockData.generateTaskBlock(selectedTargetSize, TaskBlockData.targetSeperations[0], TaskBlockData.regionss[0]));
 		
 		if (selectedMethod.name.indexOf("ThumbSpace") == -1) {
-			HXP.engine.asMain().cursorManager.thumbSpaceEnabled = false;
 			HXP.world = testWorld;
 		} else {
-			HXP.engine.asMain().cursorManager.thumbSpaceEnabled = true;
 			HXP.engine.asMain().worldQueue.add(testWorld);
 			HXP.world = new ConfigThumbSpaceWorld();
 		}

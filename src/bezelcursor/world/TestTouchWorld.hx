@@ -60,7 +60,6 @@ class TestTouchWorld extends GameWorld {
 		
 		var cm = HXP.engine.asMain().cursorManager;
 		cm.cursorsEnabled = false;
-		cm.thumbSpaceEnabled = false;
 		
 		var nextSpec = targetQueue.shift();
 		
@@ -80,7 +79,7 @@ class TestTouchWorld extends GameWorld {
 		
 		add(startBtn);
 		
-		if (HXP.engine.asMain().cursorManager.thumbSpaceEnabled) {
+		if (HXP.engine.asMain().cursorManager.inputMethod.forThumbSpace != null) {
 			HXP.stage.addChild(HXP.engine.asMain().cursorManager.thumbSpaceView);
 		}
 		

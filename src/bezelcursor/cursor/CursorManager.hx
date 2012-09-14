@@ -74,28 +74,19 @@ class CursorManager implements IStruct {
 	@skip public var stage(default, null):Stage;
 	
 	function set_cursorsEnabled(v:Bool):Bool {
-		if (cursorsEnabled == v) return v;
-		
-		thumbSpaceView.visible = v && thumbSpaceEnabled;
-		
+		if (!v) {
+			thumbSpaceEnabled = false;
+		}
 		return cursorsEnabled = v;
 	}
 	
 	function set_thumbSpaceEnabled(v:Bool):Bool {
-		if (thumbSpaceEnabled == v) return v;
 		
 		if (v) {
 			thumbSpaceViewDraw();
 			thumbSpaceView.tween(0.25, { alpha: 1.0 }).autoVisible(true);
 		} else {
 			thumbSpaceView.tween(0.25, { alpha: 0.0 }).autoVisible(true);
-			
-			if (inputMethod.forThumbSpace != null) {
-				var startBtn:StartButton = HXP.world.classFirst(StartButton);
-				if (startBtn != null) {
-					startBtn.visible = true;
-				}
-			}
 		}
 		
 		return thumbSpaceEnabled = v;
@@ -308,6 +299,12 @@ class CursorManager implements IStruct {
 					touch.y.map(thumbSpace.top, thumbSpace.bottom, 0, stage.stageHeight)
 				);
 				thumbSpaceEnabled = false;
+				cursor.onEndSignaler.bindVoid(function(){
+					var startBtn:StartButton = HXP.world.classFirst(StartButton);
+					if (startBtn != null) {
+						startBtn.visible = true;
+					}
+				}).destroyOnUse();
 		}
 		
 		cursor.onStartSignaler.addBubblingTarget(onStartSignaler);
