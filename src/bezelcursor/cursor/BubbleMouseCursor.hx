@@ -11,18 +11,11 @@ import bezelcursor.cursor.behavior.ClickWhenTouchEnd;
 import bezelcursor.cursor.behavior.MouseMove;
 
 class BubbleMouseCursor extends MouseCursor {
-	public var drawBubble(default, set_drawBubble):Bool;
-	function set_drawBubble(v:Bool):Bool {
-		if (drawBubble == v) return v;
-		
-		var db = behaviors.filter(function(b) return Std.is(b, DrawBubble)).first();
-		
-		if (v && db == null) {
-			behaviors.push(new DrawBubble(this));
-		} else if (!v && db != null) {
-			behaviors.remove(db);
-		}
-		
+	
+	@deep public var drawBubble(default, set_drawBubble):DrawBubble;
+	function set_drawBubble(v:DrawBubble):DrawBubble {
+		behaviors.remove(drawBubble);
+		if (v != null) behaviors.push(v);
 		return drawBubble = v;
 	}
 	
@@ -34,8 +27,8 @@ class BubbleMouseCursor extends MouseCursor {
 		target_radius = r;
 		default_radius = r;
 		
-		behaviors = [new MouseMove(this), new ClickWhenTouchEnd(this)];
-		
-		drawBubble = true;
+		drawRadius = null;
+		dynaScale = null;
+		drawBubble = new DrawBubble(this);
 	}
 }

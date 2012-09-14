@@ -1,14 +1,57 @@
 package bezelcursor.model;
 
-#if macro
 using Lambda;
+
+#if macro
 import haxe.macro.Expr;
 import haxe.macro.Context;
 import haxe.macro.Compiler;
-import haxe.rtti.Meta;
 #end
 
 class StructBuilder {
+	static public function hasMetaRecurive(cls:Class<Dynamic>, field:String, meta:String):Bool {
+		do {
+			var fieldMetas = haxe.rtti.Meta.getFields(cls);
+			if (Reflect.hasField(fieldMetas, field))
+				return Reflect.hasField(Reflect.field(fieldMetas, field), meta);
+		} while ((cls = Type.getSuperClass(cls)) != null);
+				
+		return false;
+	}
+	
+	static public function toObj(t:Dynamic):Dynamic {
+		if (Std.is(t, IStruct))
+			return t.toObj();
+		else {
+			var obj:Dynamic = {};
+			
+			for (fName in Reflect.fields(t)) {
+				var f = Reflect.getProperty(t, fName);
+				if (Reflect.isFunction(f)) continue;
+				
+				Reflect.setField(obj, fName, f);
+			}
+			
+			return obj;
+		}
+	}
+	
+	static public function fromObj<T>(t:T, obj:Dynamic):T {
+		if (obj == null) return t;
+
+		var cls = Type.getClass(t);
+		for (f in Reflect.fields(obj)) {
+			var field = Reflect.getProperty(obj, f);//Reflect.field(obj, f);
+			if (field != null && hasMetaRecurive(cls, f, "deep")) {
+				fromObj(Reflect.field(t,f), field);
+			} else {
+				Reflect.setProperty(t, f, field);
+			}
+		}
+		
+		return t;
+	}
+	
 	@:macro static public function buildClass():Array<Field> {
 		var pos = Context.currentPos();
 		var cls = Context.getLocalClass().get();
@@ -20,7 +63,7 @@ class StructBuilder {
 			case FFun(_):
 				false;
 			default:
-				!f.access.has(AStatic) && !f.meta.exists(function(m) return m.name == ":skip");
+				!f.access.has(AStatic) && !f.meta.exists(function(m) return m.name == "skip");
 		});
 		/*
 		var allInstanceFields = instanceFields.array();
@@ -176,7 +219,10 @@ class StructBuilder {
 									expr: EField(macro obj, fName),
 									pos: pos
 								}
-								return macro $objField = $thisField;
+								if (f.meta.exists(function(m) return m.name == "deep"))
+									return macro $objField = bezelcursor.model.StructBuilder.toObj($thisField);
+								else
+									return macro $objField = $thisField;
 							}).array()
 						).concat([macro return obj])), 
 						pos: pos
@@ -199,21 +245,13 @@ class StructBuilder {
 						type: TPath({pack:[], name:"Dynamic", params: []})
 					}],
 					ret: clsComplex,
-					expr: isDirectImpl ? macro {
-						if (obj == null) return this;
-						
-						for (f in Reflect.fields(obj)) {
-							Reflect.setProperty(this, f, Reflect.field(obj, f));
-						}
-		
-						return this;
-					} : macro { super.fromObj(obj); return this; },
+					expr: isDirectImpl ? macro return bezelcursor.model.StructBuilder.fromObj(this, obj) : macro { super.fromObj(obj); return this; },
 					params: []
 				}),
 				pos: cls.pos
 			});
 		}
 		
-		return fields.filter(function(f) return !(f.meta != null && f.meta.exists(function(m) return m.name == ":remove"))).array();
+		return fields.filter(function(f) return !(f.meta != null && f.meta.exists(function(m) return m.name == "remove"))).array();
 	}
 }

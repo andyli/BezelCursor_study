@@ -23,17 +23,17 @@ using bezelcursor.world.GameWorld;
 class Cursor implements IStruct {
 	static var nextId = 0;
 	
-	@:skip public var onStartSignaler(default, null):Signaler<Point>;
-	@:skip public var onMoveSignaler(default, null):Signaler<Point>;
-	@:skip public var onClickSignaler(default, null):Signaler<Point>;
-	@:skip public var onEndSignaler(default, null):Signaler<Point>;
+	@skip public var onStartSignaler(default, null):Signaler<Point>;
+	@skip public var onMoveSignaler(default, null):Signaler<Point>;
+	@skip public var onClickSignaler(default, null):Signaler<Point>;
+	@skip public var onEndSignaler(default, null):Signaler<Point>;
 	
 	public var id(default, null):Int;
 	
 	/**
 	* Position of where the cursor is pointing to.
 	*/
-	@:skip public var position(get_position, set_position):Point;
+	@skip public var position(get_position, set_position):Point;
 	var target_position:Point;
 	var current_position:Point;
 	function get_position():Point { return current_position; }
@@ -42,7 +42,7 @@ class Cursor implements IStruct {
 	/**
 	* The radius(in inch) of this cursor, which define the interest area used by snapper.
 	*/
-	@:skip public var radius(get_radius, set_radius):Float;
+	@skip public var radius(get_radius, set_radius):Float;
 	var default_radius:Float;
 	var target_radius:Float;
 	var current_radius:Float;
@@ -65,7 +65,7 @@ class Cursor implements IStruct {
 	* The visual graphics of the cursor.
 	* It is automatically added to the stage on `start` and removed on `end`.
 	*/
-	@:skip public var view(default, null):Sprite;
+	@skip public var view(default, null):Sprite;
 	
 	var positionXFilter:OneEuroFilter;
 	var positionYFilter:OneEuroFilter;

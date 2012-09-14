@@ -16,6 +16,14 @@ import bezelcursor.cursor.snapper.DistanceToOriginSnapper;
 import bezelcursor.model.DeviceData;
 
 class MagStickCursor extends StickCursor {
+	
+	@deep public var drawMagStick(default, set_drawMagStick):DrawMagStick;
+	function set_drawMagStick(v:DrawMagStick):DrawMagStick {
+		behaviors.remove(drawMagStick);
+		if (v != null) behaviors.push(v);
+		return drawMagStick = v;
+	}
+	
 	public function new():Void {
 		super();
 		
@@ -24,8 +32,11 @@ class MagStickCursor extends StickCursor {
 		current_radius = 0.1;
 		target_radius = 0.1;
 		default_radius = 0.1;
+
+		dynaScale = null;
+		drawRadius = null;
+		drawMagStick = new DrawMagStick(this);
 		
-		behaviors = [new DrawMagStick(this), new ClickWhenTouchEnd(this)];
 		snapper = new DistanceToOriginSnapper(this);
 	}
 }

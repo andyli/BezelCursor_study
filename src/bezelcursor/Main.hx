@@ -42,6 +42,9 @@ class Main extends Engine {
 		HXP.console.visible = false;
 		#end
 		
+		trace(Reflect.hasField(Reflect.field(haxe.rtti.Meta.getFields(bezelcursor.cursor.MagStickCursor), "drawMagStick"), "deep"));
+		trace(haxe.rtti.Meta.getFields(bezelcursor.cursor.StickCursor));
+		trace(haxe.rtti.Meta.getFields(bezelcursor.cursor.MagStickCursor));
 		initStorage();
 		
 		cursorManager = new CursorManager();

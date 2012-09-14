@@ -62,6 +62,6 @@ class InputMethod implements IStruct {
 		"ThumbSpace",
 		null,
 		null,
-		{ _class: bezelcursor.cursor.BubbleMouseCursor, data: { drawBubble: false } }
+		{ _class: bezelcursor.cursor.BubbleMouseCursor, data: { drawBubble: null } }
 	);
 }

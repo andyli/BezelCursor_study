@@ -46,17 +46,6 @@ enum ConfigState {
 }
 
 class CursorManager implements IStruct {
-	static public var defaultCreateCursor(default, null) = function(touch:TouchData, _for:CreateCursorFor):Cursor {
-		switch(_for) {
-			case ForBezel: 
-				return new bezelcursor.cursor.MouseCursor().fromObj({touchPointID: touch.touchPointID});
-			case ForScreen:
-				return new bezelcursor.cursor.MagStickCursor().fromObj({touchPointID: touch.touchPointID});
-			case ForThumbSpace:
-				return new bezelcursor.cursor.MouseCursor().fromObj({touchPointID: touch.touchPointID});
-		}
-	}
-	
 	public var inputMethod:InputMethod;
 	
 	public var tapEnabled:Bool;
@@ -71,21 +60,19 @@ class CursorManager implements IStruct {
 	var bezelIn:Rectangle;
 	
 	public var thumbSpace(default, null):Rectangle;
-	@:skip public var thumbSpaceView(default, null):Sprite;
-	@:skip public var thumbSpaceViewBitmap(default, null):Bitmap;
-	@:skip public var thumbSpaceConfigState(default, null):ConfigState;
+	@skip public var thumbSpaceView(default, null):Sprite;
+	@skip public var thumbSpaceViewBitmap(default, null):Bitmap;
+	@skip public var thumbSpaceConfigState(default, null):ConfigState;
 	
-	@:skip public var createCursor:TouchData->CreateCursorFor->Cursor;
-	
-	@:skip public var onStartSignaler(default, null):Signaler<Point>;
-	@:skip public var onMoveSignaler(default, null):Signaler<Point>;
-	@:skip public var onClickSignaler(default, null):Signaler<Point>;
-	@:skip public var onEndSignaler(default, null):Signaler<Point>;
+	@skip public var onStartSignaler(default, null):Signaler<Point>;
+	@skip public var onMoveSignaler(default, null):Signaler<Point>;
+	@skip public var onClickSignaler(default, null):Signaler<Point>;
+	@skip public var onEndSignaler(default, null):Signaler<Point>;
 	
 	/**
 	* Basically Lib.stage.
 	*/
-	@:skip public var stage(default, null):Stage;
+	@skip public var stage(default, null):Stage;
 	
 	function set_cursorsEnabled(v:Bool):Bool {
 		if (cursorsEnabled == v) return v;

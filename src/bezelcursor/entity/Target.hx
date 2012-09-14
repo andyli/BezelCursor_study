@@ -24,20 +24,20 @@ class Target extends Entity, implements IStruct {
 	inline static public var TYPE = "Target";
 	static var nextId = 0;
 	
-	@:skip public var onAddedSignaler(default, null):Signaler<Void>;
-	@:skip public var onRemovedSignaler(default, null):Signaler<Void>;
-	@:skip public var onClickSignaler(default, null):Signaler<Void>;
-	@:skip public var onRollOverSignaler(default, null):Signaler<Void>;
-	@:skip public var onRollOutSignaler(default, null):Signaler<Void>;
+	@skip public var onAddedSignaler(default, null):Signaler<Void>;
+	@skip public var onRemovedSignaler(default, null):Signaler<Void>;
+	@skip public var onClickSignaler(default, null):Signaler<Void>;
+	@skip public var onRollOverSignaler(default, null):Signaler<Void>;
+	@skip public var onRollOutSignaler(default, null):Signaler<Void>;
 	
-	@:skip var cursorManager:CursorManager;
-	@:skip var graphicList_default:Graphiclist;
-	@:skip var graphicList_hover:Graphiclist;
+	@skip var cursorManager:CursorManager;
+	@skip var graphicList_default:Graphiclist;
+	@skip var graphicList_hover:Graphiclist;
 	
 	
 	public var id(default, null):Int;
 	
-	@:skip public var color(get_color, set_color):Int;
+	@skip public var color(get_color, set_color):Int;
 	var _color:Int;
 	function get_color() { return _color; }
 	function set_color(c:Int):Int {
@@ -46,7 +46,7 @@ class Target extends Entity, implements IStruct {
 		return c;
 	}
 		
-	@:skip public var color_hover(get_color_hover, set_color_hover):Int;
+	@skip public var color_hover(get_color_hover, set_color_hover):Int;
 	var _color_hover:Int;
 	function get_color_hover() { return _color_hover; }
 	function set_color_hover(c:Int):Int {
@@ -55,15 +55,15 @@ class Target extends Entity, implements IStruct {
 		return c;
 	}
 	
-	@:skip public var image_default:Image;
-	@:skip public var image_hover:Image;
+	@skip public var image_default:Image;
+	@skip public var image_hover:Image;
 	public var isHoverBy(default, null):IntHash<Cursor>;
 	
-	@:remove public var type:String;
-	@:remove public var x:Float;
-	@:remove public var y:Float;
-	@:remove public var width:Int;
-	@:remove public var height:Int;
+	@remove public var type:String;
+	@remove public var x:Float;
+	@remove public var y:Float;
+	@remove public var width:Int;
+	@remove public var height:Int;
 	
 	public function new():Void {
 		super();

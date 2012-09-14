@@ -21,13 +21,36 @@ class StickCursor extends PointActivatedCursor {
 	public var jointActivateDistance:Float;
 	public var scaleFactor:Float;
 	
+	@deep public var clickWhenTouchEnd(default, set_clickWhenTouchEnd):ClickWhenTouchEnd;
+	function set_clickWhenTouchEnd(v:ClickWhenTouchEnd):ClickWhenTouchEnd {
+		behaviors.remove(clickWhenTouchEnd);
+		if (v != null) behaviors.push(v);
+		return clickWhenTouchEnd = v;
+	}
+	
+	@deep public var dynaScale(default, set_dynaScale):DynaScale;
+	function set_dynaScale(v:DynaScale):DynaScale {
+		behaviors.remove(dynaScale);
+		if (v != null) behaviors.push(v);
+		return dynaScale = v;
+	}
+	@deep public var drawRadius(default, set_drawRadius):DrawRadius;
+	function set_drawRadius(v:DrawRadius):DrawRadius {
+		behaviors.remove(drawRadius);
+		if (v != null) behaviors.push(v);
+		return drawRadius = v;
+	}
+	
 	public function new():Void {
 		super();
 		
 		joint = null;
 		jointActivateDistance = DeviceData.current.screenDPI * 0.2;
 		scaleFactor = 3;
-		behaviors = [new DynaScale(this), new DrawRadius(this), new ClickWhenTouchEnd(this)];
+		
+		dynaScale = new DynaScale(this);
+		drawRadius = new DrawRadius(this);
+		clickWhenTouchEnd = new ClickWhenTouchEnd(this);
 	}
 	
 	override function start():Void {
