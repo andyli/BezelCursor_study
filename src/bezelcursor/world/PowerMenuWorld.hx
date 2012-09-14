@@ -62,7 +62,7 @@ class PowerMenuWorld extends GameWorld {
 	
 		function createBtnForMethod(method:InputMethod):Button {
 			var btn = new Button(method.name);
-			btn.resize(btn.text.width + 20, btn.text.height + 20);
+			btn.resize(btn.text.width + 20, btn.text.height + 40);
 			btn.onClickSignaler.bindVoid(function() {
 				selectedMethod = method;
 				camera.tween(0.5, { x: powerMenu.x + powerMenu.width });
@@ -86,7 +86,7 @@ class PowerMenuWorld extends GameWorld {
 		add(powerMenu);
 		
 		var btn = new Button("Back");
-		btn.resize(btn.text.width + 5, btn.text.height + 5);
+		btn.resize(btn.text.width + 5, btn.text.height + 15);
 		btn.onClickSignaler.bindVoid(function(){
 			camera.tween(0.5, { x: powerMenu.x - powerMenu.width });
 		});
@@ -94,7 +94,7 @@ class PowerMenuWorld extends GameWorld {
 		
 		for (targetSize in TaskBlockData.targetSizes) {
 			var btn = new Button(targetSize.name);
-			btn.resize(btn.text.width + 20, btn.text.height + 20);
+			btn.resize(btn.text.width + 20, btn.text.height + 40);
 			btn.onClickSignaler.bindVoid(function(){
 				selectedTargetSize = targetSize;
 				camera.tween(0.5, { x: powerMenu.x + powerMenu.width });
@@ -112,21 +112,21 @@ class PowerMenuWorld extends GameWorld {
 		add(powerMenu);
 		
 		var btn = new Button("Back");
-		btn.resize(btn.text.width + 5, btn.text.height + 5);
+		btn.resize(btn.text.width + 5, btn.text.height + 15);
 		btn.onClickSignaler.bindVoid(function(){
 			camera.tween(0.5, { x: powerMenu.x - powerMenu.width });
 		});
 		powerMenu.add(btn);
 		
 		var btn = new Button("Practice");
-		btn.resize(btn.text.width + 20, btn.text.height + 20);
+		btn.resize(btn.text.width + 20, btn.text.height + 40);
 		btn.onClickSignaler.bindVoid(function(){
 			startPractice();
 		});
 		powerMenu.add(btn);
 		
 		var btn = new Button("Start");
-		btn.resize(btn.text.width + 20, btn.text.height + 20);
+		btn.resize(btn.text.width + 20, btn.text.height + 40);
 		btn.onClickSignaler.bindVoid(function(){
 			startTest();
 		});

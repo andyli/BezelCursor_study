@@ -46,7 +46,12 @@ enum ConfigState {
 }
 
 class CursorManager implements IStruct {
-	public var inputMethod:InputMethod;
+	public var inputMethod(default, set_inputMethod):InputMethod;
+	function set_inputMethod(v:InputMethod):InputMethod {
+		if (v.forThumbSpace == null) thumbSpaceEnabled = false;
+		
+		return inputMethod = v;
+	}
 	
 	public var cursorsEnabled(default, set_cursorsEnabled):Bool;
 	public var thumbSpaceEnabled(default, set_thumbSpaceEnabled):Bool;
@@ -129,17 +134,17 @@ class CursorManager implements IStruct {
 	var pointActivatedCursors:IntHash<PointActivatedCursor>;
 	
 	public function new():Void {
-		thumbSpace = new Rectangle(Math.NEGATIVE_INFINITY);
+		thumbSpace = new Rectangle(Math.NEGATIVE_INFINITY, Math.NEGATIVE_INFINITY);
 		thumbSpaceConfigState = NotConfigured;
 		
 		bezelWidth = 0.15;
-		
-		inputMethod = InputMethod.DirectTouch;
 		
 		cursors = new IntHash<Cursor>();
 		pointActivatedCursors = new IntHash<PointActivatedCursor>();
 		
 		init();
+		
+		inputMethod = InputMethod.DirectTouch;
 	}
 	
 	public function init():CursorManager {
@@ -206,6 +211,10 @@ class CursorManager implements IStruct {
 	public function startThumbSpaceConfig():Void {
 		thumbSpaceConfigState = Configuring;
 		thumbSpace.x = Math.NEGATIVE_INFINITY;
+		thumbSpace.y = Math.NEGATIVE_INFINITY;
+		thumbSpace.width = 0;
+		thumbSpace.height = 0;
+		thumbSpaceViewDraw();
 	}
 	
 	public function endThumbSpaceConfig():Void {
@@ -300,6 +309,7 @@ class CursorManager implements IStruct {
 				);
 				thumbSpaceEnabled = false;
 				cursor.onEndSignaler.bindVoid(function(){
+					if (!cursorsEnabled) return;
 					var startBtn:StartButton = HXP.world.classFirst(StartButton);
 					if (startBtn != null) {
 						startBtn.visible = true;
@@ -365,7 +375,11 @@ class CursorManager implements IStruct {
 	function onEnd(touch:TouchData):Void {
 		switch (thumbSpaceConfigState) {
 			case Configuring:
-				endThumbSpaceConfig();
+				if (thumbSpace.width < DeviceData.current.screenDPI * 0.4) {
+					startThumbSpaceConfig();
+				} else {
+					endThumbSpaceConfig();
+				}
 				return;
 			default:
 		}
