@@ -541,8 +541,9 @@ AddCharset utf-8 .atom .css .js .json .rss .vtt .xml
 
 
 php_value upload_max_filesize 100M
-
-RewriteBase /BezelCursor/
+	  
+#RewriteBase /
+#RewriteBase /BezelCursor/
 
 # this gets rid of index.php
 RewriteCond %{REQUEST_FILENAME} !-f
