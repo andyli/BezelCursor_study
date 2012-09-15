@@ -138,6 +138,7 @@ class PowerMenuWorld extends GameWorld {
 	override public function end():Void {
 		super.end();
 		
-		HXP.engine.asMain().cursorManager.inputMethod = selectedMethod;
+		if (selectedMethod != null)
+			HXP.engine.asMain().cursorManager.inputMethod = selectedMethod;
 	}
 }

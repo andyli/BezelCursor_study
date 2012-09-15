@@ -63,6 +63,15 @@ class GameWorld extends World {
 		return super.add(e);
 	}
 	
+	override public function remove<E:Entity>(e:E):E {
+		if (e.type == Target.TYPE) {
+			var target:Target = cast e;
+			visibleTargets.remove(target);
+			invisibleTargets.remove(target);
+		}
+		return super.remove(e);
+	}
+	
 	public function clipTargets():Void {
 		var pInvisibleTargets = invisibleTargets.copy();
 		var pVisibleTargets = visibleTargets.copy();
@@ -78,7 +87,7 @@ class GameWorld extends World {
 		for (target in pVisibleTargets) {
 			if (!isTargetInBound(target)) {
 				visibleTargets.remove(target);
-				remove(target);
+				super.remove(target);
 				invisibleTargets.push(target);
 			}
 		}
@@ -97,6 +106,11 @@ class GameWorld extends World {
 		}
 		pCameraX = camera.x;
 		pCameraY = camera.y;
+	}
+	
+	override public function end():Void {
+		removeAll();
+		super.end();
 	}
 	
 	static public function asGameWorld(world:World):GameWorld {

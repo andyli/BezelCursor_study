@@ -26,7 +26,7 @@ class TaskBlockData implements IStruct {
 	
 	public var targetSize:{width:Float, height:Float};
 	public var targets:Array<Dynamic>;
-	public var targetQueue:Array<{target:Int, camera:Point}>;
+	public var targetQueue:Array<{target:Int, camera:{x:Float, y:Float}}>;
 	
 	public function new():Void {
 		id = org.casalib.util.StringUtil.uuid();
@@ -158,7 +158,7 @@ class TaskBlockData implements IStruct {
 			
 			data.targetQueue.push({
 				target: data.targets.length, 
-				camera: camera
+				camera: {x:camera.x, y:camera.y}
 			});
 			
 			

@@ -27,7 +27,7 @@ using bezelcursor.Main;
 
 class TestTouchWorld extends GameWorld {
 	public var currentTarget:Target;	
-	public var targetQueue:Array<{target:Int, camera:Point}>;
+	public var targetQueue:Array<{target:Int, camera:{x:Float, y:Float}}>;
 	public var targets:Array<Target>;
 	
 	public var startBtn:StartButton;
@@ -42,10 +42,6 @@ class TestTouchWorld extends GameWorld {
 		}
 		targetQueue = taskBlockData.targetQueue.copy();
 		
-		for (target in targets) {
-			add(target);
-		}
-		
 		for (spec in targetQueue) {
 			var target = targets[spec.target];
 			target.color = 0xFF0000;
@@ -56,6 +52,7 @@ class TestTouchWorld extends GameWorld {
 	}
 	
 	public function next():Void {
+		trace("next");
 		startBtn.visible = false;
 		
 		var cm = HXP.engine.asMain().cursorManager;
@@ -83,6 +80,15 @@ class TestTouchWorld extends GameWorld {
 			HXP.stage.addChild(HXP.engine.asMain().cursorManager.thumbSpaceView);
 		}
 		
+		for (target in targets) {
+			add(target);
+		}
+		
 		next();
+	}
+	
+	override public function end():Void {
+		currentTarget.onClickSignaler.unbindVoid(next);
+		super.end();
 	}
 }
