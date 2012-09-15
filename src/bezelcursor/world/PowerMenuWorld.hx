@@ -36,7 +36,7 @@ class PowerMenuWorld extends GameWorld {
 	}
 	
 	public function startPractice():Void {
-		var testWorld = new TestTouchWorld(TaskBlockData.generateTaskBlock(selectedTargetSize, TaskBlockData.targetSeperations[0], TaskBlockData.regionss[0]));
+		var testWorld = new TestTouchWorld(TaskBlockData.generateTaskBlock(selectedTargetSize, TaskBlockData.targetSeperations[0], TaskBlockData.regionss[0], TaskBlockData.timesPerRegion));
 		
 		if (selectedMethod.name.indexOf("ThumbSpace") == -1) {
 			HXP.world = testWorld;
@@ -59,22 +59,16 @@ class PowerMenuWorld extends GameWorld {
 		var powerMenu = new PowerMenu();
 		powerMenu.x = _x;
 		add(powerMenu);
-	
-		function createBtnForMethod(method:InputMethod):Button {
+		
+		for (method in TaskBlockData.inputMethods) {
 			var btn = new Button(method.name);
 			btn.resize(btn.text.width + 20, btn.text.height + 40);
 			btn.onClickSignaler.bindVoid(function() {
 				selectedMethod = method;
 				camera.tween(0.5, { x: powerMenu.x + powerMenu.width });
 			});
-			return btn;
+			powerMenu.add(btn);
 		}
-
-		powerMenu.add(createBtnForMethod(InputMethod.BezelCursor_acceleratedBubbleCursor));
-		powerMenu.add(createBtnForMethod(InputMethod.BezelCursor_acceleratedDynaSpot));
-		powerMenu.add(createBtnForMethod(InputMethod.BezelCursor_directMappingDynaSpot));
-		powerMenu.add(createBtnForMethod(InputMethod.MagStick));
-		powerMenu.add(createBtnForMethod(InputMethod.ThumbSpace));
 		
 		_x += HXP.stage.stageWidth;
 		

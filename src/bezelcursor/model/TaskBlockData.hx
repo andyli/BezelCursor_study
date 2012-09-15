@@ -18,6 +18,31 @@ import bezelcursor.model.TouchData;
 using bezelcursor.util.RectangleUtil;
 using bezelcursor.util.UnitUtil;
 
+/**
+* Inputs:
+*  1. DirectTouch
+*  2. BezelCursor - accelerated DynaSpot
+*  3. BezelCursor - direct mapping DynaSpot
+*  4. Bezelcursor - accelerated BubbleCursor
+*  5. MagStick
+*  6. ThumbSpace
+* 
+* Target size:
+*  1. small - 5mm * 3.75mm
+*  2. 12.8mm * 9.6mm (Target size study for one-handed thumb use on small touchscreen devices)
+*  
+* Target separation:
+*  1. separation > 10 mm
+* 
+* Regions:
+*  1. 3 * 4
+*  
+* Number of targets per region:
+*  1. 3
+*  
+* Number of times for each target to be selected:
+*  1. 1
+*/
 class TaskBlockData implements IStruct {
 	/**
 	* uuid of length 36
@@ -60,30 +85,6 @@ class TaskBlockData implements IStruct {
 		return regions;
 	}
 	
-	/**
-	* Inputs:
-	*  1. BezelCursor - accelerated DynaSpot
-	*  2. BezelCursor - direct mapping DynaSpot
-	*  3. Bezelcursor - accelerated BubbleCursor
-	*  4. MagStick
-	*  5. ThumbSpace
-	* 
-	* Target size:
-	*  1. small - 5mm * 3.75mm
-	*  2. 12.8mm * 9.6mm (Target size study for one-handed thumb use on small touchscreen devices)
-	*  
-	* Target separation:
-	*  1. separation > 10 mm
-	* 
-	* Regions:
-	*  1. 3 * 4
-	*  
-	* Number of targets per region:
-	*  1. 3
-	*  
-	* Number of times for each target to be selected:
-	*  1. 1
-	*/
 	static public function generateTaskBlocks():Array<TaskBlockData> {
 		var taskBlockDatas = [];
 		
@@ -96,7 +97,8 @@ class TaskBlockData implements IStruct {
 			taskBlockDatas.push(generateTaskBlock(
 				targetSize,
 				targetSeperation,
-				regions
+				regions,
+				3
 			));			
 		}
 		
@@ -133,20 +135,35 @@ class TaskBlockData implements IStruct {
 		];
 	}
 	
+	static public var inputMethods:Array<InputMethod> = [
+		InputMethod.DirectTouch,
+		InputMethod.BezelCursor_acceleratedBubbleCursor,
+		InputMethod.BezelCursor_acceleratedDynaSpot,
+		InputMethod.BezelCursor_directMappingDynaSpot,
+		InputMethod.MagStick,
+		InputMethod.ThumbSpace,
+	];
+	
+	static public var timesPerRegion:Int = 3;
+	
 	static public var stageRect(get_stageRect, null):Rectangle;
 	static function get_stageRect() {
 		return stageRect != null ? stageRect : stageRect = new Rectangle(0, 0, Lib.stage.stageWidth, Lib.stage.stageHeight /*- DeviceData.current.screenDPI * bezelcursor.entity.StartButton.HEIGHT */);
 	}
 	
-	static public function generateTaskBlock(targetSize:{width:Float, height:Float}, targetSeperation:Float, regions:Array<Rectangle>):TaskBlockData {
+	static public function generateTaskBlock(targetSize:{width:Float, height:Float}, targetSeperation:Float, regions:Array<Rectangle>, timesPerRegion:Int):TaskBlockData {
 		var data = new TaskBlockData();
 
 		var targetSizeRect = new Rectangle(0, 0, targetSize.width, targetSize.height);
 		var numTargets = Math.round(Math.max((stageRect.width / (targetSize.width + targetSeperation)) * (stageRect.height / (targetSize.height + targetSeperation)) * 0.4, regions.length));
 		
-		var regions = regions.randomize();
-		for (r in 0...regions.length) {
-			var region = regions[r];
+		var regionsMultiplied = [];
+		for (tpr in 0...timesPerRegion) {
+			regionsMultiplied = regionsMultiplied.concat(regions.randomize());
+		}
+		
+		for (r in 0...regionsMultiplied.length) {
+			var region = regionsMultiplied[r];
 			
 			var camera = new Point(r * stageRect.width, 0);
 			
@@ -171,7 +188,7 @@ class TaskBlockData implements IStruct {
 					rect.offsetPoint(camera);
 					
 					if (itr++ > itrMax){
-						return generateTaskBlock(targetSize, targetSeperation, regions);
+						return generateTaskBlock(targetSize, targetSeperation, regionsMultiplied, timesPerRegion);
 					}
 				} while (!(
 					//target separation constraint
@@ -200,9 +217,9 @@ class TaskBlockData implements IStruct {
 					height: rect.height
 				};
 			}).array());
-			
-			data.targetSize = targetSize;
 		}
+			
+		data.targetSize = targetSize;
 		
 		return data;
 	}
