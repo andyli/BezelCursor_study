@@ -16,6 +16,7 @@ import bezelcursor.model.BuildData;
 import bezelcursor.model.DeviceData;
 import bezelcursor.model.Env;
 import bezelcursor.model.TaskBlockData;
+import bezelcursor.model.TaskBlockDataGenerator;
 import bezelcursor.model.UserData;
 import bezelcursor.world.PowerMenuWorld;
 import bezelcursor.world.TestTouchWorld;
@@ -52,7 +53,7 @@ class Main extends Engine {
 
 		worldQueue = new List<World>();
 
-		taskblocks = bezelcursor.model.TaskBlockData.generateTaskBlocks();
+		taskblocks = bezelcursor.model.TaskBlockDataGenerator.current.generateTaskBlocks();
 		HXP.world = new PowerMenuWorld();
 
 		//Lib.current.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKey);

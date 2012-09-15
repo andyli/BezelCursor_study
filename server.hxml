@@ -6,3 +6,6 @@
 -lib erazor
 -lib thx
 -lib casalib
+-lib nme
+-lib hsl-1
+--remap flash:neash

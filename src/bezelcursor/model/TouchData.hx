@@ -15,6 +15,7 @@ class TouchData implements IStruct {
 		this.sizeY = sizeY;
 	}
 	
+	#if !php
 	static public function fromTouchEvent(evt:nme.events.TouchEvent):TouchData {
 		#if js
 		return new TouchData(evt.touchPointID, evt.stageX, evt.stageY, 1, 1);
@@ -26,4 +27,5 @@ class TouchData implements IStruct {
 	static public function fromMouseEvent(evt:nme.events.MouseEvent):TouchData {
 		return new TouchData(0, evt.stageX, evt.stageY, 1, 1);
 	}
+	#end
 }

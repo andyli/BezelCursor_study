@@ -1,6 +1,8 @@
 package bezelcursor.model;
 
+#if !php
 import nme.system.Capabilities;
+#end
 #if android
 import nme.JNI;
 #end
@@ -23,7 +25,7 @@ class DeviceData implements IStruct {
 		id = org.casalib.util.StringUtil.uuid();
 	}
 	
-
+	#if !php
 	public static var sharedObject(get_sharedObject, null):nme.net.SharedObject;
 	static function get_sharedObject():nme.net.SharedObject {
 		if (sharedObject != null) 
@@ -70,8 +72,13 @@ class DeviceData implements IStruct {
 			current.hardwareModel = getHardwareModel();
 			#end
 			
+			#if !mac
 			current.screenResolutionX = Capabilities.screenResolutionX;
 			current.screenResolutionY = Capabilities.screenResolutionY;
+			#else
+			current.screenResolutionX = nme.Lib.stage.stageWidth;
+			current.screenResolutionY = nme.Lib.stage.stageHeight;
+			#end
 			
 			#if !mac
 			current.screenDPI = Capabilities.screenDPI;
@@ -86,7 +93,7 @@ class DeviceData implements IStruct {
 		
 		return current;
 	}
-	
+	#end
 	#if android
 	
 		static var _getSystemVersion:Dynamic;

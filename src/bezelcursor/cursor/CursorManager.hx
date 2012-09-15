@@ -264,13 +264,13 @@ class CursorManager implements IStruct {
 		
 		if (createFor == null) return;
 		
-		var cursor = (switch (createFor) {
+		var cursor:Cursor = (switch (createFor) {
 			case ForBezel:
-				Type.createInstance(inputMethod.forBezel._class, []).fromObj(inputMethod.forBezel.data);
+				Type.createInstance(Type.resolveClass(inputMethod.forBezel._class), []).fromObj(inputMethod.forBezel.data);
 			case ForThumbSpace:
-				Type.createInstance(inputMethod.forThumbSpace._class, []).fromObj(inputMethod.forThumbSpace.data);
+				Type.createInstance(Type.resolveClass(inputMethod.forThumbSpace._class), []).fromObj(inputMethod.forThumbSpace.data);
 			case ForScreen:
-				Type.createInstance(inputMethod.forScreen._class, []).fromObj(inputMethod.forScreen.data);
+				Type.createInstance(Type.resolveClass(inputMethod.forScreen._class), []).fromObj(inputMethod.forScreen.data);
 		}).fromObj({touchPointID: touch.touchPointID});
 		
 		//tests:

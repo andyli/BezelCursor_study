@@ -2,7 +2,6 @@ package bezelcursor.cursor;
 
 using Std;
 import nme.Lib;
-import nme.display.Stage;
 import nme.display.Sprite;
 import nme.events.Event;
 import nme.geom.Point;

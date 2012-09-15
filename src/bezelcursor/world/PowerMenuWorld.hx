@@ -12,6 +12,7 @@ import bezelcursor.entity.PowerMenu;
 import bezelcursor.entity.RandomMovingTarget;
 import bezelcursor.model.InputMethod;
 import bezelcursor.model.TaskBlockData;
+import bezelcursor.model.TaskBlockDataGenerator;
 import bezelcursor.model.DeviceData;
 using bezelcursor.world.GameWorld;
 using bezelcursor.world.TestTouchWorld;
@@ -36,7 +37,7 @@ class PowerMenuWorld extends GameWorld {
 	}
 	
 	public function startPractice():Void {
-		var testWorld = new TestTouchWorld(TaskBlockData.generateTaskBlock(selectedTargetSize, TaskBlockData.targetSeperations[0], TaskBlockData.regionss[0], TaskBlockData.timesPerRegion));
+		var testWorld = new TestTouchWorld(TaskBlockDataGenerator.current.generateTaskBlock(selectedTargetSize, TaskBlockDataGenerator.current.targetSeperations[0], TaskBlockDataGenerator.current.regionss[0], TaskBlockDataGenerator.current.timesPerRegion));
 		
 		if (selectedMethod.name.indexOf("ThumbSpace") == -1) {
 			HXP.world = testWorld;
@@ -60,7 +61,7 @@ class PowerMenuWorld extends GameWorld {
 		powerMenu.x = _x;
 		add(powerMenu);
 		
-		for (method in TaskBlockData.inputMethods) {
+		for (method in TaskBlockDataGenerator.current.inputMethods) {
 			var btn = new Button(method.name);
 			btn.resize(btn.text.width + 20, btn.text.height + 40);
 			btn.onClickSignaler.bindVoid(function() {
@@ -86,7 +87,7 @@ class PowerMenuWorld extends GameWorld {
 		});
 		powerMenu.add(btn);
 		
-		for (targetSize in TaskBlockData.targetSizes) {
+		for (targetSize in TaskBlockDataGenerator.current.targetSizes) {
 			var btn = new Button(targetSize.name);
 			btn.resize(btn.text.width + 20, btn.text.height + 40);
 			btn.onClickSignaler.bindVoid(function(){
