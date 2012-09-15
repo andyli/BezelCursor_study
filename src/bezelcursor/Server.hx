@@ -11,9 +11,11 @@ import ufront.web.DirectoryUrlFilter;
 import ufront.web.mvc.MvcApplication;
 import ufront.web.routing.RouteCollection;
 
+import bezelcursor.model.Env;
+
 class Server {
 	static public var LOCAL_DIR(default, never):String = "BezelCursor";
-	static public var ABSOLUT_PATH(default, never):String = Web.getHostName() == "localhost" ? "http://localhost/" + LOCAL_DIR + "/" : "http://bezelcursor.onthewings.net/";
+	static public var ABSOLUT_PATH(default, never):String = Web.getHostName() == "localhost" ? "http://localhost/" + LOCAL_DIR + "/" : Env.website;
 	
 	static function main():Void {
 		Imports.pack("bezelcursor.controller", true);
@@ -22,6 +24,7 @@ class Server {
 		
 		var routes = new RouteCollection();
 		routes.addRoute("/", { controller : "home", action : "index" } );
+		routes.addRoute("/taskblockdata/get/", { controller : "TaskBlockData", action : "get" } );
 		
 		var application = new MvcApplication(config, routes);
 		

@@ -40,12 +40,9 @@ class Main extends Engine {
 		HXP.console.enable();
 		#end
 		#if !debug
-		HXP.console.visible = false;
+		//HXP.console.visible = false;
 		#end
 		
-		trace(Reflect.hasField(Reflect.field(haxe.rtti.Meta.getFields(bezelcursor.cursor.MagStickCursor), "drawMagStick"), "deep"));
-		trace(haxe.rtti.Meta.getFields(bezelcursor.cursor.StickCursor));
-		trace(haxe.rtti.Meta.getFields(bezelcursor.cursor.MagStickCursor));
 		initStorage();
 		
 		cursorManager = new CursorManager();
@@ -58,6 +55,15 @@ class Main extends Engine {
 
 		//Lib.current.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKey);
 		Lib.current.stage.addEventListener(KeyboardEvent.KEY_UP, onKey);
+		
+		cpp.vm.Thread.create(function(){
+			var respond = null;
+			var http = new haxe.Http(Env.website + "taskblockdata/get/");
+			http.setParameter("buildData", haxe.Json.stringify(bezelcursor.model.BuildData.current.toObj()));
+			http.onData = function(data:String) respond = data;
+			http.request(false);
+			trace(respond);
+		});
 	}
 	
 	function initStorage():Void {

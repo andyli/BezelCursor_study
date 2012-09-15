@@ -23,10 +23,10 @@ class PowerMenuWorld extends GameWorld {
 	var selectedMethod:InputMethod;
 	var selectedTargetSize:{width:Float, height:Float};
 	
-	public function startTest():Void {		
+	public function startTest():Void {
 		var testWorld = new TestTouchWorld(HXP.engine.asMain().taskblocks.filter(function(tb){
 			return tb.targetSize.width == selectedTargetSize.width && tb.targetSize.height == selectedTargetSize.height;
-		}).first());
+		})[0]);
 		
 		if (selectedMethod.name.indexOf("ThumbSpace") == -1) {
 			HXP.world = testWorld;
