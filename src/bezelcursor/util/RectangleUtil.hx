@@ -10,4 +10,22 @@ class RectangleUtil {
 		var bottomRight = m.transformVector(new Vector3D(rect.right, rect.bottom));
 		return new Rectangle(topLeft.x, topLeft.y, bottomRight.x - topLeft.x, bottomRight.y - topLeft.y);
 	}
+	
+	/**
+	* Make sure x,y is the top left.
+	*/
+	static public function normalize(rect:Rectangle):Rectangle {
+		var newrect = rect.clone();
+		
+		if (rect.top > rect.bottom) {
+			newrect.bottom = rect.top;
+			newrect.top = rect.bottom;
+		}
+		if (rect.left > rect.right) {
+			newrect.right = rect.left;
+			newrect.left = rect.right;
+		}
+		
+		return newrect;
+	}
 }

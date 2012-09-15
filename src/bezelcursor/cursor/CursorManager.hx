@@ -32,6 +32,7 @@ import bezelcursor.model.InputMethod;
 import bezelcursor.entity.Target;
 import bezelcursor.entity.StartButton;
 using bezelcursor.world.GameWorld;
+using bezelcursor.util.RectangleUtil;
 
 enum CreateCursorFor {
 	ForBezel;
@@ -98,18 +99,7 @@ class CursorManager implements IStruct {
 	}
 	
 	function thumbSpaceViewDraw():Void {
-		var thumbSpace = thumbSpace.clone();
-		
-		if (thumbSpace.top > thumbSpace.bottom) {
-			var top = thumbSpace.bottom;
-			thumbSpace.bottom = thumbSpace.top;
-			thumbSpace.top = top;
-		}
-		if (thumbSpace.left > thumbSpace.right) {
-			var left = thumbSpace.right;
-			thumbSpace.right = thumbSpace.left;
-			thumbSpace.left = left;
-		}
+		var thumbSpace = thumbSpace.normalize();
 		
 		thumbSpaceViewBitmap.x = thumbSpace.x;
 		thumbSpaceViewBitmap.y = thumbSpace.y;
@@ -155,7 +145,7 @@ class CursorManager implements IStruct {
 		onClickSignaler = new DirectSignaler<Point>(this);
 		onEndSignaler = new DirectSignaler<Point>(this);
 		
-		thumbSpaceViewBitmap = new Bitmap(HXP.buffer, PixelSnapping.ALWAYS, true);//new Sprite();
+		thumbSpaceViewBitmap = new Bitmap(HXP.buffer, PixelSnapping.NEVER, true);//new Sprite();
 		thumbSpaceViewBitmap.alpha = 0.9;
 		//thumbSpaceViewBitmap.filters = [new nme.filters.DropShadowFilter(0, 0, 0, 0.8, 0.05 * DeviceData.current.screenDPI, 0.05 * DeviceData.current.screenDPI)];
 		thumbSpaceView = new Sprite();
@@ -359,6 +349,17 @@ class CursorManager implements IStruct {
 					
 					if (flipX) thumbSpace.width *= -1;
 					if (flipY) thumbSpace.height *= -1;
+					
+					var normalized = thumbSpace.normalize();
+					if (!HXP.bounds.containsRect(normalized)) {
+						var constrainted = normalized.scaleToFit(normalized.intersection(HXP.bounds));
+						
+						thumbSpace.width = constrainted.width;
+						thumbSpace.height = constrainted.height;
+					
+						if (flipX) thumbSpace.width *= -1;
+						if (flipY) thumbSpace.height *= -1;
+					}
 					
 					thumbSpaceViewDraw();
 					return;
