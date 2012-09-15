@@ -37,6 +37,8 @@ class Target extends Entity, implements IStruct {
 	
 	public var id(default, null):Int;
 	
+	public var alpha:Float;
+	
 	@skip public var color(get_color, set_color):Int;
 	var _color:Int;
 	function get_color() { return _color; }
@@ -77,6 +79,7 @@ class Target extends Entity, implements IStruct {
 		height = 100;
 		_color = 0xFFFFFF;
 		_color_hover = 0xFF6666;
+		alpha = 1;
 		
 		init();
 	}
@@ -94,17 +97,16 @@ class Target extends Entity, implements IStruct {
 		
 		resize();
 		
-		image_default.alpha = 0.0;
-		image_hover.alpha = 0.0;
-		
 		return this;
 	}
 	
 	override public function added():Void {
 		super.added();
-		
-		image_default.tween(0.5, {alpha: 1.0});
-		image_hover.tween(0.5, {alpha: 1.0});
+
+		image_default.alpha = 0.0;
+		image_hover.alpha = 0.0;
+		image_default.tween(0.5, {alpha: alpha});
+		image_hover.tween(0.5, {alpha: alpha});
 		
 		onAddedSignaler.dispatch();
 	}
@@ -130,10 +132,10 @@ class Target extends Entity, implements IStruct {
 		onClickSignaler.dispatch();
 		
 		image_default.alpha = 0.5;
-		image_default.tween(0.1, {alpha: 1.0});
+		image_default.tween(0.1, {alpha: alpha});
 		
 		image_hover.alpha = 0.5;
-		image_hover.tween(0.1, {alpha: 1.0});
+		image_hover.tween(0.1, {alpha: alpha});
 	}
 	
 	public function rollOver(?cursor:Cursor):Void {

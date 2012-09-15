@@ -135,7 +135,7 @@ class TaskBlockData implements IStruct {
 	
 	static public var stageRect(get_stageRect, null):Rectangle;
 	static function get_stageRect() {
-		return stageRect != null ? stageRect : stageRect = new Rectangle(0, 0, Lib.stage.stageWidth, Lib.stage.stageHeight - DeviceData.current.screenDPI * bezelcursor.entity.StartButton.HEIGHT);
+		return stageRect != null ? stageRect : stageRect = new Rectangle(0, 0, Lib.stage.stageWidth, Lib.stage.stageHeight /*- DeviceData.current.screenDPI * bezelcursor.entity.StartButton.HEIGHT */);
 	}
 	
 	static public function generateTaskBlock(targetSize:{width:Float, height:Float}, targetSeperation:Float, regions:Array<Rectangle>):TaskBlockData {

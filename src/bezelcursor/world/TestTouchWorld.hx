@@ -52,7 +52,6 @@ class TestTouchWorld extends GameWorld {
 	}
 	
 	public function next():Void {
-		trace("next");
 		startBtn.visible = false;
 		
 		var cm = HXP.engine.asMain().cursorManager;
@@ -74,8 +73,6 @@ class TestTouchWorld extends GameWorld {
 	override public function begin():Void {
 		super.begin();
 		
-		add(startBtn);
-		
 		if (HXP.engine.asMain().cursorManager.inputMethod.forThumbSpace != null) {
 			HXP.stage.addChild(HXP.engine.asMain().cursorManager.thumbSpaceView);
 		}
@@ -83,6 +80,8 @@ class TestTouchWorld extends GameWorld {
 		for (target in targets) {
 			add(target);
 		}
+		
+		add(startBtn);
 		
 		next();
 	}

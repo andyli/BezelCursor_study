@@ -18,6 +18,7 @@ class StartButton extends Button {
 	public function new(labelText:String):Void {
 		super(labelText);
 		type = TYPE; //so it is not snapped by cursor
+		text.size *= 2;
 		
 		resize(HXP.stage.stageWidth, Math.round(DeviceData.current.screenDPI * HEIGHT));
 		
@@ -27,6 +28,9 @@ class StartButton extends Button {
 		for (g in graphicList_hover.children) {
 			g.scrollX = g.scrollY = 0;
 		}
+		
+		alpha = 0.8;
+		layer = 5;
 
 		y = HXP.stage.stageHeight - DeviceData.current.screenDPI * HEIGHT;
 	}
