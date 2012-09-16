@@ -56,7 +56,6 @@ class StickCursor extends PointActivatedCursor {
 	override function start():Void {
 		super.start();
 		
-		target_position = current_position = activatedPoint;
 		joint = null;
 	}
 		
@@ -79,8 +78,8 @@ class StickCursor extends PointActivatedCursor {
 	
 	override function onTouchBegin(touch:TouchData):Void {
 		super.onTouchBegin(touch);
-		
-		target_position = current_position = activatedPoint;
+
+		setImmediatePosition(activatedPoint);
 	}
 	
 	override function onTouchMove(touch:TouchData):Void {

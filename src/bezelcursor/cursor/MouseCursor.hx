@@ -51,6 +51,6 @@ class MouseCursor extends PointActivatedCursor {
 	override function onTouchBegin(touch:TouchData):Void {
 		super.onTouchBegin(touch);
 		
-		target_position = current_position = activatedPoint;
+		setImmediatePosition(activatedPoint);
 	}
 }

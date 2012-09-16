@@ -22,7 +22,7 @@ using bezelcursor.world.GameWorld;
 class Cursor implements IStruct {
 	static var nextId = 0;
 	
-	@skip public var onStartSignaler(default, null):Signaler<Point>;
+	@skip public var onStartSignaler(default, null):Signaler<Void>;
 	@skip public var onMoveSignaler(default, null):Signaler<Point>;
 	@skip public var onClickSignaler(default, null):Signaler<Point>;
 	@skip public var onEndSignaler(default, null):Signaler<Point>;
@@ -90,7 +90,7 @@ class Cursor implements IStruct {
 	}
 	
 	public function init():Cursor {
-		onStartSignaler = new DirectSignaler<Point>(this);
+		onStartSignaler = new DirectSignaler<Void>(this);
 		onMoveSignaler = new DirectSignaler<Point>(this);
 		onClickSignaler = new DirectSignaler<Point>(this);
 		onEndSignaler = new DirectSignaler<Point>(this);
@@ -127,9 +127,6 @@ class Cursor implements IStruct {
 		}
 			
 		if (target_position != null) {
-			if (current_position == null) {
-				onStartSignaler.dispatch(current_position);
-			}
 			current_position = new Point(
 				positionXFilter.filter(target_position.x, timestamp),
 				positionYFilter.filter(target_position.y, timestamp)
@@ -175,6 +172,8 @@ class Cursor implements IStruct {
 		for (behavior in behaviors) {
 			behavior.start();
 		}
+		
+		onStartSignaler.dispatch();
 	}
 	
 	public function end():Void {
@@ -187,5 +186,10 @@ class Cursor implements IStruct {
 		Lib.stage.removeChild(view);
 		current_position = target_position = null;
 		onEndSignaler.dispatch(position);
+	}
+	
+	public function setImmediatePosition(pt:Point):Void {
+		current_position = target_position = pt;
+		snapper.run();
 	}
 }

@@ -69,7 +69,7 @@ class CursorManager implements IStruct {
 	@skip public var thumbSpaceViewBitmap(default, null):Bitmap;
 	@skip public var thumbSpaceConfigState(default, null):ConfigState;
 	
-	@skip public var onStartSignaler(default, null):Signaler<Point>;
+	@skip public var onStartSignaler(default, null):Signaler<Void>;
 	@skip public var onMoveSignaler(default, null):Signaler<Point>;
 	@skip public var onClickSignaler(default, null):Signaler<Point>;
 	@skip public var onEndSignaler(default, null):Signaler<Point>;
@@ -140,7 +140,7 @@ class CursorManager implements IStruct {
 	public function init():CursorManager {
 		stage = Lib.stage;
 		
-		onStartSignaler = new DirectSignaler<Point>(this);
+		onStartSignaler = new DirectSignaler<Void>(this);
 		onMoveSignaler = new DirectSignaler<Point>(this);
 		onClickSignaler = new DirectSignaler<Point>(this);
 		onEndSignaler = new DirectSignaler<Point>(this);
@@ -293,10 +293,10 @@ class CursorManager implements IStruct {
 			case ForScreen:
 				
 			case ForThumbSpace:
-				cursor.position = new Point(
+				cursor.setImmediatePosition(new Point(
 					touch.x.map(thumbSpace.left, thumbSpace.right, 0, stage.stageWidth),
 					touch.y.map(thumbSpace.top, thumbSpace.bottom, 0, stage.stageHeight)
-				);
+				));
 				thumbSpaceEnabled = false;
 				cursor.onEndSignaler.bindVoid(function(){
 					if (!cursorsEnabled) return;
