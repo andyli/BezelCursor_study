@@ -539,8 +539,10 @@ AddCharset utf-8 .atom .css .js .json .rss .vtt .xml
   php_value session.cookie_httponly true
 </IfModule>
 
-
+	  
 php_value upload_max_filesize 100M
+php_value max_execution_time 180
+php_value memory_limit 512M
 	  
 #RewriteBase /
 #RewriteBase /BezelCursor/

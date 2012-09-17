@@ -283,6 +283,24 @@ class CursorManager implements IStruct {
 			var pCursor = cast(cursor,PointActivatedCursor);
 			pointActivatedCursors.set(pCursor.touchPointID, pCursor);
 		}
+		
+		cursor.onStartSignaler.addBubblingTarget(onStartSignaler);
+		cursor.onMoveSignaler.addBubblingTarget(onMoveSignaler);
+		cursor.onClickSignaler.addBubblingTarget(onClickSignaler);
+		cursor.onEndSignaler.addBubblingTarget(onEndSignaler);
+		
+		cursor.onEndSignaler.bindAdvanced(function(signal:Signal<Point>):Void {
+			var cursor:Cursor = cast signal.origin;
+				
+			cursor.onStartSignaler.removeBubblingTarget(onStartSignaler);
+			cursor.onMoveSignaler.removeBubblingTarget(onMoveSignaler);
+			cursor.onClickSignaler.removeBubblingTarget(onClickSignaler);
+			cursor.onEndSignaler.removeBubblingTarget(onEndSignaler);
+			
+			cursors.remove(cursor.id);
+			if (cursor.is(PointActivatedCursor))
+				pointActivatedCursors.remove(untyped cursor.touchPointID);
+		}).destroyOnUse();
 			
 		cursor.start();
 		cursor.onTouchBegin(touch);
@@ -306,24 +324,6 @@ class CursorManager implements IStruct {
 					}
 				}).destroyOnUse();
 		}
-		
-		cursor.onStartSignaler.addBubblingTarget(onStartSignaler);
-		cursor.onMoveSignaler.addBubblingTarget(onMoveSignaler);
-		cursor.onClickSignaler.addBubblingTarget(onClickSignaler);
-		cursor.onEndSignaler.addBubblingTarget(onEndSignaler);
-		
-		cursor.onEndSignaler.bindAdvanced(function(signal:Signal<Point>):Void {
-			var cursor:Cursor = cast signal.origin;
-				
-			cursor.onStartSignaler.removeBubblingTarget(onStartSignaler);
-			cursor.onMoveSignaler.removeBubblingTarget(onMoveSignaler);
-			cursor.onClickSignaler.removeBubblingTarget(onClickSignaler);
-			cursor.onEndSignaler.removeBubblingTarget(onEndSignaler);
-			
-			cursors.remove(cursor.id);
-			if (cursor.is(PointActivatedCursor))
-				pointActivatedCursors.remove(untyped cursor.touchPointID);
-		}).destroyOnUse();
 	}
 	
 	function onMove(touch:TouchData):Void {

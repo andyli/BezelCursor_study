@@ -170,8 +170,6 @@ class TaskBlockDataGenerator implements IStruct {
 				};
 			}).array());
 		}
-			
-		data.targetSize = targetSize;
 		
 		return data;
 	}

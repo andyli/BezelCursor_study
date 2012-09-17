@@ -25,6 +25,7 @@ class Server {
 		var routes = new RouteCollection();
 		routes.addRoute("/", { controller : "home", action : "index" } );
 		routes.addRoute("/taskblockdata/get/", { controller : "TaskBlockData", action : "get" } );
+		routes.addRoute("/taskblockdata/set/", { controller : "TaskBlockData", action : "set" } );
 		
 		var application = new MvcApplication(config, routes);
 		

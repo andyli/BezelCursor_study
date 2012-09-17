@@ -1,25 +1,18 @@
 package bezelcursor;
 
 using Lambda;
-import com.haxepunk.Engine;
-import com.haxepunk.HXP;
-import com.haxepunk.World;
+using StringTools;
+import com.haxepunk.*;
 import nme.display.Sprite;
 import nme.events.KeyboardEvent;
 import nme.ui.Keyboard;
 import nme.Lib;
 
-import bezelcursor.cursor.CursorManager;
-import bezelcursor.entity.Target;
-import bezelcursor.entity.PowerMenu;
-import bezelcursor.model.BuildData;
-import bezelcursor.model.DeviceData;
-import bezelcursor.model.Env;
-import bezelcursor.model.TaskBlockData;
-import bezelcursor.model.TaskBlockDataGenerator;
-import bezelcursor.model.UserData;
-import bezelcursor.world.PowerMenuWorld;
-import bezelcursor.world.TestTouchWorld;
+import bezelcursor.cursor.*;
+import bezelcursor.entity.*;
+import bezelcursor.model.*;
+import bezelcursor.model.db.*;
+import bezelcursor.world.*;
 
 class Main extends Engine {
 	public var cursorManager:CursorManager;
@@ -40,7 +33,7 @@ class Main extends Engine {
 		HXP.console.enable();
 		#end
 		#if !debug
-		//HXP.console.visible = false;
+		HXP.console.visible = false;
 		#end
 		
 		initStorage();
@@ -50,20 +43,10 @@ class Main extends Engine {
 
 		worldQueue = new List<World>();
 
-		taskblocks = bezelcursor.model.TaskBlockDataGenerator.current.generateTaskBlocks();
-		HXP.world = new PowerMenuWorld();
+		HXP.world = new ServerConnectionWorld();
 
 		//Lib.current.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKey);
 		Lib.current.stage.addEventListener(KeyboardEvent.KEY_UP, onKey);
-		
-		cpp.vm.Thread.create(function(){
-			var respond = null;
-			var http = new haxe.Http(Env.website + "taskblockdata/get/");
-			http.setParameter("buildData", haxe.Json.stringify(bezelcursor.model.BuildData.current.toObj()));
-			http.onData = function(data:String) respond = data;
-			http.request(false);
-			trace(respond);
-		});
 	}
 	
 	function initStorage():Void {
@@ -87,11 +70,7 @@ class Main extends Engine {
 		switch(evt.keyCode) {
 			#if android
 				case Keyboard.ESCAPE:
-					if (Std.is(HXP.world, PowerMenuWorld)){
-						Sys.exit(0);
-					} else {
-						HXP.world = new PowerMenuWorld();
-					}
+					Sys.exit(0);
 				case 0x01000012: //MENU
 					HXP.world = new PowerMenuWorld();
 			#else

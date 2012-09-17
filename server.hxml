@@ -9,4 +9,5 @@
 -lib nme
 -lib hsl-1
 --remap flash:neash
+-D spod_macro
 -debug

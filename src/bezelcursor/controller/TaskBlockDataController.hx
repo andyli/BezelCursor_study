@@ -1,20 +1,59 @@
 package bezelcursor.controller;
 
+using Lambda;
+using StringTools;
 import haxe.Json;
 import ufront.web.mvc.Controller;
 import ufront.web.mvc.JsonResult;
 import ufront.web.mvc.ViewResult;
 
-import bezelcursor.model.BuildData;
-import bezelcursor.model.DeviceData;
-import bezelcursor.model.TaskBlockData;
-import bezelcursor.model.TaskBlockDataGenerator;
+import bezelcursor.model.*;
+import bezelcursor.model.db.*;
 
 class TaskBlockDataController extends Controller {
+	static function __init__():Void {
+		TaskBlockDataStore.manager;
+	}
+	
     public function get() {
-		var qs = this.controllerContext.request.query;
-		var bd = new BuildData().fromObj(Json.parse(qs.get("buildData")));
-		//return qs;
-        return new JsonResult(bd.toObj());
+		var qs = controllerContext.request.query;
+		var buildData:BuildData = haxe.Unserializer.run(qs.get("buildData"));
+		var deviceData:DeviceData = haxe.Unserializer.run(qs.get("deviceData"));
+		
+		var screenResolutionXInch = deviceData.screenResolutionX / deviceData.screenDPI;
+		var screenResolutionYInch = deviceData.screenResolutionY / deviceData.screenDPI;
+		
+		var tbds:List<TaskBlockDataStore> = TaskBlockDataStore.manager.search(
+			$screenResolutionXInch == screenResolutionXInch && $screenResolutionYInch == screenResolutionYInch,
+			{ orderBy: -generateTime }
+		);
+		
+		if (tbds.length > 0){
+			return haxe.Serializer.run(tbds.first().taskBlockDatas);
+		} else {
+			return "null";
+		}
     }
+	
+	public function set() {
+		var post = this.controllerContext.request.post;
+		var buildData:BuildData = haxe.Unserializer.run(post.get("buildData"));
+		var deviceData:DeviceData = haxe.Unserializer.run(post.get("deviceData"));
+		var taskBlockDatas:Array<TaskBlockData> = haxe.Unserializer.run(post.get("taskblocks"));
+		
+		var screenResolutionXInch = deviceData.screenResolutionX / deviceData.screenDPI;
+		var screenResolutionYInch = deviceData.screenResolutionY / deviceData.screenDPI;
+		
+		var tbds = new TaskBlockDataStore();
+		tbds.screenResolutionX = deviceData.screenResolutionX;
+		tbds.screenResolutionY = deviceData.screenResolutionY;
+		tbds.screenDPI = deviceData.screenDPI;
+		tbds.screenResolutionXInch = deviceData.screenResolutionX / deviceData.screenDPI;
+		tbds.screenResolutionYInch = deviceData.screenResolutionY / deviceData.screenDPI;
+		tbds.generateTime = Date.now();
+		tbds.taskBlockDatas = taskBlockDatas;
+		tbds.insert();
+		
+		return "ok";
+	}
 }

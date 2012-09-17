@@ -190,6 +190,6 @@ class Cursor implements IStruct {
 	
 	public function setImmediatePosition(pt:Point):Void {
 		current_position = target_position = pt;
-		snapper.run();
+		onFrame(haxe.Timer.stamp());
 	}
 }

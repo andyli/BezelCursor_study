@@ -21,12 +21,9 @@ using bezelcursor.util.UnitUtil;
 
 class PowerMenuWorld extends GameWorld {
 	var selectedMethod:InputMethod;
-	var selectedTargetSize:{width:Float, height:Float};
 	
 	public function startTest():Void {
-		var testWorld = new TestTouchWorld(HXP.engine.asMain().taskblocks.filter(function(tb){
-			return tb.targetSize.width == selectedTargetSize.width && tb.targetSize.height == selectedTargetSize.height;
-		})[0]);
+		var testWorld = new TestTouchWorld(HXP.engine.asMain().taskblocks.random());
 		
 		if (selectedMethod.name.indexOf("ThumbSpace") == -1) {
 			HXP.world = testWorld;
@@ -37,7 +34,8 @@ class PowerMenuWorld extends GameWorld {
 	}
 	
 	public function startPractice():Void {
-		var testWorld = new TestTouchWorld(TaskBlockDataGenerator.current.generateTaskBlock(selectedTargetSize, TaskBlockDataGenerator.current.targetSeperations[0], TaskBlockDataGenerator.current.regionss[0], TaskBlockDataGenerator.current.timesPerRegion));
+		var targetSize = TaskBlockDataGenerator.current.targetSizes.random();
+		var testWorld = new TestTouchWorld(TaskBlockDataGenerator.current.generateTaskBlock(targetSize, TaskBlockDataGenerator.current.targetSeperations[0], TaskBlockDataGenerator.current.regionss[0], TaskBlockDataGenerator.current.timesPerRegion));
 		
 		if (selectedMethod.name.indexOf("ThumbSpace") == -1) {
 			HXP.world = testWorld;
@@ -66,32 +64,6 @@ class PowerMenuWorld extends GameWorld {
 			btn.resize(btn.text.width + 20, btn.text.height + 40);
 			btn.onClickSignaler.bindVoid(function() {
 				selectedMethod = method;
-				camera.tween(0.5, { x: powerMenu.x + powerMenu.width });
-			});
-			powerMenu.add(btn);
-		}
-		
-		_x += HXP.stage.stageWidth;
-		
-		
-		
-		
-		var powerMenu = new PowerMenu();
-		powerMenu.x = _x;
-		add(powerMenu);
-		
-		var btn = new Button("Back");
-		btn.resize(btn.text.width + 5, btn.text.height + 15);
-		btn.onClickSignaler.bindVoid(function(){
-			camera.tween(0.5, { x: powerMenu.x - powerMenu.width });
-		});
-		powerMenu.add(btn);
-		
-		for (targetSize in TaskBlockDataGenerator.current.targetSizes) {
-			var btn = new Button(targetSize.name);
-			btn.resize(btn.text.width + 20, btn.text.height + 40);
-			btn.onClickSignaler.bindVoid(function(){
-				selectedTargetSize = targetSize;
 				camera.tween(0.5, { x: powerMenu.x + powerMenu.width });
 			});
 			powerMenu.add(btn);

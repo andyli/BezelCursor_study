@@ -18,7 +18,6 @@ class TaskBlockData implements IStruct {
 	*/
 	public var id(default,null):String;
 	
-	public var targetSize:{width:Float, height:Float};
 	public var targets:Array<Dynamic>;
 	public var targetQueue:Array<{target:Int, camera:{x:Float, y:Float}}>;
 	
