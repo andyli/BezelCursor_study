@@ -16,7 +16,10 @@ class BuildData implements IStruct {
 			current.isMac = #if mac true #else false #end;
 			current.isWindows = #if windows true #else false #end;
 			current.isLinux = #if linux true #else false #end;
+			current.isAir = #if air true #else false #end;
+			current.isMobile = #if mobile true #else false #end;
 			current.buildTime = BuildDataHelper.getTime();
+			//current.gitLog = BuildDataHelper.getGitLog();
 			current;
 		}
 	}
@@ -32,6 +35,8 @@ class BuildData implements IStruct {
 	public var isMac(default, null):Bool;
 	public var isWindows(default, null):Bool;
 	public var isLinux(default, null):Bool;
+	public var isAir(default, null):Bool;
+	public var isMobile(default, null):Bool;
 	public var buildTime(default, null):Float;
-	//public var gitLog(default, null):String = BuildDataHelper.getGitLog();
+	//public var gitLog(default, null):String;
 }

@@ -13,6 +13,7 @@ using bezelcursor.Main;
 import bezelcursor.entity.*;
 import bezelcursor.model.*;
 import bezelcursor.world.*;
+import bezelcursor.util.*;
 
 class ServerConnectionWorld extends GameWorld {
 	var panel:Panel;
@@ -86,50 +87,39 @@ class ServerConnectionWorld extends GameWorld {
 		super.end();
 	}
 	
-	function onError(code:String, details:String):Void {
-		updateMsg("Error: (" + code + ")\n\n" + details);
+	function onError(details:String):Void {
+		trace(details);
+		updateMsg("Error: " + details);
 		msg.color = 0xFF0000;
 		msg.stop();
 	}
 	
 	function onTaskblockdataGet(respond:Null<String>):Void {
+		//trace(respond);
+		
 		if (respond != null && respond != "null"){
-			//trace(respond + " " +respond.length);
 			HXP.engine.asMain().taskblocks = haxe.Unserializer.run(respond);
 			ready();
 		} else {
-			updateMsg("Generating tasks...");
+			//updateMsg("Generating tasks...");
 			var taskblocks = TaskBlockDataGenerator.current.generateTaskBlocks();
 
-			updateMsg("Sync with server");
-			
-			cpp.vm.Thread.create(function():Void {
-				var respond:Null<String> = null;
-				var status:Null<Int> = null;
-				var http = new haxe.Http(Env.website + "taskblockdata/set/");
-				http.cnxTimeout = 30;
-				http.setParameter("buildData", haxe.Serializer.run(BuildData.current));
-				http.setParameter("deviceData", haxe.Serializer.run(DeviceData.current));
-				http.setParameter("taskblocks", haxe.Serializer.run(taskblocks));
-						
-				http.onData = function(_respond:String) {
-					respond = _respond;
-				}
-				http.onStatus = function(_status:Int) {
-					status = _status;
-				}
+			updateMsg("Sync with server...");
 
-				updateMsg("Sync with server...");
-						
-				http.request(true);
-						
-				if (status == 200 && respond == "ok") {
-					HXP.engine.asMain().taskblocks = taskblocks;
-					ready();
-				} else {
-					onError(Std.string(status), "");
-				}
-			});
+		
+			var load = new AsyncLoader(Env.website + "taskblockdata/set/", Post);
+			load.data = {
+				buildData: haxe.Serializer.run(BuildData.current),
+				deviceData: haxe.Serializer.run(DeviceData.current),
+				taskblocks: haxe.Serializer.run(taskblocks)
+			}
+			load.onCompleteSignaler.bind(function(respond){
+				trace(respond);
+				HXP.engine.asMain().taskblocks = taskblocks;
+				ready();
+			}).destroyOnUse();
+			load.onErrorSignaler.bind(onError).destroyOnUse();
+			load.load();
 		}
 	}
 	
@@ -138,58 +128,14 @@ class ServerConnectionWorld extends GameWorld {
 	function connect():Void {
 		updateMsg("Connecting...");
 		
-		var urlRequest = new URLRequest(Env.website + "taskblockdata/get/" +
-			"?buildData=" + haxe.Serializer.run(BuildData.current).urlEncode() + 
-			"&deviceData=" + haxe.Serializer.run(DeviceData.current).urlEncode());
-		urlRequest.method = URLRequestMethod.GET;
-		urlLoader = new URLLoader();
-		urlLoader.dataFormat = URLLoaderDataFormat.TEXT;
-		//urlLoader.addEventListener(Event.OPEN, function(evt) trace("open"));
-		urlLoader.addEventListener(ProgressEvent.PROGRESS, function(evt) updateMsg("Receiving data..."));
-		urlLoader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, function(evt) onError("SECURITY_ERROR", ""));
-		urlLoader.addEventListener(HTTPStatusEvent.HTTP_STATUS, function(evt:HTTPStatusEvent) {
-			if (evt.status != 200) 
-				onError(Std.string(evt.status), "");
-		});
-		urlLoader.addEventListener(IOErrorEvent.IO_ERROR, function(evt) onError("IO_ERROR", ""));
-		urlLoader.addEventListener(Event.COMPLETE, function(evt:Event){
-			onTaskblockdataGet(urlLoader.data);
-		});
-		urlLoader.load(urlRequest);
-		
-		/*
-		connectThead = cpp.vm.Thread.create(function(){
-			var respond:Null<String> = null;
-			var status:Null<Int> = null;
-			var http = new haxe.Http(Env.website + "taskblockdata/get/");
-			http.cnxTimeout = 60;
-			http.setParameter("buildData", haxe.Serializer.run(BuildData.current));
-			http.setParameter("deviceData", haxe.Serializer.run(DeviceData.current));
-			http.onData = function(_respond:String) {
-				trace(_respond);
-				respond += _respond;
-			}
-			http.onStatus = function(_status:Int) {
-				trace(_status);
-				status = _status;
-			}
-			//trace(http.url + "?buildData=" + haxe.Serializer.run(BuildData.current).urlEncode() + "&deviceData=" + haxe.Serializer.run(DeviceData.current).urlEncode());
-			
-			updateMsg("Connecting...");
-			
-			http.request(false);
-			
-			switch (status) {
-				case 200:
-					onTaskblockdataGet(respond);
-				default:
-					updateMsg("Error: (" + status + ")\n\n" + respond);
-					msg.color = 0xFF0000;
-					msg.stop();
-					trace(respond);
-			}
-		});
-		*/
+		var load = new AsyncLoader(Env.website + "taskblockdata/get/", Get);
+		load.data = {
+			buildData: haxe.Serializer.run(BuildData.current),
+			deviceData: haxe.Serializer.run(DeviceData.current)
+		}
+		load.onCompleteSignaler.bind(onTaskblockdataGet).destroyOnUse();
+		load.onErrorSignaler.bind(onError).destroyOnUse();
+		load.load();
 	}
 	
 	function ready():Void {

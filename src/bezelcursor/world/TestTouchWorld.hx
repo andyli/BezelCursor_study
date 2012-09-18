@@ -1,28 +1,17 @@
 package bezelcursor.world;
 
-using Lambda;
 import hsl.haxe.Signal;
 import com.haxepunk.HXP;
 using com.eclecticdesignstudio.motion.Actuate;
 import nme.display.Sprite;
 import nme.events.TouchEvent;
-import nme.geom.Point;
-import nme.geom.Matrix3D;
+import nme.geom.*;
 using org.casalib.util.ArrayUtil;
 
-import bezelcursor.cursor.Cursor;
-import bezelcursor.cursor.CursorManager;
-import bezelcursor.cursor.behavior.DrawBubble;
-import bezelcursor.cursor.behavior.DynaScale;
-import bezelcursor.cursor.behavior.MouseMove;
-import bezelcursor.entity.Panel;
-import bezelcursor.entity.Button;
-import bezelcursor.entity.Target;
-import bezelcursor.entity.RandomMovingTarget;
-import bezelcursor.entity.StartButton;
-import bezelcursor.model.DeviceData;
-import bezelcursor.model.TouchData;
-import bezelcursor.model.TaskBlockData;
+import bezelcursor.cursor.*;
+import bezelcursor.cursor.behavior.*;
+import bezelcursor.entity.*;
+import bezelcursor.model.*;
 using bezelcursor.Main;
 
 class TestTouchWorld extends GameWorld {

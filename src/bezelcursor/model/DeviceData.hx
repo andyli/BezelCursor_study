@@ -72,18 +72,13 @@ class DeviceData implements IStruct {
 			current.hardwareModel = getHardwareModel();
 			#end
 			
-			#if !mac
-			current.screenResolutionX = Capabilities.screenResolutionX;
-			current.screenResolutionY = Capabilities.screenResolutionY;
-			#else
 			current.screenResolutionX = nme.Lib.stage.stageWidth;
 			current.screenResolutionY = nme.Lib.stage.stageHeight;
-			#end
 			
-			#if !mac
-			current.screenDPI = Capabilities.screenDPI;
+			#if (mac || (air && !mobile))
+			current.screenDPI = 129;
 			#else
-			current.screenDPI = 129;	
+			current.screenDPI = Capabilities.screenDPI;
 			#end
 			
 			current.lastLocalSyncTime = Date.now().getTime();

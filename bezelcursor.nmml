@@ -12,7 +12,7 @@
 	
 	<section if="android">
 		<template path="template/application.xml" rename="application.xml" if="air" />
-		<template path="template/AndroidManifest.xml" rename="AndroidManifest.xml" />
+		<template path="template/AndroidManifest.xml" rename="AndroidManifest.xml" unless="air" />
 		<template path="template/src" rename="src" include="*.java" />
 	</section>
 	

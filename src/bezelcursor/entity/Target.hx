@@ -2,20 +2,14 @@ package bezelcursor.entity;
 
 using Std;
 using Lambda;
-import hsl.haxe.Signal;
-import hsl.haxe.Signaler;
-import hsl.haxe.DirectSignaler;
+import hsl.haxe.*;
 import nme.geom.Point;
-import com.haxepunk.HXP;
-import com.haxepunk.Entity;
-import com.haxepunk.graphics.Image;
-import com.haxepunk.graphics.Text;
-import com.haxepunk.graphics.Graphiclist;
+import com.haxepunk.*;
+import com.haxepunk.graphics.*;
 using com.eclecticdesignstudio.motion.Actuate;
 
 using bezelcursor.Main;
-import bezelcursor.cursor.Cursor;
-import bezelcursor.cursor.CursorManager;
+import bezelcursor.cursor.*;
 import bezelcursor.model.IStruct;
 
 using bezelcursor.world.GameWorld;

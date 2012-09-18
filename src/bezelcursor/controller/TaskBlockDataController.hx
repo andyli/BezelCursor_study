@@ -20,11 +20,15 @@ class TaskBlockDataController extends Controller {
 		var buildData:BuildData = haxe.Unserializer.run(qs.get("buildData"));
 		var deviceData:DeviceData = haxe.Unserializer.run(qs.get("deviceData"));
 		
-		var screenResolutionXInch = deviceData.screenResolutionX / deviceData.screenDPI;
-		var screenResolutionYInch = deviceData.screenResolutionY / deviceData.screenDPI;
+		//var screenResolutionXInch = deviceData.screenResolutionX / deviceData.screenDPI;
+		//var screenResolutionYInch = deviceData.screenResolutionY / deviceData.screenDPI;
+		
+		//return deviceData.screenResolutionX + "," + deviceData.screenResolutionY + "," + deviceData.screenDPI;
 		
 		var tbds:List<TaskBlockDataStore> = TaskBlockDataStore.manager.search(
-			$screenResolutionXInch == screenResolutionXInch && $screenResolutionYInch == screenResolutionYInch,
+			$screenResolutionX == deviceData.screenResolutionX && 
+			$screenResolutionY == deviceData.screenResolutionY && 
+			$screenDPI == deviceData.screenDPI,
 			{ orderBy: -generateTime }
 		);
 		
@@ -36,7 +40,11 @@ class TaskBlockDataController extends Controller {
     }
 	
 	public function set() {
-		var post = this.controllerContext.request.post;
+		//trace("Content-type: " + controllerContext.request.clientHeaders.get("Content-type"));
+		//return controllerContext.request.postString.substr(0, 200);
+		//sys.io.File.saveContent("log"+Date.now().toString() + ".txt", controllerContext.request.postString);
+		
+		var post = controllerContext.request.post;
 		var buildData:BuildData = haxe.Unserializer.run(post.get("buildData"));
 		var deviceData:DeviceData = haxe.Unserializer.run(post.get("deviceData"));
 		var taskBlockDatas:Array<TaskBlockData> = haxe.Unserializer.run(post.get("taskblocks"));
