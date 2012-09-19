@@ -149,7 +149,7 @@ class TaskBlockDataGenerator implements IStruct {
 					rect.offsetPoint(camera);
 					
 					if (itr++ > itrMax){
-						return generateTaskBlock(targetSize, targetSeperation, regionsMultiplied, timesPerRegion);
+						return generateTaskBlock(targetSize, targetSeperation, regions, timesPerRegion);
 					}
 				} while (!(
 					//target separation constraint
