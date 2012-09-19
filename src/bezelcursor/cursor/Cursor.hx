@@ -23,9 +23,9 @@ class Cursor implements IStruct {
 	static var nextId = 0;
 	
 	@skip public var onStartSignaler(default, null):Signaler<Void>;
-	@skip public var onMoveSignaler(default, null):Signaler<Point>;
-	@skip public var onClickSignaler(default, null):Signaler<Point>;
-	@skip public var onEndSignaler(default, null):Signaler<Point>;
+	@skip public var onMoveSignaler(default, null):Signaler<Target>;
+	@skip public var onClickSignaler(default, null):Signaler<Target>;
+	@skip public var onEndSignaler(default, null):Signaler<Void>;
 	
 	public var id(default, null):Int;
 	
@@ -91,9 +91,9 @@ class Cursor implements IStruct {
 	
 	public function init():Cursor {
 		onStartSignaler = new DirectSignaler<Void>(this);
-		onMoveSignaler = new DirectSignaler<Point>(this);
-		onClickSignaler = new DirectSignaler<Point>(this);
-		onEndSignaler = new DirectSignaler<Point>(this);
+		onMoveSignaler = new DirectSignaler<Target>(this);
+		onClickSignaler = new DirectSignaler<Target>(this);
+		onEndSignaler = new DirectSignaler<Void>(this);
 		
 		return this;
 	}
@@ -105,12 +105,12 @@ class Cursor implements IStruct {
 		}
 	}
 	
-	function dispatch(signaler:Signaler<Point>):Void {
+	function dispatch(signaler:Signaler<Target>):Void {
 		var snapTarget = snapper.target;
 		if (snapTarget != null) {
-			signaler.dispatch(HXP.world.asGameWorld().worldToScreen(new Point(snapTarget.centerX, snapTarget.centerY)));
+			signaler.dispatch(snapTarget);
 		} else {
-			signaler.dispatch(current_position);
+			signaler.dispatch(null);
 		}
 	}
 	
@@ -185,7 +185,7 @@ class Cursor implements IStruct {
 		}
 		Lib.stage.removeChild(view);
 		current_position = target_position = null;
-		onEndSignaler.dispatch(position);
+		onEndSignaler.dispatch();
 	}
 	
 	public function setImmediatePosition(pt:Point):Void {

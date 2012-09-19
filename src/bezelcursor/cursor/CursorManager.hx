@@ -70,9 +70,9 @@ class CursorManager implements IStruct {
 	@skip public var thumbSpaceConfigState(default, null):ConfigState;
 	
 	@skip public var onStartSignaler(default, null):Signaler<Void>;
-	@skip public var onMoveSignaler(default, null):Signaler<Point>;
-	@skip public var onClickSignaler(default, null):Signaler<Point>;
-	@skip public var onEndSignaler(default, null):Signaler<Point>;
+	@skip public var onMoveSignaler(default, null):Signaler<Target>;
+	@skip public var onClickSignaler(default, null):Signaler<Target>;
+	@skip public var onEndSignaler(default, null):Signaler<Void>;
 	
 	/**
 	* Basically Lib.stage.
@@ -141,9 +141,9 @@ class CursorManager implements IStruct {
 		stage = Lib.stage;
 		
 		onStartSignaler = new DirectSignaler<Void>(this);
-		onMoveSignaler = new DirectSignaler<Point>(this);
-		onClickSignaler = new DirectSignaler<Point>(this);
-		onEndSignaler = new DirectSignaler<Point>(this);
+		onMoveSignaler = new DirectSignaler<Target>(this);
+		onClickSignaler = new DirectSignaler<Target>(this);
+		onEndSignaler = new DirectSignaler<Void>(this);
 		
 		thumbSpaceViewBitmap = new Bitmap(HXP.buffer, PixelSnapping.NEVER, true);//new Sprite();
 		thumbSpaceViewBitmap.alpha = 0.9;
@@ -289,7 +289,7 @@ class CursorManager implements IStruct {
 		cursor.onClickSignaler.addBubblingTarget(onClickSignaler);
 		cursor.onEndSignaler.addBubblingTarget(onEndSignaler);
 		
-		cursor.onEndSignaler.bindAdvanced(function(signal:Signal<Point>):Void {
+		cursor.onEndSignaler.bindAdvanced(function(signal:Signal<Void>):Void {
 			var cursor:Cursor = cast signal.origin;
 				
 			cursor.onStartSignaler.removeBubblingTarget(onStartSignaler);
