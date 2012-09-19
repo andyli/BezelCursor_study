@@ -3,7 +3,8 @@ package bezelcursor.entity;
 using Std;
 using Lambda;
 import hsl.haxe.*;
-import nme.geom.Point;
+import nme.display.*;
+import nme.geom.*;
 import com.haxepunk.*;
 import com.haxepunk.graphics.*;
 using com.eclecticdesignstudio.motion.Actuate;
@@ -112,8 +113,8 @@ class Target extends Entity, implements IStruct {
 	}
 	
 	public function resize(w:Int = -1, h:Int = -1):Void {
-		image_default = Image.createRect(width = w == -1 ? width : w, height = h == -1 ? height : h, color);
-		image_hover = Image.createRect(width = w == -1 ? width : w, height = h == -1 ? height : h, color_hover);
+		image_default = new Image(getBitmapdataOfColor(width = w == -1 ? width : w, height = h == -1 ? height : h, color));
+		image_hover = new Image(getBitmapdataOfColor(width = w == -1 ? width : w, height = h == -1 ? height : h, color_hover));
 		
 		graphicList_default.removeAll();
 		graphicList_default.add(image_default);
@@ -145,4 +146,16 @@ class Target extends Entity, implements IStruct {
 			graphic = graphicList_default;
 		}
 	}
+	
+	static function getBitmapdataOfColor(width:Int, height:Int, color:Int):BitmapData {
+		var key = width + "," + height + "," + color;
+		if (bitmapdataOfColor.exists(key)) {
+			return bitmapdataOfColor.get(key);
+		} else {
+			var bm = HXP.createBitmap(width, height, true, 0xFF000000 | color);
+			bitmapdataOfColor.set(key, bm);
+			return bm;
+		}
+	}
+	static var bitmapdataOfColor:Hash<BitmapData> = new Hash<BitmapData>();
 }
