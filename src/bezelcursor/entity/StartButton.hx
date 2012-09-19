@@ -4,6 +4,7 @@ import nme.events.MouseEvent;
 import nme.geom.Point;
 import com.haxepunk.HXP;
 import hsl.haxe.Signal;
+using com.eclecticdesignstudio.motion.Actuate;
 
 using bezelcursor.Main;
 import bezelcursor.cursor.Cursor;
@@ -20,7 +21,9 @@ class StartButton extends Button {
 		type = TYPE; //so it is not snapped by cursor
 		text.size *= 2;
 		
-		resize(HXP.stage.stageWidth, Math.round(DeviceData.current.screenDPI * HEIGHT));
+		var dpi = DeviceData.current.screenDPI;
+		
+		resize(Math.round(dpi * 18.mm2inches()), Math.round(dpi * 9.mm2inches()));
 		
 		for (g in graphicList_default.children) {
 			g.scrollX = g.scrollY = 0;
@@ -31,18 +34,23 @@ class StartButton extends Button {
 		
 		alpha = 0.8;
 		layer = 5;
-
-		y = HXP.stage.stageHeight - DeviceData.current.screenDPI * HEIGHT;
+		
+		x = (HXP.stage.stageWidth - width) * 0.5;
+		y = HXP.stage.stageHeight - dpi * 11.mm2inches();
 	}
 	
 	override public function added():Void {
 		super.added();
 		HXP.stage.addEventListener(MouseEvent.MOUSE_DOWN, onPressed);
+		
+		text.tween(0.5, {alpha:0.5}).reflect(true).repeat(-1);
 	}
 	
 	override public function removed():Void {
 		super.removed();
 		HXP.stage.removeEventListener(MouseEvent.MOUSE_DOWN, onPressed);
+		
+		text.stop();
 	}
 	
 	function onPressed(evt:MouseEvent):Void {
