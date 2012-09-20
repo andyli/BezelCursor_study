@@ -22,8 +22,7 @@ class TestTouchWorld extends GameWorld {
 	public var targets:Array<Target>;
 	
 	public var startBtn:StartButton;
-	public var missedText:Text;
-	public var missedEntity:Entity;
+	public var missedLabel:Label;
 	
 	override public function new(taskBlockData:TaskBlockData):Void {
 		super();
@@ -43,19 +42,15 @@ class TestTouchWorld extends GameWorld {
 		
 		startBtn = new StartButton("Start");
 		
-		missedEntity = new Entity();
-		missedText = new Text("MISSED", {
+		missedLabel = new Label("MISSED", {
 			color: 0xFF0000,
 			size: Math.round(DeviceData.current.screenDPI * 0.36),
 			resizable: true,
 			align: TextFormatAlign.CENTER
 		});
-		missedText.scrollX = missedText.scrollY = 0;
-		missedEntity.addGraphic(missedText);
-		missedEntity.width = missedText.textWidth;
-		missedEntity.height = missedText.textHeight;
-		missedEntity.x = (HXP.stage.stageWidth - missedEntity.width) * 0.5;
-		missedEntity.y = (HXP.stage.stageHeight - missedEntity.height) * 0.5;
+		missedLabel.text.scrollX = missedLabel.text.scrollY = 0;
+		missedLabel.x = (HXP.stage.stageWidth - missedLabel.width) * 0.5;
+		missedLabel.y = (HXP.stage.stageHeight - missedLabel.height) * 0.5;
 	}
 	
 	public function next():Void {
@@ -111,10 +106,10 @@ class TestTouchWorld extends GameWorld {
 		if (target == currentTarget){
 			next();
 		} else {
-			add(missedEntity);
-			missedText.alpha = 0;
-			missedText.tween(0.5, { alpha:1.0 }).onComplete(function(){ 
-				remove(missedEntity); 
+			add(missedLabel);
+			missedLabel.text.alpha = 0;
+			missedLabel.text.tween(0.5, { alpha:1.0 }).onComplete(function(){ 
+				remove(missedLabel); 
 				next();
 			});
 		}
