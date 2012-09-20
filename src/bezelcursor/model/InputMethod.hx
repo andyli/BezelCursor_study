@@ -19,19 +19,22 @@ class InputMethod implements IStruct {
 	public var forScreen:CursorSetting;
 	public var forBezel:CursorSetting;
 	public var forThumbSpace:CursorSetting;
+	public var requireStartButton:Bool;
 	
-	public function new(name:String, ?forScreen:CursorSetting, ?forBezel:CursorSetting, ?forThumbSpace:CursorSetting):Void {
+	public function new(name:String, ?forScreen:CursorSetting, ?forBezel:CursorSetting, ?forThumbSpace:CursorSetting, requireStartButton:Bool = false):Void {
 		this.name = name;
 		this.forScreen = forScreen;
 		this.forBezel = forBezel;
 		this.forThumbSpace = forThumbSpace;
+		this.requireStartButton = requireStartButton;
 	}
 	
 	static public var None:InputMethod = new InputMethod(
 		"None",
 		null,
 		null,
-		null
+		null,
+		false
 	);
 	
 	static public var DirectTouch:InputMethod = new InputMethod(
@@ -44,41 +47,47 @@ class InputMethod implements IStruct {
 			default_radius: 0
 		} },
 		null,
-		null
+		null,
+		false
 	);
 	
 	static public var BezelCursor_acceleratedDynaSpot:InputMethod = new InputMethod(
 		"BezelCursor - accelerated DynaSpot",
 		null,
 		{ _class: "bezelcursor.cursor.MouseCursor", data: {} },
-		null
+		null,
+		false
 	);
 	
 	static public var BezelCursor_directMappingDynaSpot:InputMethod = new InputMethod(
 		"BezelCursor - direct mapping DynaSpot",
 		null,
 		{ _class: "bezelcursor.cursor.StickCursor", data: {} },
-		null
+		null,
+		false
 	);
 	
 	static public var BezelCursor_acceleratedBubbleCursor:InputMethod = new InputMethod(
 		"Bezelcursor - accelerated BubbleCursor",
 		null,
 		{ _class: "bezelcursor.cursor.BubbleMouseCursor", data: {} },
-		null
+		null,
+		false
 	);
 	
 	static public var MagStick:InputMethod = new InputMethod(
 		"MagStick",
 		{ _class: "bezelcursor.cursor.MagStickCursor", data: {} },
 		null,
-		null
+		null,
+		true
 	);
 	
 	static public var ThumbSpace:InputMethod = new InputMethod(
 		"ThumbSpace",
 		null,
 		null,
-		{ _class: "bezelcursor.cursor.BubbleMouseCursor", data: { drawBubble: null } }
+		{ _class: "bezelcursor.cursor.BubbleMouseCursor", data: { drawBubble: null } },
+		true
 	);
 }

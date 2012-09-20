@@ -48,10 +48,12 @@ class TestTouchWorld extends GameWorld {
 	}
 	
 	public function next():Void {
-		startBtn.visible = false;
-		
 		var cm = HXP.engine.asMain().cursorManager;
 		cm.cursorsEnabled = false;
+		
+		if (cm.inputMethod.requireStartButton){
+			startBtn.visible = false;
+		}
 		
 		var nextSpec = targetQueue.shift();
 		
@@ -64,7 +66,12 @@ class TestTouchWorld extends GameWorld {
 			currentTarget = targets[nextSpec.target];
 			currentTarget.color = 0xFF0000;
 			currentTarget.color_hover = 0x66FF66;
-			startBtn.visible = true;
+			
+			if (cm.inputMethod.requireStartButton){
+				startBtn.visible = true;
+			} else {
+				cm.cursorsEnabled = true;
+			}
 		});
 	}
 	
@@ -81,7 +88,9 @@ class TestTouchWorld extends GameWorld {
 			add(target);
 		}
 		
-		add(startBtn);
+		if (cm.inputMethod.requireStartButton){
+			add(startBtn);
+		}
 		
 		cm.onClickSignaler.bind(onCursorClick);
 		if (cm.inputMethod != InputMethod.DirectTouch && cm.inputMethod != InputMethod.ThumbSpace) {
@@ -102,10 +111,13 @@ class TestTouchWorld extends GameWorld {
 	}
 	
 	function onCursorClick(target:Target):Void {
-		startBtn.visible = false;
-		
 		var cm = HXP.engine.asMain().cursorManager;
 		cm.cursorsEnabled = false;
+		
+		if (cm.inputMethod.requireStartButton) {
+			startBtn.visible = false;
+		}
+		
 		
 		if (target == currentTarget){
 			next();
