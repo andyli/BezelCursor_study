@@ -21,8 +21,25 @@ using bezelcursor.util.UnitUtil;
 
 class PowerMenuWorld extends GameWorld {
 	var selectedMethod:InputMethod;
+	var selectedUseStartButton:Bool;
+	var powerMenuStack:Array<PowerMenu>;
+	
+	function popPowerMenuStack():Void {
+		remove(powerMenuStack.pop());
+		camera.tween(0.5, { x: powerMenuStack[powerMenuStack.length-1].x });
+	}
+	
+	function pushPowerMenuStack(powerMenu:PowerMenu):Void {
+		powerMenu.x = HXP.stage.stageWidth * powerMenuStack.length;
+		powerMenuStack.push(add(powerMenu));
+		camera.tween(0.5, { x: powerMenu.x });
+	}
 	
 	public function startTest():Void {
+		if (selectedUseStartButton && !selectedMethod.requireOverlayButton) {
+			selectedMethod = new InputMethod("").fromObj(selectedMethod.toObj()).fromObj({requireOverlayButton: true});
+		}
+		
 		var testWorld = new TestTouchWorld(HXP.engine.asMain().taskblocks.random());
 		
 		if (selectedMethod.name.indexOf("ThumbSpace") == -1) {
@@ -34,7 +51,10 @@ class PowerMenuWorld extends GameWorld {
 	}
 	
 	public function startPractice():Void {
-		var targetSize = TaskBlockDataGenerator.current.targetSizes.random();
+		if (selectedUseStartButton && !selectedMethod.requireOverlayButton) {
+			selectedMethod = new InputMethod("").fromObj(selectedMethod.toObj()).fromObj({requireOverlayButton: true});
+		}
+		
 		var testWorld = new PracticeTouchWorld(HXP.engine.asMain().taskblocks.random());
 		
 		if (selectedMethod.name.indexOf("ThumbSpace") == -1) {
@@ -49,57 +69,60 @@ class PowerMenuWorld extends GameWorld {
 		super.begin();
 		
 		var dpi = DeviceData.current.screenDPI;
+		var buttonWidth = 45.mm2inches() * dpi;
+		var buttonHeight = 9.mm2inches() * dpi;
 		
 		HXP.engine.asMain().cursorManager.inputMethod = InputMethod.DirectTouch;
 		HXP.engine.asMain().cursorManager.cursorsEnabled = true;
 		
-		var _x = 0;
+		powerMenuStack = new Array<PowerMenu>();
+		
 		
 		var powerMenu = new PowerMenu();
-		powerMenu.x = _x;
-		add(powerMenu);
 		
 		for (method in TaskBlockDataGenerator.current.inputMethods) {
 			var btn = new Button(method.name);
-			btn.resize(btn.text.width + 20, btn.text.height + 40);
-			btn.onClickSignaler.bindVoid(function() {
-				selectedMethod = method;
-				camera.tween(0.5, { x: powerMenu.x + powerMenu.width });
-			});
+			btn.resize(buttonWidth, buttonHeight);
+			if (method.requireOverlayButton) {
+				btn.onClickSignaler.bindVoid(function() {
+					selectedUseStartButton = true;
+					selectedMethod = method;
+					startPractice();
+				});
+			} else {
+				btn.onClickSignaler.bindVoid(function() {
+					selectedMethod = method;
+				
+					var powerMenu = new PowerMenu();
+		
+					var btn = new Button("Back");
+					btn.resize(buttonWidth * 0.5, buttonHeight);
+					btn.onClickSignaler.bindVoid(popPowerMenuStack).destroyOnUse();
+					powerMenu.add(btn);
+		
+					var btn = new Button("Use start button");
+					btn.resize(buttonWidth, buttonHeight);
+					btn.onClickSignaler.bindVoid(function(){
+						selectedUseStartButton = true;
+						startPractice();
+					});
+					powerMenu.add(btn);
+		
+					var btn = new Button("No start button");
+					btn.resize(buttonWidth, buttonHeight);
+					btn.onClickSignaler.bindVoid(function(){
+						selectedUseStartButton = false;
+						startPractice();
+					});
+					powerMenu.add(btn);
+				
+					pushPowerMenuStack(powerMenu);
+				});
+			}
 			powerMenu.add(btn);
 		}
-		
-		_x += HXP.stage.stageWidth;
-		
-		
-		
-		
-		var powerMenu = new PowerMenu();
-		powerMenu.x = _x;
-		add(powerMenu);
-		
-		var btn = new Button("Back");
-		btn.resize(btn.text.width + 5, btn.text.height + 15);
-		btn.onClickSignaler.bindVoid(function(){
-			camera.tween(0.5, { x: powerMenu.x - powerMenu.width });
-		});
-		powerMenu.add(btn);
-		
-		var btn = new Button("Practice");
-		btn.resize(btn.text.width + 20, btn.text.height + 40);
-		btn.onClickSignaler.bindVoid(function(){
-			startPractice();
-		});
-		powerMenu.add(btn);
-		
-		var btn = new Button("Start");
-		btn.resize(btn.text.width + 20, btn.text.height + 40);
-		btn.onClickSignaler.bindVoid(function(){
-			startTest();
-		});
-		powerMenu.add(btn);
-		
-		_x += HXP.stage.stageWidth;
+
+		pushPowerMenuStack(powerMenu);
 	}
 	
 	override public function end():Void {

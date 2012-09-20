@@ -15,11 +15,11 @@ typedef CursorSetting = {
 }
 
 class InputMethod implements IStruct {
-	public var name:String;
-	public var forScreen:CursorSetting;
-	public var forBezel:CursorSetting;
-	public var forThumbSpace:CursorSetting;
-	public var requireOverlayButton:Bool;
+	public var name(default, null):String;
+	public var forScreen(default, null):CursorSetting;
+	public var forBezel(default, null):CursorSetting;
+	public var forThumbSpace(default, null):CursorSetting;
+	public var requireOverlayButton(default, null):Bool;
 	
 	public function new(name:String, ?forScreen:CursorSetting, ?forBezel:CursorSetting, ?forThumbSpace:CursorSetting, requireOverlayButton:Bool = false):Void {
 		this.name = name;
@@ -80,7 +80,7 @@ class InputMethod implements IStruct {
 		{ _class: "bezelcursor.cursor.MagStickCursor", data: {} },
 		null,
 		null,
-		true
+		false
 	);
 	
 	static public var ThumbSpace:InputMethod = new InputMethod(

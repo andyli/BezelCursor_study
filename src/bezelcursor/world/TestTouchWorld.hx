@@ -105,7 +105,7 @@ class TestTouchWorld extends GameWorld {
 		}
 		
 		cm.onClickSignaler.bind(onCursorClick);
-		if (cm.inputMethod != InputMethod.DirectTouch && cm.inputMethod != InputMethod.ThumbSpace) {
+		if (cm.inputMethod.name != InputMethod.DirectTouch.name && cm.inputMethod.name != InputMethod.ThumbSpace.name) {
 			cm.isValidStart = function(t:TouchData) {
 				var worldTouchPos = screenToWorld(new Point(t.x, t.y));
 				return !currentTarget.collidePoint(currentTarget.x, currentTarget.y, worldTouchPos.x, worldTouchPos.y);
