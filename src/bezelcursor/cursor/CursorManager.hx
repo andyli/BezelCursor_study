@@ -105,6 +105,7 @@ class CursorManager implements IStruct {
 	function thumbSpaceViewDraw():Void {
 		var thumbSpace = thumbSpace.normalize();
 		
+		thumbSpaceViewBitmap.bitmapData = HXP.buffer;
 		thumbSpaceViewBitmap.x = thumbSpace.x;
 		thumbSpaceViewBitmap.y = thumbSpace.y;
 		thumbSpaceViewBitmap.width = thumbSpace.width;
