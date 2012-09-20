@@ -68,7 +68,7 @@ class InputMethod implements IStruct {
 	);
 	
 	static public var BezelCursor_acceleratedBubbleCursor:InputMethod = new InputMethod(
-		"Bezelcursor - accelerated BubbleCursor",
+		"BezelCursor - accelerated BubbleCursor",
 		null,
 		{ _class: "bezelcursor.cursor.BubbleMouseCursor", data: {} },
 		null,

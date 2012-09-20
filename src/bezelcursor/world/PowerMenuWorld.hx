@@ -1,6 +1,7 @@
 package bezelcursor.world;
 
 using Lambda;
+using StringTools;
 import nme.geom.Rectangle;
 import com.haxepunk.HXP;
 using com.eclecticdesignstudio.motion.Actuate;
@@ -35,24 +36,16 @@ class PowerMenuWorld extends GameWorld {
 		camera.tween(0.5, { x: powerMenu.x });
 	}
 	
-	public function startTest():Void {
-		if (selectedUseStartButton && !selectedMethod.requireOverlayButton) {
-			selectedMethod = new InputMethod("").fromObj(selectedMethod.toObj()).fromObj({requireOverlayButton: true});
-		}
-		
-		var testWorld = new TestTouchWorld(HXP.engine.asMain().taskblocks.random());
-		
-		if (selectedMethod.name.indexOf("ThumbSpace") == -1) {
-			HXP.world = testWorld;
-		} else {
-			HXP.engine.asMain().worldQueue.add(testWorld);
-			HXP.world = new ConfigThumbSpaceWorld();
-		}
-	}
-	
 	public function startPractice():Void {
 		if (selectedUseStartButton && !selectedMethod.requireOverlayButton) {
 			selectedMethod = new InputMethod("").fromObj(selectedMethod.toObj()).fromObj({requireOverlayButton: true});
+		}
+		
+		if (selectedMethod.name.startsWith("BezelCursor") && selectedMethod.requireOverlayButton) {
+			selectedMethod = new InputMethod("").fromObj(selectedMethod.toObj()).fromObj({
+				forScreen: selectedMethod.forBezel,
+				forBezel: null
+			});
 		}
 		
 		var testWorld = new PracticeTouchWorld(HXP.engine.asMain().taskblocks.random());

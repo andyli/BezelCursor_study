@@ -55,31 +55,7 @@ class PracticeTouchWorld extends TestTouchWorld {
 		}
 	}
 	
-	override public function next():Void {
-		var cm = HXP.engine.asMain().cursorManager;
-		cm.cursorsEnabled = false;
-		
-		if (cm.inputMethod.requireOverlayButton){
-			startBtn.visible = false;
-		}
-		
-		var nextSpec = targetQueue.shift();
-		
-		if (nextSpec == null) { //end
-			HXP.world = new PracticeTouchWorld(taskBlockData);
-			return;
-		}
-		
-		camera.tween(0.5, nextSpec.camera).onComplete(function() {
-			currentTarget = targets[nextSpec.target];
-			currentTarget.color = 0xFF0000;
-			currentTarget.color_hover = 0x66FF66;
-			
-			if (cm.inputMethod.requireOverlayButton){
-				startBtn.visible = true;
-			} else {
-				cm.cursorsEnabled = true;
-			}
-		});
+	override function onFinish():Void {
+		HXP.world = new PracticeTouchWorld(taskBlockData);
 	}
 }

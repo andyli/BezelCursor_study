@@ -1,5 +1,6 @@
 package bezelcursor.world;
 
+using StringTools;
 import hsl.haxe.*;
 import com.haxepunk.*;
 import com.haxepunk.graphics.*;
@@ -69,7 +70,7 @@ class TestTouchWorld extends GameWorld {
 		var nextSpec = targetQueue.shift();
 		
 		if (nextSpec == null) { //end
-			HXP.world = new bezelcursor.world.PowerMenuWorld();
+			onFinish();
 			return;
 		}
 		
@@ -80,6 +81,9 @@ class TestTouchWorld extends GameWorld {
 			
 			if (cm.inputMethod.requireOverlayButton){
 				startBtn.visible = true;
+				if (cm.inputMethod.name.startsWith("BezelCursor")) {
+					cm.cursorsEnabled = true;
+				}
 			} else {
 				cm.cursorsEnabled = true;
 			}
@@ -105,7 +109,12 @@ class TestTouchWorld extends GameWorld {
 		}
 		
 		cm.onClickSignaler.bind(onCursorClick);
-		if (cm.inputMethod.name != InputMethod.DirectTouch.name && cm.inputMethod.name != InputMethod.ThumbSpace.name) {
+		
+		if (cm.inputMethod.requireOverlayButton && cm.inputMethod.name.startsWith("BezelCursor")) {
+			cm.isValidStart = function(t:TouchData) {
+				return startBtn.collidePoint(startBtn.x, startBtn.y, t.x, t.y);
+			}
+		} else if (cm.inputMethod.name != InputMethod.DirectTouch.name && cm.inputMethod.name != InputMethod.ThumbSpace.name) {
 			cm.isValidStart = function(t:TouchData) {
 				var worldTouchPos = screenToWorld(new Point(t.x, t.y));
 				return !currentTarget.collidePoint(currentTarget.x, currentTarget.y, worldTouchPos.x, worldTouchPos.y);
@@ -142,5 +151,9 @@ class TestTouchWorld extends GameWorld {
 				next();
 			});
 		}
+	}
+	
+	function onFinish():Void {
+		HXP.world = new PowerMenuWorld();
 	}
 }
