@@ -26,7 +26,7 @@ class PracticeTouchWorld extends TestTouchWorld {
 		
 		this.taskBlockData = taskBlockData;
 		
-		endPracticeBtn = new OverlayButton("End");
+		endPracticeBtn = new OverlayButton("Begin");
 		endPracticeBtn.onClickSignaler.bindVoid(function(){
 			HXP.world = new TestTouchWorld(taskBlockData);
 		}).destroyOnUse();
