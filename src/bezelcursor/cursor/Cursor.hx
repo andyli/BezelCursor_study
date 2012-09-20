@@ -82,11 +82,15 @@ class Cursor implements IStruct {
 		behaviors = [];
 		snapper = new SimpleSnapper(this);
 		
-		positionXFilter = new OneEuroFilter(Lib.stage.frameRate, 1, 0.2);
-		positionYFilter = new OneEuroFilter(Lib.stage.frameRate, 1, 0.2);
+		resetPositionFilters();
 		radiusFilter = new OneEuroFilter(Lib.stage.frameRate);
 		
 		init();
+	}
+	
+	function resetPositionFilters():Void {
+		positionXFilter = new OneEuroFilter(Lib.stage.frameRate, 1, 0.2);
+		positionYFilter = new OneEuroFilter(Lib.stage.frameRate, 1, 0.2);
 	}
 	
 	public function init():Cursor {
@@ -190,6 +194,7 @@ class Cursor implements IStruct {
 	
 	public function setImmediatePosition(pt:Point):Void {
 		current_position = target_position = pt;
+		resetPositionFilters();
 		onFrame(haxe.Timer.stamp());
 	}
 }

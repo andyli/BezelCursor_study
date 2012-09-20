@@ -34,12 +34,6 @@ class TestTouchWorld extends GameWorld {
 		}
 		targetQueue = taskBlockData.targetQueue.copy();
 		
-		for (spec in targetQueue) {
-			var target = targets[spec.target];
-			target.color = 0xFF0000;
-			target.color_hover = 0x66FF66;
-		}
-		
 		startBtn = new StartButton("Start");
 		
 		missedLabel = new Label("MISSED", {
@@ -66,9 +60,12 @@ class TestTouchWorld extends GameWorld {
 			return;
 		}
 		
-		currentTarget = targets[nextSpec.target];
-		
-		camera.tween(0.5, nextSpec.camera).onComplete(function() startBtn.visible = true);
+		camera.tween(0.5, nextSpec.camera).onComplete(function() {
+			currentTarget = targets[nextSpec.target];
+			currentTarget.color = 0xFF0000;
+			currentTarget.color_hover = 0x66FF66;
+			startBtn.visible = true;
+		});
 	}
 	
 	override public function begin():Void {
