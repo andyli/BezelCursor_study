@@ -30,7 +30,7 @@ import bezelcursor.model.TouchData;
 import bezelcursor.model.IStruct;
 import bezelcursor.model.InputMethod;
 import bezelcursor.entity.Target;
-import bezelcursor.entity.StartButton;
+import bezelcursor.entity.OverlayButton;
 using bezelcursor.world.GameWorld;
 using bezelcursor.util.RectangleUtil;
 
@@ -324,7 +324,7 @@ class CursorManager implements IStruct {
 				thumbSpaceEnabled = false;
 				cursor.onEndSignaler.bindVoid(function(){
 					if (!cursorsEnabled) return;
-					var startBtn:StartButton = HXP.world.classFirst(StartButton);
+					var startBtn:OverlayButton = HXP.world.classFirst(OverlayButton);
 					if (startBtn != null) {
 						startBtn.visible = true;
 					}

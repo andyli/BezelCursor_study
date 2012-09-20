@@ -21,7 +21,7 @@ class TestTouchWorld extends GameWorld {
 	public var targetQueue:Array<{target:Int, camera:{x:Float, y:Float}}>;
 	public var targets:Array<Target>;
 	
-	public var startBtn:StartButton;
+	public var startBtn:OverlayButton;
 	public var missedLabel:Label;
 	
 	override public function new(taskBlockData:TaskBlockData):Void {
@@ -34,7 +34,18 @@ class TestTouchWorld extends GameWorld {
 		}
 		targetQueue = taskBlockData.targetQueue.copy();
 		
-		startBtn = new StartButton("Start");
+		startBtn = new OverlayButton("Start");
+		startBtn.onClickSignaler.bindVoid(function(){
+			var cm = HXP.engine.asMain().cursorManager;
+			if (cm.inputMethod.forBezel != null || cm.inputMethod.forScreen != null || cm.inputMethod.forThumbSpace != null) {
+				cm.cursorsEnabled = true;
+			}
+			if (cm.inputMethod.forThumbSpace != null) {
+				cm.thumbSpaceEnabled = true;
+			}
+			
+			startBtn.visible = false;
+		});
 		
 		missedLabel = new Label("MISSED", {
 			color: 0xFF0000,
@@ -51,7 +62,7 @@ class TestTouchWorld extends GameWorld {
 		var cm = HXP.engine.asMain().cursorManager;
 		cm.cursorsEnabled = false;
 		
-		if (cm.inputMethod.requireStartButton){
+		if (cm.inputMethod.requireOverlayButton){
 			startBtn.visible = false;
 		}
 		
@@ -67,7 +78,7 @@ class TestTouchWorld extends GameWorld {
 			currentTarget.color = 0xFF0000;
 			currentTarget.color_hover = 0x66FF66;
 			
-			if (cm.inputMethod.requireStartButton){
+			if (cm.inputMethod.requireOverlayButton){
 				startBtn.visible = true;
 			} else {
 				cm.cursorsEnabled = true;
@@ -86,9 +97,10 @@ class TestTouchWorld extends GameWorld {
 		
 		for (target in targets) {
 			add(target);
+			startBtn.text.tween(0.5, {alpha:0.5}).reflect(true).repeat(-1);
 		}
 		
-		if (cm.inputMethod.requireStartButton){
+		if (cm.inputMethod.requireOverlayButton){
 			add(startBtn);
 		}
 		
@@ -107,6 +119,7 @@ class TestTouchWorld extends GameWorld {
 		var cm = HXP.engine.asMain().cursorManager;
 		cm.onClickSignaler.unbind(onCursorClick);
 		cm.isValidStart = function(t) return true;
+		startBtn.text.stop();
 		super.end();
 	}
 	
@@ -114,7 +127,7 @@ class TestTouchWorld extends GameWorld {
 		var cm = HXP.engine.asMain().cursorManager;
 		cm.cursorsEnabled = false;
 		
-		if (cm.inputMethod.requireStartButton) {
+		if (cm.inputMethod.requireOverlayButton) {
 			startBtn.visible = false;
 		}
 		

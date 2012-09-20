@@ -20,7 +20,7 @@ using bezelcursor.Main;
 import bezelcursor.cursor.Cursor;
 import bezelcursor.cursor.CursorManager;
 import bezelcursor.entity.Target;
-import bezelcursor.entity.StartButton;
+import bezelcursor.entity.OverlayButton;
 import bezelcursor.model.EventRecord;
 
 class GameWorld extends World {

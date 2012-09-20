@@ -12,9 +12,10 @@ import bezelcursor.model.DeviceData;
 using bezelcursor.util.UnitUtil;
 using bezelcursor.world.GameWorld;
 
-class StartButton extends Button {
-	inline static public var TYPE = "StartButton";
-	inline static public var HEIGHT:Float = 10.mm2inches();
+class OverlayButton extends Button {
+	inline static public var TYPE = "OverlayButton";
+	inline static public var WIDTH:Float = 18.mm2inches();
+	inline static public var HEIGHT:Float = 9.mm2inches();
 	
 	public function new(labelText:String):Void {
 		super(labelText);
@@ -23,7 +24,7 @@ class StartButton extends Button {
 		
 		var dpi = DeviceData.current.screenDPI;
 		
-		resize(Math.round(dpi * 18.mm2inches()), Math.round(dpi * 9.mm2inches()));
+		resize(Math.round(dpi * WIDTH), Math.round(dpi * HEIGHT));
 		
 		for (g in graphicList_default.children) {
 			g.scrollX = g.scrollY = 0;
@@ -36,36 +37,21 @@ class StartButton extends Button {
 		layer = 5;
 		
 		x = (HXP.stage.stageWidth - width) * 0.5;
-		y = HXP.stage.stageHeight - dpi * 11.mm2inches();
+		y = HXP.stage.stageHeight - dpi * (HEIGHT + 2.mm2inches());
 	}
 	
 	override public function added():Void {
 		super.added();
 		HXP.stage.addEventListener(MouseEvent.MOUSE_DOWN, onPressed);
-		
-		text.tween(0.5, {alpha:0.5}).reflect(true).repeat(-1);
 	}
 	
 	override public function removed():Void {
 		super.removed();
 		HXP.stage.removeEventListener(MouseEvent.MOUSE_DOWN, onPressed);
-		
-		text.stop();
 	}
 	
 	function onPressed(evt:MouseEvent):Void {
-		if (visible && collidePoint(x, y, evt.stageX, evt.stageY)) {
-
-			var cm = HXP.engine.asMain().cursorManager;
-			if (cm.inputMethod.forBezel != null || cm.inputMethod.forScreen != null || cm.inputMethod.forThumbSpace != null) {
-				cm.cursorsEnabled = true;
-			}
-			if (cm.inputMethod.forThumbSpace != null) {
-				cm.thumbSpaceEnabled = true;
-			}
-			
-			visible = false;
-			
+		if (visible && collidePoint(x, y, evt.stageX, evt.stageY)) {			
 			click();
 		}
 	}

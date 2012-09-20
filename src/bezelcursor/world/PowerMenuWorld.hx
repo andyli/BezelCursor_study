@@ -35,7 +35,7 @@ class PowerMenuWorld extends GameWorld {
 	
 	public function startPractice():Void {
 		var targetSize = TaskBlockDataGenerator.current.targetSizes.random();
-		var testWorld = new TestTouchWorld(TaskBlockDataGenerator.current.generateTaskBlock(targetSize, TaskBlockDataGenerator.current.targetSeperations[0], TaskBlockDataGenerator.current.regionss[0], TaskBlockDataGenerator.current.timesPerRegion));
+		var testWorld = new PracticeTouchWorld(HXP.engine.asMain().taskblocks.random());
 		
 		if (selectedMethod.name.indexOf("ThumbSpace") == -1) {
 			HXP.world = testWorld;

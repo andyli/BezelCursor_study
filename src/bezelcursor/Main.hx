@@ -3,6 +3,7 @@ package bezelcursor;
 using Lambda;
 using StringTools;
 import com.haxepunk.*;
+import com.haxepunk.utils.*;
 import nme.display.Sprite;
 import nme.events.KeyboardEvent;
 import nme.ui.Keyboard;
@@ -44,7 +45,8 @@ class Main extends Engine {
 		worldQueue = new List<World>();
 
 		HXP.world = new ServerConnectionWorld();
-
+		
+		Input.define("menu", [Keyboard.SPACE, 0x01000012]);
 		//Lib.current.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKey);
 		Lib.current.stage.addEventListener(KeyboardEvent.KEY_UP, onKey);
 	}
@@ -65,17 +67,12 @@ class Main extends Engine {
 	
 	function onKey(evt:KeyboardEvent):Void {
 		switch(evt.keyCode) {
-			#if android
-				case Keyboard.ESCAPE:
+			case Keyboard.ESCAPE:
+				if (Std.is(HXP.world, PowerMenuWorld)) {
 					Sys.exit(0);
-				case 0x01000012: //MENU
+				} else {
 					HXP.world = new PowerMenuWorld();
-			#else
-				case Keyboard.SPACE:
-					HXP.console.visible = !HXP.console.visible;
-				case Keyboard.ESCAPE:
-					HXP.world = new PowerMenuWorld();
-			#end
+				}
 		}
 		evt.stopImmediatePropagation();
 	}

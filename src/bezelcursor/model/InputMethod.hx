@@ -19,14 +19,14 @@ class InputMethod implements IStruct {
 	public var forScreen:CursorSetting;
 	public var forBezel:CursorSetting;
 	public var forThumbSpace:CursorSetting;
-	public var requireStartButton:Bool;
+	public var requireOverlayButton:Bool;
 	
-	public function new(name:String, ?forScreen:CursorSetting, ?forBezel:CursorSetting, ?forThumbSpace:CursorSetting, requireStartButton:Bool = false):Void {
+	public function new(name:String, ?forScreen:CursorSetting, ?forBezel:CursorSetting, ?forThumbSpace:CursorSetting, requireOverlayButton:Bool = false):Void {
 		this.name = name;
 		this.forScreen = forScreen;
 		this.forBezel = forBezel;
 		this.forThumbSpace = forThumbSpace;
-		this.requireStartButton = requireStartButton;
+		this.requireOverlayButton = requireOverlayButton;
 	}
 	
 	static public var None:InputMethod = new InputMethod(
