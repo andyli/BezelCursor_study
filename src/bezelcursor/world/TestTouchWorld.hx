@@ -87,6 +87,12 @@ class TestTouchWorld extends GameWorld {
 		add(startBtn);
 		
 		cm.onClickSignaler.bind(onCursorClick);
+		if (cm.inputMethod != InputMethod.DirectTouch && cm.inputMethod != InputMethod.ThumbSpace) {
+			cm.isValidStart = function(t:TouchData) {
+				var worldTouchPos = screenToWorld(new Point(t.x, t.y));
+				return !currentTarget.collidePoint(currentTarget.x, currentTarget.y, worldTouchPos.x, worldTouchPos.y);
+			}
+		}
 		
 		next();
 	}
@@ -94,6 +100,7 @@ class TestTouchWorld extends GameWorld {
 	override public function end():Void {
 		var cm = HXP.engine.asMain().cursorManager;
 		cm.onClickSignaler.unbind(onCursorClick);
+		cm.isValidStart = function(t) return true;
 		super.end();
 	}
 	

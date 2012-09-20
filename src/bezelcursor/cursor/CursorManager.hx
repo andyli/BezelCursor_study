@@ -54,6 +54,10 @@ class CursorManager implements IStruct {
 		return inputMethod = v;
 	}
 	
+	dynamic public function isValidStart(touch:TouchData):Bool {
+		return true;
+	}
+	
 	public var cursorsEnabled(default, set_cursorsEnabled):Bool;
 	public var thumbSpaceEnabled(default, set_thumbSpaceEnabled):Bool;
 
@@ -251,6 +255,8 @@ class CursorManager implements IStruct {
 		}
 		
 		if (!cursorsEnabled) return;
+		
+		if (!isValidStart(touch)) return;
 		
 		var createFor = if (inputMethod.forBezel != null && insideBezel(touch)) {
 			ForBezel;
