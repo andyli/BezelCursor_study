@@ -97,11 +97,11 @@ class TestTouchWorld extends GameWorld {
 		
 		for (target in targets) {
 			add(target);
-			startBtn.text.tween(0.5, {alpha:0.5}).reflect(true).repeat(-1);
 		}
 		
 		if (cm.inputMethod.requireOverlayButton){
 			add(startBtn);
+			startBtn.text.tween(0.5, {alpha:0.5}).reflect(true).repeat(-1);
 		}
 		
 		cm.onClickSignaler.bind(onCursorClick);

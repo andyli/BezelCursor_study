@@ -43,7 +43,15 @@ class PracticeTouchWorld extends TestTouchWorld {
 		super.update();
 		
 		if (Input.pressed("menu")) {
+			var cm = HXP.engine.asMain().cursorManager;
+			
 			endPracticeBtn.visible = !endPracticeBtn.visible;
+			
+			if (endPracticeBtn.visible) {
+				cm.cursorsEnabled = false;
+			} else {
+				cm.cursorsEnabled = true;
+			}
 		}
 	}
 	
