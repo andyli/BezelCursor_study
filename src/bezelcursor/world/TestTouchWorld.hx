@@ -21,6 +21,7 @@ class TestTouchWorld extends GameWorld {
 	public var currentTarget:Target;	
 	public var targetQueue:Array<{target:Int, camera:{x:Float, y:Float}}>;
 	public var targets:Array<Target>;
+	public var taskBlockData:TaskBlockData;
 	
 	public var startBtn:OverlayButton;
 	public var missedLabel:Label;
@@ -28,12 +29,7 @@ class TestTouchWorld extends GameWorld {
 	override public function new(taskBlockData:TaskBlockData):Void {
 		super();
 		
-		targets = [];
-		for (td in taskBlockData.targets) {
-			var t = new Target().fromObj(td).init();
-			targets.push(t);
-		}
-		targetQueue = taskBlockData.targetQueue.copy();
+		this.taskBlockData = taskBlockData;
 		
 		startBtn = new OverlayButton("Start");
 		startBtn.onClickSignaler.bindVoid(function(){
@@ -99,6 +95,17 @@ class TestTouchWorld extends GameWorld {
 			HXP.stage.addChild(cm.thumbSpaceView);
 		}
 		
+
+		
+		targets = [];
+		for (td in taskBlockData.targets) {
+			var t = new Target().fromObj(td).init();
+			targets.push(t);
+		}
+		targetQueue = taskBlockData.targetQueue.copy();
+		
+		
+		
 		for (target in targets) {
 			add(target);
 		}
@@ -154,6 +161,6 @@ class TestTouchWorld extends GameWorld {
 	}
 	
 	function onFinish():Void {
-		HXP.world = new PowerMenuWorld();
+		HXP.world = HXP.engine.asMain().worldQueue.pop();
 	}
 }

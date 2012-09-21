@@ -20,15 +20,12 @@ using bezelcursor.util.UnitUtil;
 
 class PracticeTouchWorld extends TestTouchWorld {
 	public var endPracticeBtn:OverlayButton;
-	public var taskBlockData:TaskBlockData;
 	override public function new(taskBlockData:TaskBlockData):Void {
 		super(taskBlockData);
 		
-		this.taskBlockData = taskBlockData;
-		
 		endPracticeBtn = new OverlayButton("Begin");
 		endPracticeBtn.onClickSignaler.bindVoid(function(){
-			HXP.world = new TestTouchWorld(taskBlockData);
+			HXP.world = HXP.engine.asMain().worldQueue.pop();
 		}).destroyOnUse();
 	}
 	
