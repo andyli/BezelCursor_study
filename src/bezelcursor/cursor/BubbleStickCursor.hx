@@ -2,7 +2,7 @@ package bezelcursor.cursor;
 
 import bezelcursor.cursor.behavior.*;
 
-class BubbleMouseCursor extends MouseCursor {
+class BubbleStickCursor extends StickCursor {
 	
 	@deep public var drawBubble(default, set_drawBubble):DrawBubble;
 	function set_drawBubble(v:DrawBubble):DrawBubble {

@@ -1,14 +1,7 @@
 package bezelcursor.cursor;
 
-import nme.events.TouchEvent;
-
-import bezelcursor.cursor.behavior.Behavior;
-import bezelcursor.cursor.behavior.ClickWhenTouchEnd;
-import bezelcursor.cursor.behavior.DynaScale;
-import bezelcursor.cursor.behavior.DrawRadius;
-import bezelcursor.cursor.behavior.DrawStick;
-import bezelcursor.cursor.behavior.MouseMove;
-import bezelcursor.model.TouchData;
+import bezelcursor.cursor.behavior.*;
+import bezelcursor.model.*;
 
 class MouseCursor extends PointActivatedCursor {
 	@deep public var drawRadius(default, set_drawRadius):DrawRadius;
@@ -39,9 +32,17 @@ class MouseCursor extends PointActivatedCursor {
 		return clickWhenTouchEnd = v;
 	}
 	
+	@deep public var drawStick(default, set_drawStick):DrawStick;
+	function set_drawStick(v:DrawStick):DrawStick {
+		behaviors.remove(drawStick);
+		if (v != null) behaviors.push(v);
+		return drawStick = v;
+	}
+	
 	public function new():Void {
 		super();
-		
+
+		drawStick = new DrawStick(this);
 		drawRadius = new DrawRadius(this);
 		mouseMove = new MouseMove(this);
 		dynaScale = new DynaScale(this);

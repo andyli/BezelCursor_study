@@ -1,36 +1,22 @@
 package bezelcursor.cursor;
 
 using Std;
+using Lambda;
 import nme.Lib;
-import nme.display.Bitmap;
-import nme.display.BitmapData;
-import nme.display.PixelSnapping;
-import nme.display.Sprite;
-import nme.display.Stage;
-import nme.display.LineScaleMode;
-import nme.events.Event;
-import nme.events.TouchEvent;
-import nme.events.MouseEvent;
-import nme.geom.Point;
-import nme.geom.Rectangle;
+import nme.display.*;
+import nme.events.*;
+import nme.geom.*;
 import nme.system.Capabilities;
-import nme.ui.Multitouch;
-import nme.ui.MultitouchInputMode;
-import hsl.haxe.Signal;
-import hsl.haxe.Signaler;
-import hsl.haxe.DirectSignaler;
+import nme.ui.*;
+import hsl.haxe.*;
 using org.casalib.util.NumberUtil;
 using org.casalib.util.RatioUtil;
 import com.haxepunk.HXP;
 using com.eclecticdesignstudio.motion.Actuate;
 
-import bezelcursor.cursor.behavior.DrawStick;
-import bezelcursor.model.DeviceData;
-import bezelcursor.model.TouchData;
-import bezelcursor.model.IStruct;
-import bezelcursor.model.InputMethod;
-import bezelcursor.entity.Target;
-import bezelcursor.entity.OverlayButton;
+import bezelcursor.cursor.behavior.*;
+import bezelcursor.model.*;
+import bezelcursor.entity.*;
 using bezelcursor.world.GameWorld;
 using bezelcursor.util.RectangleUtil;
 
@@ -86,6 +72,9 @@ class CursorManager implements IStruct {
 	function set_cursorsEnabled(v:Bool):Bool {
 		if (!v) {
 			thumbSpaceEnabled = false;
+			for (cursor in cursors.array()) {
+				cursor.end();
+			}
 		}
 		return cursorsEnabled = v;
 	}

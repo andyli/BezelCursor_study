@@ -1,5 +1,10 @@
 package bezelcursor.model;
 
+#if cpp
+import cpp.vm.*;
+#elseif neko
+import neko.vm.*;
+#end
 using Lambda;
 import nme.geom.Rectangle;
 import nme.geom.Point;
@@ -27,6 +32,7 @@ class TaskBlockDataGenerator implements IStruct {
 		inputMethods = [
 			InputMethod.DirectTouch,
 			InputMethod.BezelCursor_acceleratedBubbleCursor,
+			InputMethod.BezelCursor_directMappingBubbleCursor,
 			InputMethod.BezelCursor_acceleratedDynaSpot,
 			InputMethod.BezelCursor_directMappingDynaSpot,
 			InputMethod.MagStick,
@@ -53,24 +59,32 @@ class TaskBlockDataGenerator implements IStruct {
 		return regions;
 	}
 	
-	public function generateTaskBlocks():Array<TaskBlockData> {
-		var taskBlockDatas = [];
+	public function generateTaskBlocks(onComplete:Array<TaskBlockData>->Dynamic):Void {
+		#if (cpp || neko)
+		Thread.create(function():Void {
+		#end
+			var taskBlockDatas = [];
 		
-		var numTargetsPerRegion = 1;
-		
-		for (regions in regionss)
-		for (targetSeperation in targetSeperations)
-		for (targetSize in targetSizes) 
-		{
-			taskBlockDatas.push(generateTaskBlock(
-				targetSize,
-				targetSeperation,
-				regions,
-				3
-			));			
-		}
-		
-		return taskBlockDatas; 
+			var numTargetsPerRegion = 1;
+			
+			var i = 0;
+			for (regions in regionss)
+			for (targetSeperation in targetSeperations)
+			for (targetSize in targetSizes) 
+			{
+				taskBlockDatas[i] = generateTaskBlock(
+					targetSize,
+					targetSeperation,
+					regions,
+					3
+				);
+				++i;
+			}
+
+			onComplete(taskBlockDatas);
+		#if (cpp || neko)
+		});
+		#end
 	}
 	
 	public var targetSizes(get_targetSizes, null):Array<{width:Float, height:Float, name:String}>;
@@ -92,7 +106,7 @@ class TaskBlockDataGenerator implements IStruct {
 	public var targetSeperations(get_targetSeperations, null):Array<Float>;
 	function get_targetSeperations() {
 		return targetSeperations != null ? targetSeperations : targetSeperations = [
-			2.mm2inches() * deviceData.screenDPI
+			1.mm2inches() * deviceData.screenDPI
 		];
 	}
 	
@@ -116,7 +130,7 @@ class TaskBlockDataGenerator implements IStruct {
 		var data = new TaskBlockData();
 
 		var targetSizeRect = new Rectangle(0, 0, targetSize.width, targetSize.height);
-		var numTargets = Math.round(Math.max((stageRect.width / (targetSize.width + targetSeperation)) * (stageRect.height / (targetSize.height + targetSeperation)) * 0.4, regions.length));
+		var numTargets = Math.round(Math.max((stageRect.width / (targetSize.width + targetSeperation)) * (stageRect.height / (targetSize.height + targetSeperation)) * 0.5, regions.length));
 		
 		var regionsMultiplied = [];
 		for (tpr in 0...timesPerRegion) {
@@ -139,27 +153,32 @@ class TaskBlockDataGenerator implements IStruct {
 				camera: {x:camera.x, y:camera.y}
 			});
 			
-			
-			for (i in 1...numTargets) {
-		
-				var itr = 0;
-				var itrMax = 400;
-				do {
-					rect = GeomUtil.randomlyPlaceRectangle(stageRect, targetSizeRect, false);
-					rect.offsetPoint(camera);
+
+			function generateForRegion(predefinedRects:Array<Rectangle>):Array<Rectangle> {
+				var rects:Array<Rectangle> = predefinedRects.copy();
+				for (i in 1...numTargets) {
+					var itr = 0;
+					var itrMax = numTargets * 1.5;
+					do {
+						rect = GeomUtil.randomlyPlaceRectangle(stageRect, targetSizeRect, false);
+						rect.offsetPoint(camera);
 					
-					if (itr++ > itrMax){
-						return generateTaskBlock(targetSize, targetSeperation, regions, timesPerRegion);
-					}
-				} while (!(
-					//target separation constraint
-					rects.foreach(function(rect2)
-						return rect.distanceRects(rect2) > targetSeperation
-					)
-				));
-				//trace(i + "/" + numTargets);
-				rects.push(rect);
+						if (itr++ > itrMax){
+							return generateForRegion(predefinedRects);
+						}
+					} while (!(
+						//target separation constraint
+						rects.foreach(function(rect2)
+							return rect.distanceRects(rect2) > targetSeperation
+						)
+					));
+					rects.push(rect);
+					//trace(r + " " + i + "/" + numTargets);
+				}
+				return rects.slice(predefinedRects.length);
 			}
+			trace(r);
+			rects = rects.concat(generateForRegion(rects));
 			
 			data.targets = data.targets.concat(rects.map(function(rect) {
 				return {

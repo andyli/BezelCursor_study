@@ -35,6 +35,7 @@ class MagStickCursor extends StickCursor {
 
 		dynaScale = null;
 		drawRadius = null;
+		drawStick = null;
 		drawMagStick = new DrawMagStick(this);
 		
 		snapper = new DistanceToOriginSnapper(this);

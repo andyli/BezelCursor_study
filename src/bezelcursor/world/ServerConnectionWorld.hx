@@ -101,26 +101,28 @@ class ServerConnectionWorld extends GameWorld {
 			HXP.engine.asMain().taskblocks = haxe.Unserializer.run(respond);
 			ready();
 		} else {
-			//updateMsg("Generating tasks...");
-			var taskblocks = TaskBlockDataGenerator.current.generateTaskBlocks();
-
-			updateMsg("Sync with server...");
-
-		
-			var load = new AsyncLoader(Env.website + "taskblockdata/set/", Post);
-			load.data = {
-				buildData: haxe.Serializer.run(BuildData.current),
-				deviceData: haxe.Serializer.run(DeviceData.current),
-				taskblocks: haxe.Serializer.run(taskblocks)
-			}
-			load.onCompleteSignaler.bind(function(respond){
-				trace(respond);
-				HXP.engine.asMain().taskblocks = taskblocks;
-				ready();
-			}).destroyOnUse();
-			load.onErrorSignaler.bind(onError).destroyOnUse();
-			load.load();
+			updateMsg("Generating tasks...");
+			
+			TaskBlockDataGenerator.current.generateTaskBlocks(onTaskBlockGenerated);
 		}
+	}
+	
+	function onTaskBlockGenerated(taskblocks:Array<TaskBlockData>){
+		updateMsg("Sync with server...");
+		
+		var load = new AsyncLoader(Env.website + "taskblockdata/set/", Post);
+		load.data = {
+			buildData: haxe.Serializer.run(BuildData.current),
+			deviceData: haxe.Serializer.run(DeviceData.current),
+			taskblocks: haxe.Serializer.run(taskblocks)
+		}
+		load.onCompleteSignaler.bind(function(respond){
+			trace(respond);
+			HXP.engine.asMain().taskblocks = taskblocks;
+			ready();
+		}).destroyOnUse();
+		load.onErrorSignaler.bind(onError).destroyOnUse();
+		load.load();
 	}
 	
 	var urlLoader:URLLoader;

@@ -46,8 +46,10 @@ class PracticeTouchWorld extends TestTouchWorld {
 			
 			if (endPracticeBtn.visible) {
 				cm.cursorsEnabled = false;
+				remove(startBtn);
 			} else {
-				cm.cursorsEnabled = true;
+				cm.cursorsEnabled = !startBtn.visible;
+				add(startBtn);
 			}
 		}
 	}

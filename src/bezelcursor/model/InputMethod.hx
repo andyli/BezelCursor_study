@@ -4,6 +4,7 @@ using Lambda;
 
 #if !php
 import bezelcursor.cursor.BubbleMouseCursor;
+import bezelcursor.cursor.BubbleStickCursor;
 import bezelcursor.cursor.MagStickCursor;
 import bezelcursor.cursor.MouseCursor;
 import bezelcursor.cursor.StickCursor;
@@ -44,6 +45,7 @@ class InputMethod implements IStruct {
 			scaleFactor: 1,
 			jointActivateDistance: Math.POSITIVE_INFINITY,
 			dynaScale: null,
+			drawStick: null,
 			default_radius: 0
 		} },
 		null,
@@ -68,9 +70,17 @@ class InputMethod implements IStruct {
 	);
 	
 	static public var BezelCursor_acceleratedBubbleCursor:InputMethod = new InputMethod(
-		"BezelCursor - accelerated BubbleCursor",
+		"BezelCursor - accelerated Bubble",
 		null,
 		{ _class: "bezelcursor.cursor.BubbleMouseCursor", data: {} },
+		null,
+		false
+	);
+	
+	static public var BezelCursor_directMappingBubbleCursor:InputMethod = new InputMethod(
+		"BezelCursor - direct mapping Bubble",
+		null,
+		{ _class: "bezelcursor.cursor.BubbleStickCursor", data: {} },
 		null,
 		false
 	);
@@ -87,7 +97,10 @@ class InputMethod implements IStruct {
 		"ThumbSpace",
 		null,
 		null,
-		{ _class: "bezelcursor.cursor.BubbleMouseCursor", data: { drawBubble: null } },
+		{ _class: "bezelcursor.cursor.BubbleMouseCursor", data: { 
+			drawBubble: null,
+			drawStick: null
+		}},
 		true
 	);
 }

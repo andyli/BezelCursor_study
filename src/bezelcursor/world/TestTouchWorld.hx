@@ -24,6 +24,7 @@ class TestTouchWorld extends GameWorld {
 	public var taskBlockData:TaskBlockData;
 	
 	public var startBtn:OverlayButton;
+	public var hitLabel:Label;
 	public var missedLabel:Label;
 	
 	override public function new(taskBlockData:TaskBlockData):Void {
@@ -53,6 +54,16 @@ class TestTouchWorld extends GameWorld {
 		missedLabel.text.scrollX = missedLabel.text.scrollY = 0;
 		missedLabel.x = (HXP.stage.stageWidth - missedLabel.width) * 0.5;
 		missedLabel.y = (HXP.stage.stageHeight - missedLabel.height) * 0.5;
+		
+		hitLabel = new Label("HIT", {
+			color: 0x00FF00,
+			size: Math.round(DeviceData.current.screenDPI * 0.36),
+			resizable: true,
+			align: TextFormatAlign.CENTER
+		});
+		hitLabel.text.scrollX = hitLabel.text.scrollY = 0;
+		hitLabel.x = (HXP.stage.stageWidth - hitLabel.width) * 0.5;
+		hitLabel.y = (HXP.stage.stageHeight - hitLabel.height) * 0.5;
 	}
 	
 	public function next():Void {
@@ -87,6 +98,7 @@ class TestTouchWorld extends GameWorld {
 	}
 	
 	override public function begin():Void {
+		//cpp.vm.Profiler.start();
 		super.begin();
 		
 		var cm = HXP.engine.asMain().cursorManager;
@@ -129,6 +141,8 @@ class TestTouchWorld extends GameWorld {
 		}
 		
 		next();
+		
+		//cpp.vm.Profiler.stop();
 	}
 	
 	override public function end():Void {
@@ -149,7 +163,12 @@ class TestTouchWorld extends GameWorld {
 		
 		
 		if (target == currentTarget){
-			next();
+			add(hitLabel);
+			hitLabel.text.alpha = 0;
+			hitLabel.text.tween(0.5, { alpha:1.0 }).onComplete(function(){ 
+				remove(hitLabel); 
+				next();
+			});
 		} else {
 			add(missedLabel);
 			missedLabel.text.alpha = 0;

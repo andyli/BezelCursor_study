@@ -1,19 +1,11 @@
 package bezelcursor.cursor;
 
-import nme.events.Event;
-import nme.events.TouchEvent;
-import nme.geom.Point;
-import nme.geom.Rectangle;
+import nme.geom.*;
 using org.casalib.util.NumberUtil;
 
-import bezelcursor.cursor.behavior.Behavior;
-import bezelcursor.cursor.behavior.ClickWhenTouchEnd;
-import bezelcursor.cursor.behavior.DynaScale;
-import bezelcursor.cursor.behavior.DrawStick;
-import bezelcursor.cursor.behavior.DrawRadius;
-import bezelcursor.cursor.snapper.SimpleSnapper;
-import bezelcursor.model.DeviceData;
-import bezelcursor.model.TouchData;
+import bezelcursor.cursor.behavior.*;
+import bezelcursor.cursor.snapper.*;
+import bezelcursor.model.*;
 
 
 class StickCursor extends PointActivatedCursor {
@@ -34,11 +26,19 @@ class StickCursor extends PointActivatedCursor {
 		if (v != null) behaviors.push(v);
 		return dynaScale = v;
 	}
+	
 	@deep public var drawRadius(default, set_drawRadius):DrawRadius;
 	function set_drawRadius(v:DrawRadius):DrawRadius {
 		behaviors.remove(drawRadius);
 		if (v != null) behaviors.push(v);
 		return drawRadius = v;
+	}
+	
+	@deep public var drawStick(default, set_drawStick):DrawStick;
+	function set_drawStick(v:DrawStick):DrawStick {
+		behaviors.remove(drawStick);
+		if (v != null) behaviors.push(v);
+		return drawStick = v;
 	}
 	
 	public function new():Void {
@@ -47,7 +47,8 @@ class StickCursor extends PointActivatedCursor {
 		joint = null;
 		jointActivateDistance = DeviceData.current.screenDPI * 0.2;
 		scaleFactor = 3;
-		
+
+		drawStick = new DrawStick(this);
 		dynaScale = new DynaScale(this);
 		drawRadius = new DrawRadius(this);
 		clickWhenTouchEnd = new ClickWhenTouchEnd(this);
