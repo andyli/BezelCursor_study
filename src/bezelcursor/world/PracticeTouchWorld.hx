@@ -25,7 +25,12 @@ class PracticeTouchWorld extends TestTouchWorld {
 	override public function new(taskBlockData:TaskBlockData):Void {
 		super(taskBlockData);
 		
+		var dpi = DeviceData.current.screenDPI;
+		var buttonWidth = 45.mm2inches() * dpi;
+		var buttonHeight = 9.mm2inches() * dpi;
+		
 		endPracticeBtn = new OverlayButton("Begin");
+		endPracticeBtn.resize(buttonWidth, buttonHeight);
 		endPracticeBtn.onClickSignaler.bindVoid(function(){
 			HXP.world = HXP.engine.asMain().worldQueue.pop();
 		}).destroyOnUse();
@@ -34,7 +39,9 @@ class PracticeTouchWorld extends TestTouchWorld {
 	override public function begin():Void {
 		super.begin();
 
-		add(endPracticeBtn).y = (HXP.stage.stageHeight - endPracticeBtn.height) * 0.5;
+		add(endPracticeBtn);
+		endPracticeBtn.x = (HXP.stage.stageWidth - endPracticeBtn.width) * 0.5;
+		endPracticeBtn.y = (HXP.stage.stageHeight - endPracticeBtn.height) * 0.5;
 		endPracticeBtn.visible = false;
 	}
 	
@@ -47,9 +54,11 @@ class PracticeTouchWorld extends TestTouchWorld {
 			endPracticeBtn.visible = !endPracticeBtn.visible;
 			
 			if (endPracticeBtn.visible) {
+				//add(title);
 				cm.cursorsEnabled = false;
 				remove(startBtn);
 			} else {
+				//remove(title);
 				if (cm.inputMethod.name.startsWith("BezelCursor")) {
 					cm.cursorsEnabled = true;
 					startBtn.visible = true;

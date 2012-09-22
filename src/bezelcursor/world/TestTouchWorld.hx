@@ -52,9 +52,7 @@ class TestTouchWorld extends GameWorld {
 			resizable: true,
 			align: TextFormatAlign.CENTER
 		});
-		missedLabel.text.scrollX = missedLabel.text.scrollY = 0;
-		missedLabel.x = (HXP.stage.stageWidth - missedLabel.width) * 0.5;
-		missedLabel.y = (HXP.stage.stageHeight - missedLabel.height) * 0.5;
+		missedLabel.graphic.scrollX = missedLabel.graphic.scrollY = 0;
 		
 		hitLabel = new Label("HIT", {
 			color: 0x00FF00,
@@ -62,9 +60,7 @@ class TestTouchWorld extends GameWorld {
 			resizable: true,
 			align: TextFormatAlign.CENTER
 		});
-		hitLabel.text.scrollX = hitLabel.text.scrollY = 0;
-		hitLabel.x = (HXP.stage.stageWidth - hitLabel.width) * 0.5;
-		hitLabel.y = (HXP.stage.stageHeight - hitLabel.height) * 0.5;
+		hitLabel.graphic.scrollX = hitLabel.graphic.scrollY = 0;
 		
 		title = new Label("", {
 			color: 0x000000,
@@ -72,12 +68,12 @@ class TestTouchWorld extends GameWorld {
 			resizable: true,
 			align: TextFormatAlign.LEFT
 		});
-		title.text.scrollX = title.text.scrollY = 0;
+		title.graphic.scrollX = title.graphic.scrollY = 0;
 		title.x = 10;
 		title.y = 10;
 		title.layer = 5;
-		title.text.alpha = 0.5;
-		add(title);
+		title.alpha = 0.5;
+		//add(title);
 	}
 	
 	public function next():Void {
@@ -123,7 +119,7 @@ class TestTouchWorld extends GameWorld {
 			}
 		});
 		
-		title.label = (currentQueueIndex+1) + "/" + taskBlockData.targetQueue.length;
+		title.label = (currentQueueIndex+1) + " / " + taskBlockData.targetQueue.length;
 		
 		++currentQueueIndex;
 	}
@@ -140,7 +136,7 @@ class TestTouchWorld extends GameWorld {
 		
 		if (cm.inputMethod.requireOverlayButton){
 			add(startBtn);
-			startBtn.text.tween(0.5, {alpha:0.5}).reflect(true).repeat(-1);
+			startBtn.tween(0.5, {alpha:0.5}).reflect(true).repeat(-1);
 		}
 		
 		cm.onClickSignaler.bind(onCursorClick);
@@ -165,7 +161,7 @@ class TestTouchWorld extends GameWorld {
 		var cm = HXP.engine.asMain().cursorManager;
 		cm.onClickSignaler.unbind(onCursorClick);
 		cm.isValidStart = function(t) return true;
-		startBtn.text.stop();
+		startBtn.stop();
 		super.end();
 	}
 	
@@ -180,15 +176,21 @@ class TestTouchWorld extends GameWorld {
 		
 		if (target == currentTarget){
 			add(hitLabel);
-			hitLabel.text.alpha = 0;
-			hitLabel.text.tween(0.5, { alpha:1.0 }).onComplete(function(){ 
+			hitLabel.label = title.label + "\nHIT";
+			hitLabel.x = (HXP.stage.stageWidth - hitLabel.width) * 0.5;
+			hitLabel.y = (HXP.stage.stageHeight - hitLabel.height) * 0.5;
+			hitLabel.alpha = 0;
+			hitLabel.tween(0.5, { alpha:1.0 }).onComplete(function(){ 
 				remove(hitLabel); 
 				next();
 			});
 		} else {
 			add(missedLabel);
-			missedLabel.text.alpha = 0;
-			missedLabel.text.tween(0.5, { alpha:1.0 }).onComplete(function(){ 
+			missedLabel.label = title.label + "\nMISSED";
+			missedLabel.x = (HXP.stage.stageWidth - missedLabel.width) * 0.5;
+			missedLabel.y = (HXP.stage.stageHeight - missedLabel.height) * 0.5;
+			missedLabel.alpha = 0;
+			missedLabel.tween(0.5, { alpha:1.0 }).onComplete(function(){ 
 				remove(missedLabel); 
 				next();
 			});

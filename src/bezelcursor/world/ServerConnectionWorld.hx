@@ -59,7 +59,7 @@ class ServerConnectionWorld extends GameWorld {
 				align: TextFormatAlign.CENTER
 			}
 		);
-		msg.tween(0.5, {alpha:0.5}).reflect(true).repeat(-1);
+		msg.tween(0.25, {alpha:0.5}).reflect(true).repeat(-1);
 		
 		msgEntity = new Entity();
 		msgEntity.graphic = msg;
