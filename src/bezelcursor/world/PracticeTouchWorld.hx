@@ -63,6 +63,7 @@ class PracticeTouchWorld extends TestTouchWorld {
 	
 	override public function next():Void {
 		currentQueueIndex = NumberUtil.randomIntegerWithinRange(0, taskBlockData.targetQueue.length-1);
-		super.next(); 
+		super.next();
+		title.label = "Practice";
 	}
 }

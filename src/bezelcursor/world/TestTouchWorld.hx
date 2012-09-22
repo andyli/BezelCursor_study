@@ -26,6 +26,8 @@ class TestTouchWorld extends GameWorld {
 	public var hitLabel:Label;
 	public var missedLabel:Label;
 	
+	public var title:Label;
+	
 	override public function new(taskBlockData:TaskBlockData):Void {
 		super();
 		
@@ -63,6 +65,19 @@ class TestTouchWorld extends GameWorld {
 		hitLabel.text.scrollX = hitLabel.text.scrollY = 0;
 		hitLabel.x = (HXP.stage.stageWidth - hitLabel.width) * 0.5;
 		hitLabel.y = (HXP.stage.stageHeight - hitLabel.height) * 0.5;
+		
+		title = new Label("", {
+			color: 0x000000,
+			size: Math.round(DeviceData.current.screenDPI * 0.36),
+			resizable: true,
+			align: TextFormatAlign.LEFT
+		});
+		title.text.scrollX = title.text.scrollY = 0;
+		title.x = 10;
+		title.y = 10;
+		title.layer = 5;
+		title.text.alpha = 0.5;
+		add(title);
 	}
 	
 	public function next():Void {
@@ -107,6 +122,8 @@ class TestTouchWorld extends GameWorld {
 				recycle(invisibleTargets.pop());
 			}
 		});
+		
+		title.label = (currentQueueIndex+1) + "/" + taskBlockData.targetQueue.length;
 		
 		++currentQueueIndex;
 	}
