@@ -90,13 +90,13 @@ class Target extends Entity, implements IStruct {
 		graphic = graphicList_default = new Graphiclist();
 		graphicList_hover = new Graphiclist();
 		
-		resize();
-		
 		return this;
 	}
 	
 	override public function added():Void {
 		super.added();
+		
+		resize();
 
 		image_default.alpha = 0.0;
 		image_hover.alpha = 0.0;

@@ -18,10 +18,9 @@ import bezelcursor.model.*;
 using bezelcursor.Main;
 
 class TestTouchWorld extends GameWorld {
-	public var currentTarget:Target;	
-	public var targetQueue:Array<{target:Int, camera:{x:Float, y:Float}}>;
-	public var targets:Array<Target>;
+	public var currentTarget:Target;
 	public var taskBlockData:TaskBlockData;
+	public var currentQueueIndex:Int;
 	
 	public var startBtn:OverlayButton;
 	public var hitLabel:Label;
@@ -74,15 +73,24 @@ class TestTouchWorld extends GameWorld {
 			startBtn.visible = false;
 		}
 		
-		var nextSpec = targetQueue.shift();
-		
-		if (nextSpec == null) { //end
+		if (currentQueueIndex > taskBlockData.targetQueue.length - 1) {
 			onFinish();
 			return;
 		}
 		
-		camera.tween(0.5, nextSpec.camera).onComplete(function() {
-			currentTarget = targets[nextSpec.target];
+		var currentTargets = taskBlockData.targetQueue[currentQueueIndex];
+		
+		for (i in 0...currentTargets.length) {
+			var target = create(Target, false);
+			target.fromObj(currentTargets[i]);
+			target.moveBy(currentQueueIndex * HXP.stage.stageWidth, 0);
+			add(target);
+			if (i == 0) {
+				currentTarget = target;
+			}
+		}
+		
+		camera.tween(0.5, {x: currentQueueIndex * HXP.stage.stageWidth}).onComplete(function() {
 			currentTarget.color = 0xFF0000;
 			currentTarget.color_hover = 0x66FF66;
 			
@@ -94,7 +102,13 @@ class TestTouchWorld extends GameWorld {
 			} else {
 				cm.cursorsEnabled = true;
 			}
+			
+			while(invisibleTargets.length > 0) {
+				recycle(invisibleTargets.pop());
+			}
 		});
+		
+		++currentQueueIndex;
 	}
 	
 	override public function begin():Void {
@@ -105,22 +119,7 @@ class TestTouchWorld extends GameWorld {
 		
 		if (cm.inputMethod.forThumbSpace != null) {
 			HXP.stage.addChild(cm.thumbSpaceView);
-		}
-		
-
-		
-		targets = [];
-		for (td in taskBlockData.targets) {
-			var t = new Target().fromObj(td).init();
-			targets.push(t);
-		}
-		targetQueue = taskBlockData.targetQueue.copy();
-		
-		
-		
-		for (target in targets) {
-			add(target);
-		}
+		}		
 		
 		if (cm.inputMethod.requireOverlayButton){
 			add(startBtn);

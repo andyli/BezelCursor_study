@@ -26,18 +26,22 @@ class OverlayButton extends Button {
 		
 		resize(Math.round(dpi * WIDTH), Math.round(dpi * HEIGHT));
 		
+		alpha = 0.8;
+		layer = 5;
+		
+		x = (HXP.stage.stageWidth - width) * 0.5;
+		y = HXP.stage.stageHeight - dpi * (HEIGHT + 2.mm2inches());
+	}
+	
+	override public function resize(w:Float = -1, h:Float = -1):Void {
+		super.resize(w, h);
+		
 		for (g in graphicList_default.children) {
 			g.scrollX = g.scrollY = 0;
 		}
 		for (g in graphicList_hover.children) {
 			g.scrollX = g.scrollY = 0;
 		}
-		
-		alpha = 0.8;
-		layer = 5;
-		
-		x = (HXP.stage.stageWidth - width) * 0.5;
-		y = HXP.stage.stageHeight - dpi * (HEIGHT + 2.mm2inches());
 	}
 	
 	override public function added():Void {

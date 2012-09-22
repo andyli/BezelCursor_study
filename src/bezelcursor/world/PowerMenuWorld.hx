@@ -8,16 +8,10 @@ using com.eclecticdesignstudio.motion.Actuate;
 using org.casalib.util.ArrayUtil;
 
 using bezelcursor.Main;
-import bezelcursor.entity.Button;
-import bezelcursor.entity.PowerMenu;
-import bezelcursor.entity.RandomMovingTarget;
-import bezelcursor.model.InputMethod;
-import bezelcursor.model.TaskBlockData;
-import bezelcursor.model.TaskBlockDataGenerator;
-import bezelcursor.model.DeviceData;
+import bezelcursor.entity.*;
+import bezelcursor.model.*;
+import bezelcursor.world.*;
 using bezelcursor.world.GameWorld;
-using bezelcursor.world.TestTouchWorld;
-using bezelcursor.world.ConfigThumbSpaceWorld;
 using bezelcursor.util.UnitUtil;
 
 class PowerMenuWorld extends GameWorld {

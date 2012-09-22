@@ -128,7 +128,7 @@ class TaskBlockDataGenerator implements IStruct {
 	
 	public function generateTaskBlock(targetSize:{width:Float, height:Float}, targetSeperation:Float, regions:Array<Rectangle>, timesPerRegion:Int):TaskBlockData {
 		var data = new TaskBlockData();
-
+		
 		var targetSizeRect = new Rectangle(0, 0, targetSize.width, targetSize.height);
 		var numTargets = Math.round(Math.max((stageRect.width / (targetSize.width + targetSeperation)) * (stageRect.height / (targetSize.height + targetSeperation)) * 0.5, regions.length));
 		
@@ -140,28 +140,18 @@ class TaskBlockDataGenerator implements IStruct {
 		for (r in 0...regionsMultiplied.length) {
 			var region = regionsMultiplied[r];
 			
-			var camera = new Point(r * stageRect.width, 0);
-			
 			var rects:Array<Rectangle> = [];
 			
-			var rect:Rectangle = GeomUtil.randomlyPlaceRectangle(region, targetSizeRect, false);
-			rect.offsetPoint(camera);
-			rects.push(rect);
-			
-			data.targetQueue.push({
-				target: data.targets.length, 
-				camera: {x:camera.x, y:camera.y}
-			});
-			
+			rects.push(GeomUtil.randomlyPlaceRectangle(region, targetSizeRect, false));			
 
 			function generateForRegion(predefinedRects:Array<Rectangle>):Array<Rectangle> {
 				var rects:Array<Rectangle> = predefinedRects.copy();
+				var rect;
 				for (i in 1...numTargets) {
 					var itr = 0;
 					var itrMax = numTargets * 1.5;
 					do {
 						rect = GeomUtil.randomlyPlaceRectangle(stageRect, targetSizeRect, false);
-						rect.offsetPoint(camera);
 					
 						if (itr++ > itrMax){
 							return generateForRegion(predefinedRects);
@@ -180,7 +170,7 @@ class TaskBlockDataGenerator implements IStruct {
 			trace(r);
 			rects = rects.concat(generateForRegion(rects));
 			
-			data.targets = data.targets.concat(rects.map(function(rect) {
+			data.targetQueue.push(rects.map(function(rect) {
 				return {
 					x: rect.x,
 					y: rect.y,

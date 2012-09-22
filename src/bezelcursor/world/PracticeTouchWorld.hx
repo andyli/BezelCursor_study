@@ -48,7 +48,12 @@ class PracticeTouchWorld extends TestTouchWorld {
 				cm.cursorsEnabled = false;
 				remove(startBtn);
 			} else {
-				cm.cursorsEnabled = !startBtn.visible;
+				if (cm.inputMethod.name.startsWith("BezelCursor")) {
+					cm.cursorsEnabled = true;
+					startBtn.visible = true;
+				} else {
+					cm.cursorsEnabled = !startBtn.visible;
+				}
 				add(startBtn);
 			}
 		}
