@@ -1,5 +1,6 @@
 package bezelcursor.world;
 
+using StringTools;
 import hsl.haxe.*;
 import com.haxepunk.*;
 import com.haxepunk.graphics.*;
@@ -10,6 +11,7 @@ import nme.events.TouchEvent;
 import nme.geom.*;
 import nme.text.*;
 using org.casalib.util.ArrayUtil;
+import org.casalib.util.*;
 
 using bezelcursor.Main;
 import bezelcursor.cursor.*;
@@ -59,7 +61,8 @@ class PracticeTouchWorld extends TestTouchWorld {
 		}
 	}
 	
-	override function onFinish():Void {
-		HXP.world = new PracticeTouchWorld(taskBlockData);
+	override public function next():Void {
+		currentQueueIndex = NumberUtil.randomIntegerWithinRange(0, taskBlockData.targetQueue.length-1);
+		super.next(); 
 	}
 }

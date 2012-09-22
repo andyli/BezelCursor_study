@@ -83,14 +83,14 @@ class TestTouchWorld extends GameWorld {
 		for (i in 0...currentTargets.length) {
 			var target = create(Target, false);
 			target.fromObj(currentTargets[i]);
-			target.moveBy(currentQueueIndex * HXP.stage.stageWidth, 0);
+			target.moveBy(camera.x + HXP.stage.stageWidth, 0);
 			add(target);
 			if (i == 0) {
 				currentTarget = target;
 			}
 		}
 		
-		camera.tween(0.5, {x: currentQueueIndex * HXP.stage.stageWidth}).onComplete(function() {
+		camera.tween(0.5, {x: camera.x + HXP.stage.stageWidth}).onComplete(function() {
 			currentTarget.color = 0xFF0000;
 			currentTarget.color_hover = 0x66FF66;
 			
