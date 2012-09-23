@@ -98,7 +98,7 @@ class ServerConnectionWorld extends GameWorld {
 		//trace(respond);
 		
 		if (respond != null && respond != "null"){
-			HXP.engine.asMain().taskblocks = haxe.Unserializer.run(respond);
+			TaskBlockData.current = haxe.Unserializer.run(respond);
 			ready();
 		} else {
 			updateMsg("Generating tasks...");
@@ -117,9 +117,12 @@ class ServerConnectionWorld extends GameWorld {
 			taskblocks: haxe.Serializer.run(taskblocks)
 		}
 		load.onCompleteSignaler.bind(function(respond){
-			trace(respond);
-			HXP.engine.asMain().taskblocks = taskblocks;
-			ready();
+			if (respond != "ok") {
+				onError(respond);
+			} else {
+				TaskBlockData.current = taskblocks;
+				ready();
+			} 
 		}).destroyOnUse();
 		load.onErrorSignaler.bind(onError).destroyOnUse();
 		load.load();

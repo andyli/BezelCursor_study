@@ -19,7 +19,6 @@ class Main extends Engine {
 	public var cursorManager:CursorManager;
 	public var isFirstRun:Bool;
 	public var powerMenu:PowerMenu;
-	public var taskblocks:Array<TaskBlockData>;
 	public var worldQueue:List<World>;
 	
 	public function new():Void {
@@ -43,10 +42,15 @@ class Main extends Engine {
 		cursorManager.start();
 
 		worldQueue = new List<World>();
-
-		HXP.world = new ServerConnectionWorld();
+		
+		if (TaskBlockData.current == null){
+			HXP.world = new ServerConnectionWorld();
+		} else {
+			HXP.world = new PowerMenuWorld();
+		}
 		
 		Input.define("menu", [Keyboard.SPACE, 0x01000012]);
+		Input.define("back", [Keyboard.ESCAPE]);
 		//Lib.current.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKey);
 		Lib.current.stage.addEventListener(KeyboardEvent.KEY_UP, onKey);
 	}

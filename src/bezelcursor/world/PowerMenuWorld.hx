@@ -42,7 +42,7 @@ class PowerMenuWorld extends GameWorld {
 			});
 		}
 		
-		var testWorld = new PracticeTouchWorld(HXP.engine.asMain().taskblocks[1]);
+		var testWorld = new PracticeTouchWorld(TaskBlockData.current[0]);
 		
 		if (selectedMethod.name.indexOf("ThumbSpace") == -1) {
 			HXP.world = testWorld;
@@ -51,7 +51,7 @@ class PowerMenuWorld extends GameWorld {
 			HXP.world = new ConfigThumbSpaceWorld();
 		}
 		
-		for (taskblock in HXP.engine.asMain().taskblocks.randomize()) {
+		for (taskblock in TaskBlockData.current.randomize()) {
 			HXP.engine.asMain().worldQueue.add(new TestTouchWorld(taskblock));
 		}
 		HXP.engine.asMain().worldQueue.add(new PowerMenuWorld());

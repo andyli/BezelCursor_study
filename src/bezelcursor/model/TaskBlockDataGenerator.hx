@@ -91,14 +91,14 @@ class TaskBlockDataGenerator implements IStruct {
 	function get_targetSizes(){
 		return targetSizes != null ? targetSizes : targetSizes = [
 			{
-				width:3.mm2inches() * deviceData.screenDPI, 
-				height:3.mm2inches() * deviceData.screenDPI,
-				name: "3mm * 3mm"
-			}, 
-			{
 				width:9.6.mm2inches() * deviceData.screenDPI, 
 				height:9.6.mm2inches() * deviceData.screenDPI,
 				name: "9.6mm * 9.6mm"
+			},
+			{
+				width:3.mm2inches() * deviceData.screenDPI, 
+				height:3.mm2inches() * deviceData.screenDPI,
+				name: "3mm * 3mm"
 			}
 		];
 	}

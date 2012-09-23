@@ -1,14 +1,12 @@
 package bezelcursor.model;
 
 using Lambda;
-import nme.geom.Rectangle;
-import nme.geom.Point;
+import nme.geom.*;
 using org.casalib.util.ArrayUtil;
 using org.casalib.util.GeomUtil;
 using org.casalib.util.NumberUtil;
 
-import bezelcursor.model.DeviceData;
-import bezelcursor.model.TouchData;
+import bezelcursor.model.*;
 using bezelcursor.util.RectangleUtil;
 using bezelcursor.util.UnitUtil;
 
@@ -32,6 +30,19 @@ class TaskBlockData implements IStruct {
 			return sharedObject;
 		else
 			return sharedObject = nme.net.SharedObject.getLocal("TaskBlockData");
+	}
+	
+	public static var current(get_current, set_current):Array<TaskBlockData>;
+	static function get_current():Array<TaskBlockData> {
+		if (current != null) return current;
+		if (sharedObject.data.current == null) return null;
+		
+		return current = cast(sharedObject.data.current,Array<Dynamic>).map(function(o) return new TaskBlockData().fromObj(o)).array();
+	}
+	static function set_current(v:Array<TaskBlockData>):Array<TaskBlockData> {
+		sharedObject.data.current = v.map(function(tbd) return tbd.toObj()).array();
+		sharedObject.flush();
+		return current = v;
 	}
 	#end
 }
