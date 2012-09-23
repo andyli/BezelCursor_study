@@ -373,7 +373,7 @@ class CursorManager implements IStruct {
 	function onEnd(touch:TouchData):Void {
 		switch (thumbSpaceConfigState) {
 			case Configuring:
-				if (thumbSpace.width < DeviceData.current.screenDPI * 0.4) {
+				if (Math.abs(thumbSpace.width) < DeviceData.current.screenDPI * 0.4) {
 					startThumbSpaceConfig();
 				} else {
 					endThumbSpaceConfig();
