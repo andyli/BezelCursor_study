@@ -71,7 +71,7 @@ class Main extends Engine {
 			case Keyboard.ESCAPE:
 				if (Std.is(HXP.world, PowerMenuWorld)) {
 					Sys.exit(0);
-				} else {
+				} else if (Std.is(HXP.world, TestTouchWorld)) {
 					HXP.world = new PowerMenuWorld();
 				}
 		}
