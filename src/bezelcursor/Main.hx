@@ -19,7 +19,6 @@ class Main extends Engine {
 	public var cursorManager:CursorManager;
 	public var isFirstRun:Bool;
 	public var powerMenu:PowerMenu;
-	public var worldQueue:List<World>;
 	
 	public function new():Void {
 		super(Lib.current.stage.stageWidth, Lib.current.stage.stageHeight, 30, true);
@@ -40,8 +39,6 @@ class Main extends Engine {
 		
 		cursorManager = new CursorManager();
 		cursorManager.start();
-
-		worldQueue = new List<World>();
 		
 		if (TaskBlockData.current == null){
 			HXP.world = new ServerConnectionWorld();

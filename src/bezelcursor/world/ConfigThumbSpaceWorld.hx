@@ -25,23 +25,27 @@ class ConfigThumbSpaceWorld extends GameWorld {
 		var btn = new Button("redefine");
 		btn.text.size = Math.round(DeviceData.current.screenDPI * 0.24);
 		btn.resize(btn.text.width + 20, btn.text.height + 20);
-		btn.onClickSignaler.bindVoid(function(){ 
-			HXP.world = new ConfigThumbSpaceWorld();
+		btn.onClickSignaler.bindVoid(function(){
+			var clone = new ConfigThumbSpaceWorld();
+			clone.worldQueue = worldQueue;
+			HXP.world = clone;
 		});
 		panel.add(btn);
 		
 		var btn = new Button("OK");
 		btn.text.size = Math.round(DeviceData.current.screenDPI * 0.48);
 		btn.resize(btn.text.width + 20, btn.text.height + 20);
-		btn.onClickSignaler.bindVoid(function(){ 
-			HXP.engine.asMain().cursorManager.thumbSpaceEnabled = false;
-			HXP.world = HXP.engine.asMain().worldQueue.pop();
-		});
+		btn.onClickSignaler.bindVoid(onOk);
 		panel.add(btn);
 		
 		panel.y = Lib.stage.stageHeight * 0.5;
 		panel.width = Lib.stage.stageWidth;
 		panel.layout = Verticle(Center);
+	}
+	
+	public function onOk():Void {
+		HXP.engine.asMain().cursorManager.thumbSpaceEnabled = false;
+		nextWorld();
 	}
 	
 	override public function begin():Void {

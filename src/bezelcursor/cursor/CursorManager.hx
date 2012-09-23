@@ -17,6 +17,7 @@ using com.eclecticdesignstudio.motion.Actuate;
 import bezelcursor.cursor.behavior.*;
 import bezelcursor.model.*;
 import bezelcursor.entity.*;
+import bezelcursor.world.*;
 using bezelcursor.world.GameWorld;
 using bezelcursor.util.RectangleUtil;
 
@@ -314,9 +315,9 @@ class CursorManager implements IStruct {
 				thumbSpaceEnabled = false;
 				cursor.onEndSignaler.bindVoid(function(){
 					if (!cursorsEnabled) return;
-					var startBtn:OverlayButton = HXP.world.classFirst(OverlayButton);
-					if (startBtn != null) {
-						startBtn.visible = true;
+					
+					if (HXP.world.is(TestTouchWorld)) {
+						cast(HXP.world, TestTouchWorld).startBtn.visible = true;
 					}
 				}).destroyOnUse();
 		}

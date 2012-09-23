@@ -1,27 +1,16 @@
 package bezelcursor.world;
 
 using Std;
-import hsl.haxe.Signal;
-import com.haxepunk.Entity;
-import com.haxepunk.HXP;
-import com.haxepunk.World;
-import nme.display.Sprite;
-import nme.geom.Point;
-import nme.geom.Rectangle;
-import nme.geom.Matrix;
-import nme.geom.Matrix3D;
-import nme.geom.Vector3D;
+import com.haxepunk.*;
+import nme.display.*;
+import nme.geom.*;
 import nme.system.Capabilities;
-import hsl.haxe.Signal;
-import hsl.haxe.Signaler;
-import hsl.haxe.DirectSignaler;
+import hsl.haxe.*;
 
 using bezelcursor.Main;
-import bezelcursor.cursor.Cursor;
-import bezelcursor.cursor.CursorManager;
-import bezelcursor.entity.Target;
-import bezelcursor.entity.OverlayButton;
-import bezelcursor.model.EventRecord;
+import bezelcursor.cursor.*;
+import bezelcursor.entity.*;
+import bezelcursor.model.*;
 
 class GameWorld extends World {
 	public var isCameraMoving(default, null):Bool;
@@ -33,15 +22,24 @@ class GameWorld extends World {
 	public var visibleTargets:Array<Target>;
 	public var invisibleTargets:Array<Target>;
 	
+	public var worldQueue:Array<GameWorld>;
+	
 	public function new():Void {
 		super();
 		isCameraMoving = true;
 		
 		visibleTargets = [];
 		invisibleTargets = [];
+		worldQueue = [];
 		
 		pCameraX = camera.x;
 		pCameraY = camera.y;
+	}
+	
+	function nextWorld():Void {
+		var next = worldQueue.shift();
+		next.worldQueue = next.worldQueue.concat(worldQueue);
+		HXP.world = next;
 	}
 	
 	function isTargetInBound(target:Target):Bool {

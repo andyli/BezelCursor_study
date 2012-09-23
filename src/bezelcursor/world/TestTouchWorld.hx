@@ -85,7 +85,7 @@ class TestTouchWorld extends GameWorld {
 		}
 		
 		if (currentQueueIndex > taskBlockData.targetQueue.length - 1) {
-			onFinish();
+			nextWorld();
 			return;
 		}
 		
@@ -195,9 +195,5 @@ class TestTouchWorld extends GameWorld {
 				next();
 			});
 		}
-	}
-	
-	function onFinish():Void {
-		HXP.world = HXP.engine.asMain().worldQueue.pop();
 	}
 }

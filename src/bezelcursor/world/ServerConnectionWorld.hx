@@ -120,8 +120,10 @@ class ServerConnectionWorld extends GameWorld {
 			if (respond != "ok") {
 				onError(respond);
 			} else {
-				TaskBlockData.current = taskblocks;
-				ready();
+				haxe.Timer.delay(function(){
+					TaskBlockData.current = taskblocks;
+					ready();
+				}, 100);
 			} 
 		}).destroyOnUse();
 		load.onErrorSignaler.bind(onError).destroyOnUse();

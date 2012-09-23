@@ -31,9 +31,7 @@ class PracticeTouchWorld extends TestTouchWorld {
 		
 		endPracticeBtn = new OverlayButton("Begin");
 		endPracticeBtn.resize(buttonWidth, buttonHeight);
-		endPracticeBtn.onClickSignaler.bindVoid(function(){
-			HXP.world = HXP.engine.asMain().worldQueue.pop();
-		}).destroyOnUse();
+		endPracticeBtn.onClickSignaler.bindVoid(nextWorld).destroyOnUse();
 	}
 	
 	override public function begin():Void {

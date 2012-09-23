@@ -47,14 +47,15 @@ class PowerMenuWorld extends GameWorld {
 		if (selectedMethod.name.indexOf("ThumbSpace") == -1) {
 			HXP.world = testWorld;
 		} else {
-			HXP.engine.asMain().worldQueue.add(testWorld);
-			HXP.world = new ConfigThumbSpaceWorld();
+			var configThumbSpaceWorld = new ConfigThumbSpaceWorld();
+			configThumbSpaceWorld.worldQueue.push(testWorld);
+			HXP.world = configThumbSpaceWorld;
 		}
 		
 		for (taskblock in TaskBlockData.current.randomize()) {
-			HXP.engine.asMain().worldQueue.add(new TestTouchWorld(taskblock));
+			testWorld.worldQueue.push(new TestTouchWorld(taskblock));
 		}
-		HXP.engine.asMain().worldQueue.add(new PowerMenuWorld());
+		testWorld.worldQueue.push(new PowerMenuWorld());
 	}
 	
 	override public function begin():Void {
