@@ -6,6 +6,7 @@ import nme.display.*;
 import nme.geom.*;
 import nme.system.Capabilities;
 import hsl.haxe.*;
+import sys.io.*;
 
 using bezelcursor.Main;
 import bezelcursor.cursor.*;
@@ -16,8 +17,6 @@ class GameWorld extends World {
 	public var isCameraMoving(default, null):Bool;
 	var pCameraX:Float;
 	var pCameraY:Float;
-	
-	public var eventRecords(default, null):Array<EventRecord>;
 	
 	public var visibleTargets:Array<Target>;
 	public var invisibleTargets:Array<Target>;
@@ -106,7 +105,7 @@ class GameWorld extends World {
 		pCameraY = camera.y;
 	}
 	
-	override public function end():Void {
+	override public function end():Void {		
 		removeAll();
 		super.end();
 	}

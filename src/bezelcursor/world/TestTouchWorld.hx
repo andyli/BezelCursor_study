@@ -1,6 +1,8 @@
 package bezelcursor.world;
 
 using StringTools;
+using DateTools;
+import sys.io.*;
 import hsl.haxe.*;
 import com.haxepunk.*;
 import com.haxepunk.graphics.*;
@@ -17,16 +19,26 @@ import bezelcursor.entity.*;
 import bezelcursor.model.*;
 using bezelcursor.Main;
 
-class TestTouchWorld extends GameWorld {
-	public var currentTarget:Target;
+class TestTouchWorld extends GameWorld, implements IStruct {
+	
+	@:skip var logData:StringBuf;
+	public function log(event:String, data:Dynamic = null):Void {
+		logData.add(haxe.Json.stringify({
+			time: haxe.Timer.stamp(),
+			event: event,
+			data: haxe.Serializer.run(data)
+		}) + ",\n");
+	}
+	
+	@:skip public var currentTarget:Target;
 	public var taskBlockData:TaskBlockData;
 	public var currentQueueIndex:Int;
 	
-	public var startBtn:OverlayButton;
-	public var hitLabel:Label;
-	public var missedLabel:Label;
+	@:skip public var startBtn:OverlayButton;
+	@:skip public var hitLabel:Label;
+	@:skip public var missedLabel:Label;
 	
-	public var title:Label;
+	@:skip public var title:Label;
 	
 	override public function new(taskBlockData:TaskBlockData):Void {
 		super();
@@ -91,6 +103,8 @@ class TestTouchWorld extends GameWorld {
 		
 		var currentTargets = taskBlockData.targetQueue[currentQueueIndex];
 		
+		log("next", currentTargets);
+		
 		for (i in 0...currentTargets.length) {
 			var target = create(Target, false);
 			target.fromObj(currentTargets[i]);
@@ -124,7 +138,7 @@ class TestTouchWorld extends GameWorld {
 		++currentQueueIndex;
 	}
 	
-	override public function begin():Void {
+	override public function begin():Void {		
 		//cpp.vm.Profiler.start();
 		super.begin();
 		
@@ -140,6 +154,21 @@ class TestTouchWorld extends GameWorld {
 		}
 		
 		cm.onClickSignaler.bind(onCursorClick);
+		
+
+		logData = new StringBuf();
+		logData.add("[\n");
+		log("begin", {
+			world: Type.getClassName(Type.getClass(this)),
+			taskBlockData: taskBlockData,
+			cursorManager: cm
+		});
+		
+		cm.onStartSignaler.bindAdvanced(recCursorStart);
+		cm.onMoveSignaler.bindAdvanced(recCursorMove);
+		cm.onClickSignaler.bindAdvanced(recCursorClick);
+		cm.onEndSignaler.bindAdvanced(recCursorEnd);
+		
 		
 		if (cm.inputMethod.requireOverlayButton && cm.inputMethod.name.startsWith("BezelCursor")) {
 			cm.isValidStart = function(t:TouchData) {
@@ -159,10 +188,59 @@ class TestTouchWorld extends GameWorld {
 	
 	override public function end():Void {
 		var cm = HXP.engine.asMain().cursorManager;
+		
+		cm.onStartSignaler.unbindAdvanced(recCursorStart);
+		cm.onMoveSignaler.unbindAdvanced(recCursorMove);
+		cm.onClickSignaler.unbindAdvanced(recCursorClick);
+		cm.onEndSignaler.unbindAdvanced(recCursorEnd);
+		
+		log("end");
+		logData.add("]");
+		
+		var logFileURL = 
+			#if android
+			"/mnt/sdcard/BezelCursorLog_"
+			#elseif sys
+			"BezelCursorLog"
+			#end
+			+ DeviceData.current.id + "_" + Date.now().format("%Y%m%d_%H%M%S") + ".txt";
+		
+		logFileURL = logFileURL.replace(" ", "_");
+		
+		File.saveContent(logFileURL, logData.toString());
+		
 		cm.onClickSignaler.unbind(onCursorClick);
 		cm.isValidStart = function(t) return true;
 		startBtn.stop();
 		super.end();
+	}
+	
+	function recCursorStart(s:Signal<Void>):Void {
+		log("cursor-start", {
+			cursor: s.origin
+		});
+	}
+	
+	function recCursorMove(s:Signal<Target>):Void {
+		log("cursor-move", {
+			cursor: s.origin,
+			target: s.data,
+			isCurrent: s.data == currentTarget
+		});
+	}
+	
+	function recCursorClick(s:Signal<Target>):Void {
+		log("cursor-click", {
+			cursor: s.origin,
+			target: s.data,
+			isCurrent: s.data == currentTarget
+		});
+	}
+	
+	function recCursorEnd(s:Signal<Void>):Void {
+		log("cursor-end", {
+			cursor: s.origin
+		});
 	}
 	
 	function onCursorClick(target:Target):Void {

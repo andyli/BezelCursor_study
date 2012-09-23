@@ -130,7 +130,7 @@ class TaskBlockDataGenerator implements IStruct {
 		var data = new TaskBlockData();
 		
 		var targetSizeRect = new Rectangle(0, 0, targetSize.width, targetSize.height);
-		var numTargets = Math.round(Math.max((stageRect.width / (targetSize.width + targetSeperation)) * (stageRect.height / (targetSize.height + targetSeperation)) * 0.5, regions.length));
+		var numTargets = Math.round(Math.max((stageRect.width / (targetSize.width + targetSeperation)) * (stageRect.height / (targetSize.height + targetSeperation)) * 0.4, regions.length));
 		
 		var regionsMultiplied = [];
 		for (tpr in 0...timesPerRegion) {
@@ -167,7 +167,7 @@ class TaskBlockDataGenerator implements IStruct {
 				}
 				return rects.slice(predefinedRects.length);
 			}
-			trace(r);
+			//trace(r);
 			rects = rects.concat(generateForRegion(rects));
 			
 			data.targetQueue.push(rects.map(function(rect) {

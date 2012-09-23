@@ -54,7 +54,7 @@ class Target extends Entity, implements IStruct {
 	
 	@skip public var image_default:Image;
 	@skip public var image_hover:Image;
-	public var isHoverBy(default, null):IntHash<Cursor>;
+	@skip public var isHoverBy(default, null):IntHash<Cursor>;
 	
 	@remove public var type:String;
 	@remove public var x:Float;
