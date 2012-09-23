@@ -37,10 +37,10 @@ class TaskBlockData implements IStruct {
 		if (current != null) return current;
 		if (sharedObject.data.current == null) return null;
 		
-		return current = cast(sharedObject.data.current,Array<Dynamic>).map(function(o) return new TaskBlockData().fromObj(o)).array();
+		return current = haxe.Unserializer.run(sharedObject.data.current);
 	}
 	static function set_current(v:Array<TaskBlockData>):Array<TaskBlockData> {
-		sharedObject.data.current = v.map(function(tbd) return tbd.toObj()).array();
+		sharedObject.data.current = haxe.Serializer.run(v);
 		sharedObject.flush();
 		return current = v;
 	}
