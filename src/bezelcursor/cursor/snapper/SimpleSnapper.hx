@@ -16,7 +16,7 @@ class SimpleSnapper extends Snapper<Cursor> {
 		
 		interestedTargets = [];
 
-		var cursorInWorld = HXP.world.asGameWorld().screenToWorld(cursor.position);
+		var cursorInWorld = HXP.world.asGameWorld().screenToWorld(cursor.positionRecord.first().position);
 		
 		for (target in targets) {
 			var distance = target.distanceToPoint(cursorInWorld.x, cursorInWorld.y, true);
@@ -29,7 +29,7 @@ class SimpleSnapper extends Snapper<Cursor> {
 	}
 	
 	function sortTargets(t0:Target, t1:Target):Int {
-		var cursorInWorld = HXP.world.asGameWorld().screenToWorld(cursor.position);
+		var cursorInWorld = HXP.world.asGameWorld().screenToWorld(cursor.positionRecord.first().position);
 		var d0 = Point.distance(cursorInWorld, new Point(t0.centerX, t0.centerY));
 		var d1 = Point.distance(cursorInWorld, new Point(t1.centerX, t1.centerY));
 		

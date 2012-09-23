@@ -38,6 +38,11 @@ class Cursor implements IStruct {
 	function get_position():Point { return current_position; }
 	function set_position(v:Point):Point { return target_position = v; }
 	
+	@skip public var positionRecord:List<{
+		position:Point,
+		time:Float
+	}>;
+	
 	/**
 	* The radius(in inch) of this cursor, which define the interest area used by snapper.
 	*/
@@ -70,6 +75,8 @@ class Cursor implements IStruct {
 	var positionYFilter:OneEuroFilter;
 	var radiusFilter:OneEuroFilter;
 	
+	var ignoreTime:Float;
+	
 	public function new():Void {
 		id = nextId++;
 		color = 0xFF0000;
@@ -78,6 +85,7 @@ class Cursor implements IStruct {
 		current_radius =  0.001;
 		target_radius =  0.001;
 		default_radius = 0.001;
+		ignoreTime = 0.05;
 		
 		behaviors = [];
 		snapper = new SimpleSnapper(this);
@@ -98,6 +106,8 @@ class Cursor implements IStruct {
 		onMoveSignaler = new DirectSignaler<Target>(this);
 		onClickSignaler = new DirectSignaler<Target>(this);
 		onEndSignaler = new DirectSignaler<Void>(this);
+		
+		positionRecord = new List();
 		
 		return this;
 	}
@@ -135,7 +145,13 @@ class Cursor implements IStruct {
 				positionXFilter.filter(target_position.x, timestamp),
 				positionYFilter.filter(target_position.y, timestamp)
 			);
-			
+			positionRecord.add({
+				position: current_position,
+				time: timestamp
+			});
+			while (timestamp - positionRecord.first().time > ignoreTime) {
+				positionRecord.pop();
+			}
 			dispatch(onMoveSignaler);
 		}
 		
@@ -194,7 +210,17 @@ class Cursor implements IStruct {
 	
 	public function setImmediatePosition(pt:Point):Void {
 		current_position = target_position = pt;
+
+		var timestamp = haxe.Timer.stamp();
+		positionRecord.add({
+			position: current_position,
+			time: timestamp
+		});
+		while (timestamp - positionRecord.first().time > ignoreTime) {
+			positionRecord.pop();
+		}
+		
 		resetPositionFilters();
-		onFrame(haxe.Timer.stamp());
+		onFrame(timestamp);
 	}
 }

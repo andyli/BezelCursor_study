@@ -14,7 +14,7 @@ class DistanceToOriginSnapper extends Snapper<PointActivatedCursor> {
 		var targets = HXP.world.asGameWorld().visibleTargets;
 		
 		interestedTargets = [];
-		var cursorInWorld = HXP.world.asGameWorld().screenToWorld(cursor.position);
+		var cursorInWorld = HXP.world.asGameWorld().screenToWorld(cursor.positionRecord.first().position);
 		var activatedPointInWorld = HXP.world.asGameWorld().screenToWorld(cursor.activatedPoint);
 		var currentTouchPointInWorld = HXP.world.asGameWorld().screenToWorld(cursor.currentTouchPoint);
 		var minDistanceToOrigin = Point.distance(activatedPointInWorld, currentTouchPointInWorld) + DeviceData.current.screenDPI * cursor.radius;
@@ -34,7 +34,7 @@ class DistanceToOriginSnapper extends Snapper<PointActivatedCursor> {
 	}
 	
 	function sortTargets(t0:Target, t1:Target):Int {
-		var cursorInWorld = HXP.world.asGameWorld().screenToWorld(cursor.position);
+		var cursorInWorld = HXP.world.asGameWorld().screenToWorld(cursor.positionRecord.first().position);
 		var d0 = Point.distance(cursorInWorld, new Point(t0.centerX, t0.centerY));
 		var d1 = Point.distance(cursorInWorld, new Point(t1.centerX, t1.centerY));
 		
