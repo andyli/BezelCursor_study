@@ -40,7 +40,7 @@ class Main extends Engine {
 		cursorManager = new CursorManager();
 		cursorManager.start();
 		
-		if (TaskBlockData.current == null){
+		if (true ||TaskBlockData.current == null){
 			HXP.world = new ServerConnectionWorld();
 		} else {
 			HXP.world = new PowerMenuWorld();

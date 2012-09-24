@@ -11,6 +11,12 @@ import nme.geom.Point;
 using org.casalib.util.ArrayUtil;
 using org.casalib.util.GeomUtil;
 using org.casalib.util.NumberUtil;
+import nape.callbacks.*;
+import nape.constraint.*;
+import nape.geom.*;
+import nape.phys.*;
+import nape.shape.*;
+import nape.space.*;
 
 import bezelcursor.model.DeviceData;
 import bezelcursor.model.TouchData;
@@ -66,7 +72,7 @@ class TaskBlockDataGenerator implements IStruct {
 			var taskBlockDatas = [];
 		
 			var numTargetsPerRegion = 1;
-			
+			cpp.vm.Profiler.start("generateTaskBlocks");
 			var i = 0;
 			for (regions in regionss)
 			for (targetSeperation in targetSeperations)
@@ -78,10 +84,12 @@ class TaskBlockDataGenerator implements IStruct {
 					regions,
 					3
 				);
+				trace(i);
 				++i;
 			}
 
 			onComplete(taskBlockDatas);
+			cpp.vm.Profiler.stop();
 		#if (cpp || neko)
 		});
 		#end
@@ -129,7 +137,7 @@ class TaskBlockDataGenerator implements IStruct {
 	public function generateTaskBlock(targetSize:{width:Float, height:Float}, targetSeperation:Float, regions:Array<Rectangle>, timesPerRegion:Int):TaskBlockData {
 		var data = new TaskBlockData();
 		
-		var targetSizeRect = new Rectangle(0, 0, targetSize.width, targetSize.height);
+		var targetSizeWithSeperationRect = new Rectangle(0, 0, targetSize.width + targetSeperation, targetSize.height + targetSeperation);
 		var numTargets = Math.round(Math.max((stageRect.width / (targetSize.width + targetSeperation)) * (stageRect.height / (targetSize.height + targetSeperation)) * 0.4, regions.length));
 		
 		var regionsMultiplied = [];
@@ -137,47 +145,120 @@ class TaskBlockDataGenerator implements IStruct {
 			regionsMultiplied = regionsMultiplied.concat(regions.randomize());
 		}
 		
+		var space = new Space(Broadphase.SWEEP_AND_PRUNE);
+		space.worldLinearDrag = 0;
+		
+		var wallWidth = 50;
+		
+		//up
+		var body = new Body(BodyType.STATIC);
+		body.shapes.add(new Polygon(Polygon.rect(-wallWidth, -wallWidth, stageRect.width + wallWidth*2, wallWidth)));
+		body.space = space;
+		//left
+		var body = new Body(BodyType.STATIC);
+		body.shapes.add(new Polygon(Polygon.rect(-wallWidth, -wallWidth, wallWidth, stageRect.height + wallWidth*2)));
+		body.space = space;
+		//right
+		var body = new Body(BodyType.STATIC);
+		body.shapes.add(new Polygon(Polygon.rect(stageRect.width, -wallWidth, wallWidth, stageRect.height + wallWidth*2)));
+		body.space = space;
+		//bottom
+		var body = new Body(BodyType.STATIC);
+		body.shapes.add(new Polygon(Polygon.rect(-wallWidth, stageRect.height, stageRect.width + wallWidth*2, wallWidth)));
+		body.space = space;
+		
+		
+		var circleShape = new Circle(Math.max(targetSize.width + targetSeperation*0.5, targetSize.height + targetSeperation*0.5)*0.5);
+		circleShape.material.dynamicFriction = 0;
+		circleShape.material.staticFriction = 0;
+		circleShape.material.rollingFriction = 0;
+		var rectShape = new Polygon(Polygon.box(targetSize.width + targetSeperation, targetSize.height + targetSeperation));
+		rectShape.material.dynamicFriction = 0;
+		rectShape.material.staticFriction = 0;
+		rectShape.material.rollingFriction = 0;
+		
+		var bodys = [];
+		
+		var redbody = new Body(BodyType.STATIC);
+		redbody.shapes.add(circleShape);
+		redbody.shapes.add(rectShape);
+		redbody.allowRotation = false;
+		redbody.align();
+		bodys.push(redbody);
+		
+		for (i in 1...numTargets) {
+			var circleShape = new Circle(Math.max(targetSize.width + targetSeperation*0.5, targetSize.height + targetSeperation*0.5)*0.5);
+			circleShape.material.dynamicFriction = 0;
+			circleShape.material.staticFriction = 0;
+			circleShape.material.rollingFriction = 0;
+			var rectShape = new Polygon(Polygon.box(targetSize.width + targetSeperation, targetSize.height + targetSeperation));
+			rectShape.material.dynamicFriction = 0;
+			rectShape.material.staticFriction = 0;
+			rectShape.material.rollingFriction = 0;
+					
+			var body = new Body();
+			body.shapes.add(circleShape);
+			body.shapes.add(rectShape);
+			body.allowRotation = false;
+			body.align();
+			body.space = space;
+			bodys.push(body);
+		}
+				
 		for (r in 0...regionsMultiplied.length) {
 			var region = regionsMultiplied[r];
+			do {
+				var rect = GeomUtil.randomlyPlaceRectangle(
+					region, 
+					targetSizeWithSeperationRect, 
+					false
+				);
+		
+				//red target
+				space.bodies.remove(redbody);
+				redbody.space = null;				
+				redbody.position.x = rect.x + targetSize.width * 0.5;
+				redbody.position.y = rect.y + targetSize.height * 0.5;
+				redbody.space = space;
+		
 			
-			var rects:Array<Rectangle> = [];
-			
-			rects.push(GeomUtil.randomlyPlaceRectangle(region, targetSizeRect, false));			
-
-			function generateForRegion(predefinedRects:Array<Rectangle>):Array<Rectangle> {
-				var rects:Array<Rectangle> = predefinedRects.copy();
-				var rect;
-				for (i in 1...numTargets) {
-					var itr = 0;
-					var itrMax = numTargets * 1.5;
-					do {
-						rect = GeomUtil.randomlyPlaceRectangle(stageRect, targetSizeRect, false);
-					
-						if (itr++ > itrMax){
-							return generateForRegion(predefinedRects);
-						}
-					} while (!(
-						//target separation constraint
-						rects.foreach(function(rect2)
-							return rect.distanceRects(rect2) > targetSeperation
-						)
-					));
-					rects.push(rect);
-					//trace(r + " " + i + "/" + numTargets);
+				for (body in bodys) {
+					if (body.isStatic()) continue;
+				
+					var rect = GeomUtil.randomlyPlaceRectangle(
+						stageRect, 
+						targetSizeWithSeperationRect, 
+						false
+					);
+					body.position.x = rect.x + targetSize.width * 0.5;
+					body.position.y = rect.y + targetSize.height * 0.5;
 				}
-				return rects.slice(predefinedRects.length);
-			}
-			//trace(r);
-			rects = rects.concat(generateForRegion(rects));
+				
+				while (space.liveBodies.length > 0) {
+					space.step(1/30);
+				}
+				
+				//trace(space.bodies.length + " all slept");
 			
-			data.targetQueue.push(rects.map(function(rect) {
+			} while (space.bodies.exists(function(body) {
+				for (arbiter in body.arbiters) {
+					for (contact in arbiter.collisionArbiter.contacts) {
+						if (contact.penetration > 1) return true;
+					}
+				}
+				return false;
+			}));
+			
+			data.targetQueue.push(bodys.map(function(body) {
 				return {
-					x: rect.x,
-					y: rect.y,
-					width: rect.width,
-					height: rect.height
+					x: body.position.x - targetSize.width * 0.5,
+					y: body.position.y - targetSize.height * 0.5,
+					width: targetSize.width,
+					height: targetSize.height
 				};
 			}).array());
+			
+			trace(r);
 		}
 		
 		return data;
