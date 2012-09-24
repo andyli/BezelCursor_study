@@ -6,20 +6,18 @@ import cpp.vm.*;
 import neko.vm.*;
 #end
 using Lambda;
-import nme.geom.Rectangle;
-import nme.geom.Point;
-using org.casalib.util.ArrayUtil;
-using org.casalib.util.GeomUtil;
-using org.casalib.util.NumberUtil;
+import nme.geom.*;
 import nape.callbacks.*;
 import nape.constraint.*;
 import nape.geom.*;
 import nape.phys.*;
 import nape.shape.*;
 import nape.space.*;
+using org.casalib.util.ArrayUtil;
+using org.casalib.util.GeomUtil;
+using org.casalib.util.NumberUtil;
 
-import bezelcursor.model.DeviceData;
-import bezelcursor.model.TouchData;
+import bezelcursor.model.*;
 using bezelcursor.util.RectangleUtil;
 using bezelcursor.util.UnitUtil;
 
@@ -31,9 +29,47 @@ class TaskBlockDataGenerator implements IStruct {
 	}
 	#end
 	
+	/**
+	* It provide the device specific data to the generator, specifically screen resolution and dpi.
+	*/
 	public var deviceData(default, null):DeviceData;
+	
+	/**
+	* Target sizes to be tested.
+	* Name is merely a humam readable name.
+	*/
+	public var targetSizes(default, null):Array<{width:Float, height:Float, name:String}>;
+	
+	/**
+	* Minimum distances between targets.
+	*/
+	public var targetSeperations(default, null):Array<Float>;
+	
+	/**
+	* Regions within the screen. At least one target will be placed completely inside each region.
+	*/
+	public var regionss(default, null):Array<Array<Rectangle>>;
+	
+	/**
+	* Input methods to be tested.
+	*/
+	public var inputMethods:Array<InputMethod>;
+	
+	/**
+	* How many times should one region be tested.
+	*/
+	public var timesPerRegion:Int;
+	
+	/**
+	* Rectangle that the size is set to match the device screen.
+	*/
+	public var stageRect(default, null):Rectangle;
+	
+	
 	public function new(deviceData:DeviceData):Void {
 		this.deviceData = deviceData;
+		
+		stageRect = new Rectangle(0, 0, deviceData.screenResolutionX, deviceData.screenResolutionY);
 		
 		inputMethods = [
 			InputMethod.DirectTouch,
@@ -45,9 +81,33 @@ class TaskBlockDataGenerator implements IStruct {
 			InputMethod.ThumbSpace,
 		];
 		
+		targetSizes = [
+			{
+				width:9.6.mm2inches() * deviceData.screenDPI, 
+				height:9.6.mm2inches() * deviceData.screenDPI,
+				name: "9.6mm * 9.6mm"
+			},
+			{
+				width:3.mm2inches() * deviceData.screenDPI, 
+				height:3.mm2inches() * deviceData.screenDPI,
+				name: "3mm * 3mm"
+			}
+		];
+		
+		targetSeperations = [
+			1.mm2inches() * deviceData.screenDPI
+		];
+		
+		regionss = [
+			genRegions(3, 4)
+		];
+		
 		timesPerRegion = 3;
 	}
 	
+	/**
+	* Generates regions in the form of grid.
+	*/
 	function genRegions(width:Int, height:Int):Array<Rectangle> {		
 		var regions = [];
 		for (x in 0...width) {
@@ -95,46 +155,7 @@ class TaskBlockDataGenerator implements IStruct {
 		#end
 	}
 	
-	public var targetSizes(get_targetSizes, null):Array<{width:Float, height:Float, name:String}>;
-	function get_targetSizes(){
-		return targetSizes != null ? targetSizes : targetSizes = [
-			{
-				width:9.6.mm2inches() * deviceData.screenDPI, 
-				height:9.6.mm2inches() * deviceData.screenDPI,
-				name: "9.6mm * 9.6mm"
-			},
-			{
-				width:3.mm2inches() * deviceData.screenDPI, 
-				height:3.mm2inches() * deviceData.screenDPI,
-				name: "3mm * 3mm"
-			}
-		];
-	}
-	
-	public var targetSeperations(get_targetSeperations, null):Array<Float>;
-	function get_targetSeperations() {
-		return targetSeperations != null ? targetSeperations : targetSeperations = [
-			1.mm2inches() * deviceData.screenDPI
-		];
-	}
-	
-	public var regionss(get_regionss, null):Array<Array<Rectangle>>;
-	function get_regionss() {
-		return regionss != null ? regionss : regionss = [
-			genRegions(3, 4)
-		];
-	}
-	
-	public var inputMethods:Array<InputMethod>;
-	
-	public var timesPerRegion:Int;
-	
-	public var stageRect(get_stageRect, null):Rectangle;
-	function get_stageRect() {
-		return stageRect != null ? stageRect : stageRect = new Rectangle(0, 0, deviceData.screenResolutionX, deviceData.screenResolutionY);
-	}
-	
-	public function generateTaskBlock(targetSize:{width:Float, height:Float}, targetSeperation:Float, regions:Array<Rectangle>, timesPerRegion:Int):TaskBlockData {
+	function generateTaskBlock(targetSize:{width:Float, height:Float}, targetSeperation:Float, regions:Array<Rectangle>, timesPerRegion:Int):TaskBlockData {
 		var data = new TaskBlockData();
 		
 		var targetSizeWithSeperationRect = new Rectangle(0, 0, targetSize.width + targetSeperation, targetSize.height + targetSeperation);
