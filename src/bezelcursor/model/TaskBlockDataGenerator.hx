@@ -13,6 +13,7 @@ import nape.geom.*;
 import nape.phys.*;
 import nape.shape.*;
 import nape.space.*;
+import hsl.haxe.*;
 using org.casalib.util.ArrayUtil;
 using org.casalib.util.GeomUtil;
 using org.casalib.util.NumberUtil;
@@ -65,6 +66,20 @@ class TaskBlockDataGenerator implements IStruct {
 	*/
 	public var stageRect(default, null):Rectangle;
 	
+	/**
+	* Number of red targets have been generated.
+	*/
+	public var generatedRedTargets(default, null):Int;
+	
+	/**
+	* Compute the total number of red targets based on the current setting.
+	*/
+	public function getTotalRedTargets():Int {
+		return regionss.length * targetSeperations.length * targetSizes.length * regionss[0].length * timesPerRegion;
+	}
+
+	@:skip public var onProgressSignaler(default, null):Signaler<Float>;
+	@:skip public var onCompleteSignaler(default, null):Signaler<Array<TaskBlockData>>;
 	
 	public function new(deviceData:DeviceData):Void {
 		this.deviceData = deviceData;
@@ -103,6 +118,9 @@ class TaskBlockDataGenerator implements IStruct {
 		];
 		
 		timesPerRegion = 3;
+		
+		onProgressSignaler = new DirectSignaler<Float>(this);
+		onCompleteSignaler = new DirectSignaler<Array<TaskBlockData>>(this);
 	}
 	
 	/**
@@ -125,31 +143,27 @@ class TaskBlockDataGenerator implements IStruct {
 		return regions;
 	}
 	
-	public function generateTaskBlocks(onComplete:Array<TaskBlockData>->Dynamic):Void {
+	public function generateTaskBlocks():Void {
+		generatedRedTargets = 0;
+		
 		#if (cpp || neko)
 		Thread.create(function():Void {
 		#end
 			var taskBlockDatas = [];
-		
-			var numTargetsPerRegion = 1;
-			cpp.vm.Profiler.start("generateTaskBlocks");
-			var i = 0;
+			
 			for (regions in regionss)
 			for (targetSeperation in targetSeperations)
 			for (targetSize in targetSizes) 
 			{
-				taskBlockDatas[i] = generateTaskBlock(
+				taskBlockDatas.push(generateTaskBlock(
 					targetSize,
 					targetSeperation,
 					regions,
-					3
-				);
-				trace(i);
-				++i;
+					timesPerRegion
+				));
 			}
-
-			onComplete(taskBlockDatas);
-			cpp.vm.Profiler.stop();
+			
+			onCompleteSignaler.dispatch(taskBlockDatas);
 		#if (cpp || neko)
 		});
 		#end
@@ -279,7 +293,8 @@ class TaskBlockDataGenerator implements IStruct {
 				};
 			}).array());
 			
-			trace(r);
+			++generatedRedTargets;
+			onProgressSignaler.dispatch(generatedRedTargets/getTotalRedTargets());
 		}
 		
 		return data;

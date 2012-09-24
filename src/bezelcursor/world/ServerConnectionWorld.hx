@@ -1,5 +1,6 @@
 package bezelcursor.world;
 
+using Std;
 using Lambda;
 using StringTools;
 import nme.events.*;
@@ -8,6 +9,7 @@ import nme.net.*;
 import com.haxepunk.*;
 import com.haxepunk.graphics.*;
 using com.eclecticdesignstudio.motion.Actuate;
+using org.casalib.util.NumberUtil;
 
 using bezelcursor.Main;
 import bezelcursor.entity.*;
@@ -103,7 +105,15 @@ class ServerConnectionWorld extends GameWorld {
 		} else {
 			updateMsg("Generating tasks...");
 			
-			TaskBlockDataGenerator.current.generateTaskBlocks(onTaskBlockGenerated);
+			var gen = TaskBlockDataGenerator.current;
+			var pbond = gen.onProgressSignaler.bind(function(p) {
+				updateMsg("Generating tasks...\n" + p.map(0, 1, 0, 100).int() + "%");
+			});
+			gen.onCompleteSignaler.bind(function(a) {
+				onTaskBlockGenerated(a);
+				pbond.destroy();
+			}).destroyOnUse();
+			gen.generateTaskBlocks();
 		}
 	}
 	
