@@ -67,6 +67,11 @@ class TaskBlockDataGenerator implements IStruct {
 	public var stageRect(default, null):Rectangle;
 	
 	/**
+	* Density of targets.
+	*/
+	public var targetDensity(default, null):Float;
+	
+	/**
 	* Number of red targets have been generated.
 	*/
 	public var generatedRedTargets(default, null):Int;
@@ -112,6 +117,8 @@ class TaskBlockDataGenerator implements IStruct {
 		targetSeperations = [
 			1.mm2inches() * deviceData.screenDPI
 		];
+		
+		targetDensity = 0.5;
 		
 		regionss = [
 			genRegions(3, 4)
@@ -173,7 +180,7 @@ class TaskBlockDataGenerator implements IStruct {
 		var data = new TaskBlockData();
 		
 		var targetSizeWithSeperationRect = new Rectangle(0, 0, targetSize.width + targetSeperation, targetSize.height + targetSeperation);
-		var numTargets = Math.round(Math.max((stageRect.width / (targetSize.width + targetSeperation)) * (stageRect.height / (targetSize.height + targetSeperation)) * 0.4, regions.length));
+		var numTargets = Math.round(Math.max((stageRect.width / (targetSize.width + targetSeperation)) * (stageRect.height / (targetSize.height + targetSeperation)) * targetDensity, regions.length));
 		
 		var regionsMultiplied = [];
 		for (tpr in 0...timesPerRegion) {
