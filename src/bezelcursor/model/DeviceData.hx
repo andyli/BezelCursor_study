@@ -75,11 +75,7 @@ class DeviceData implements IStruct {
 			current.screenResolutionX = nme.Lib.stage.stageWidth;
 			current.screenResolutionY = nme.Lib.stage.stageHeight;
 			
-			#if (mac || (air && !mobile))
-			current.screenDPI = 129;
-			#else
 			current.screenDPI = Capabilities.screenDPI;
-			#end
 			
 			current.lastLocalSyncTime = Date.now().getTime();
 			sharedObject.data.current = current.toObj();
