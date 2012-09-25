@@ -103,8 +103,6 @@ class TestTouchWorld extends GameWorld, implements IStruct {
 		
 		var currentTargets = taskBlockData.targetQueue[currentQueueIndex];
 		
-		log("next", currentTargets);
-		
 		for (i in 0...currentTargets.length) {
 			var target = create(Target, false);
 			target.fromObj(currentTargets[i]);
@@ -131,6 +129,8 @@ class TestTouchWorld extends GameWorld, implements IStruct {
 			while(invisibleTargets.length > 0) {
 				recycle(invisibleTargets.pop());
 			}
+			
+			log("next", currentTargets);
 		});
 		
 		title.label = (currentQueueIndex+1) + " / " + taskBlockData.targetQueue.length;
