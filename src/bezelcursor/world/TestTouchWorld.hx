@@ -253,6 +253,7 @@ class TestTouchWorld extends GameWorld, implements IStruct {
 		
 		
 		if (target == currentTarget){
+			currentTarget.color = currentTarget.color_hover;
 			add(hitLabel);
 			hitLabel.label = title.label + "\nHIT";
 			hitLabel.x = (HXP.stage.stageWidth - hitLabel.width) * 0.5;
