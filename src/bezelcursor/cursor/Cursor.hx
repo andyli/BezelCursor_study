@@ -129,17 +129,6 @@ class Cursor implements IStruct {
 	}
 	
 	public function onFrame(timestamp:Float):Void {
-		var lastTarget = snapper.target;
-		snapper.run();
-		if (snapper.target != lastTarget) {
-			if (lastTarget != null) {
-				lastTarget.rollOut(this);
-			}
-			if (snapper.target != null) {
-				snapper.target.rollOver(this);
-			}
-		}
-			
 		if (target_position != null) {
 			current_position = new Point(
 				positionXFilter.filter(target_position.x, timestamp),
@@ -152,14 +141,26 @@ class Cursor implements IStruct {
 			while (timestamp - positionRecord.first().time > ignoreTime) {
 				positionRecord.pop();
 			}
+		
+			current_radius = radiusFilter.filter(target_radius, timestamp);
+		
+			view.graphics.clear();
+			for (behavior in behaviors) {
+				behavior.onFrame(timestamp);
+			}
+
+			var lastTarget = snapper.target;
+			snapper.run();
+			if (snapper.target != lastTarget) {
+				if (lastTarget != null) {
+					lastTarget.rollOut(this);
+				}
+				if (snapper.target != null) {
+					snapper.target.rollOver(this);
+				}
+			}
+		
 			dispatch(onMoveSignaler);
-		}
-		
-		current_radius = radiusFilter.filter(target_radius, timestamp);
-		
-		view.graphics.clear();
-		for (behavior in behaviors) {
-			behavior.onFrame(timestamp);
 		}
 	}
 	
@@ -210,17 +211,9 @@ class Cursor implements IStruct {
 	
 	public function setImmediatePosition(pt:Point):Void {
 		current_position = target_position = pt;
-
 		var timestamp = haxe.Timer.stamp();
-		positionRecord.add({
-			position: current_position,
-			time: timestamp
-		});
-		while (timestamp - positionRecord.first().time > ignoreTime) {
-			positionRecord.pop();
-		}
-		
 		resetPositionFilters();
+		positionRecord.clear();
 		onFrame(timestamp);
 	}
 }
