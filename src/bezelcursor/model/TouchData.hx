@@ -2,10 +2,10 @@ package bezelcursor.model;
 
 class TouchData implements IStruct {
 	public var touchPointID(default, null):Int;
-	public var x(default, null):Float;
-	public var y(default, null):Float;
-	public var sizeX(default, null):Float;
-	public var sizeY(default, null):Float;
+	public var x:Float;
+	public var y:Float;
+	public var sizeX:Float;
+	public var sizeY:Float;
 	
 	public function new(touchPointID:Int, x:Float, y:Float, sizeX:Float, sizeY:Float):Void {
 		this.touchPointID = touchPointID;
@@ -13,6 +13,10 @@ class TouchData implements IStruct {
 		this.y = y;
 		this.sizeX = sizeX;
 		this.sizeY = sizeY;
+	}
+	
+	public function clone():TouchData {
+		return new TouchData(touchPointID, x, y, sizeX, sizeY);
 	}
 	
 	#if !php

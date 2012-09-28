@@ -71,8 +71,6 @@ class Cursor implements IStruct {
 	*/
 	@skip public var view(default, null):Sprite;
 	
-	var positionXFilter:OneEuroFilter;
-	var positionYFilter:OneEuroFilter;
 	var radiusFilter:OneEuroFilter;
 	
 	var ignoreTime:Float;
@@ -90,15 +88,9 @@ class Cursor implements IStruct {
 		behaviors = [];
 		snapper = new SimpleSnapper(this);
 		
-		resetPositionFilters();
 		radiusFilter = new OneEuroFilter(Lib.stage.frameRate);
 		
 		init();
-	}
-	
-	function resetPositionFilters():Void {
-		positionXFilter = new OneEuroFilter(Lib.stage.frameRate, 1, 0.2);
-		positionYFilter = new OneEuroFilter(Lib.stage.frameRate, 1, 0.2);
 	}
 	
 	public function init():Cursor {
@@ -130,10 +122,7 @@ class Cursor implements IStruct {
 	
 	public function onFrame(timestamp:Float):Void {
 		if (target_position != null) {
-			current_position = new Point(
-				positionXFilter.filter(target_position.x, timestamp),
-				positionYFilter.filter(target_position.y, timestamp)
-			);
+			current_position = target_position.clone();
 			positionRecord.add({
 				position: current_position,
 				time: timestamp
@@ -212,7 +201,6 @@ class Cursor implements IStruct {
 	public function setImmediatePosition(pt:Point):Void {
 		current_position = target_position = pt;
 		var timestamp = haxe.Timer.stamp();
-		resetPositionFilters();
 		positionRecord.clear();
 		onFrame(timestamp);
 	}

@@ -118,6 +118,8 @@ class CursorManager implements IStruct {
 	*/
 	var pointActivatedCursors:IntHash<PointActivatedCursor>;
 	
+	var touchFilters:IntHash<{x:OneEuroFilter, y:OneEuroFilter, next:TouchData}>;
+	
 	public function new():Void {
 		thumbSpace = new Rectangle(Math.NEGATIVE_INFINITY, Math.NEGATIVE_INFINITY);
 		thumbSpaceConfigState = NotConfigured;
@@ -126,6 +128,7 @@ class CursorManager implements IStruct {
 		
 		cursors = new IntHash<Cursor>();
 		pointActivatedCursors = new IntHash<PointActivatedCursor>();
+		touchFilters = new IntHash<{x:OneEuroFilter, y:OneEuroFilter, next:TouchData}>();
 		
 		init();
 		
@@ -221,6 +224,18 @@ class CursorManager implements IStruct {
 	
 	function onFrame(evt:Event):Void {		
 		var timestamp = haxe.Timer.stamp();
+		
+		for (filters in touchFilters) {
+			var touch = filters.next.clone();
+			touch.x = filters.x.filter(touch.x, timestamp);
+			touch.y = filters.y.filter(touch.y, timestamp);
+		
+			if (pointActivatedCursors.exists(touch.touchPointID)) {
+				var cursor = pointActivatedCursors.get(touch.touchPointID);
+				cursor.onTouchMove(touch);
+			}
+		}
+		
 		for (cursor in cursors) {
 			cursor.onFrame(timestamp);
 		}
@@ -237,6 +252,19 @@ class CursorManager implements IStruct {
 	}
 	
 	function onBegin(touch:TouchData):Void {
+		var time = haxe.Timer.stamp();
+		
+		var filters = {
+			x: new OneEuroFilter(Lib.stage.frameRate, 1, 0.2),
+			y: new OneEuroFilter(Lib.stage.frameRate, 1, 0.2),
+			next: touch
+		};
+		touchFilters.set(touch.touchPointID, filters);
+		
+		touch.x = filters.x.filter(touch.x, time);
+		touch.y = filters.y.filter(touch.y, time);
+		
+		
 		switch (thumbSpaceConfigState) {
 			case Configuring:
 				thumbSpace.x = touch.x;
@@ -324,6 +352,13 @@ class CursorManager implements IStruct {
 	}
 	
 	function onMove(touch:TouchData):Void {
+		var time = haxe.Timer.stamp();
+		
+		var filters = touchFilters.get(touch.touchPointID);
+		if (filters != null) {
+			filters.next = touch;
+		}
+		
 		switch (thumbSpaceConfigState) {
 			case Configuring:
 				if (thumbSpace.x != Math.NEGATIVE_INFINITY) {
@@ -363,11 +398,6 @@ class CursorManager implements IStruct {
 				}
 			default:
 		}
-		
-		if (pointActivatedCursors.exists(touch.touchPointID)) {
-			var cursor = pointActivatedCursors.get(touch.touchPointID);
-			cursor.onTouchMove(touch);
-		}
 	}
 	
 	function onEnd(touch:TouchData):Void {
@@ -386,6 +416,8 @@ class CursorManager implements IStruct {
 			var cursor = pointActivatedCursors.get(touch.touchPointID);
 			cursor.onTouchEnd(touch);
 		}
+		
+		touchFilters.remove(touch.touchPointID);
 	}
 	
 	function onTouchBegin(evt:TouchEvent):Void {
