@@ -31,20 +31,22 @@ class TestTouchWorld extends GameWorld, implements IStruct {
 		}) + ",\n");
 	}
 	
-	@:skip public var currentTarget:Target;
-	public var taskBlockData:TaskBlockData;
-	public var currentQueueIndex:Int;
+	@:skip public var currentTarget(default, null):Target;
+	public var taskBlockData(default, null):TaskBlockData;
+	public var flipStage(default, null):Bool;
+	public var currentQueueIndex(default, null):Int;
 	
-	@:skip public var startBtn:OverlayButton;
-	@:skip public var hitLabel:Label;
-	@:skip public var missedLabel:Label;
+	@:skip public var startBtn(default, null):OverlayButton;
+	@:skip public var hitLabel(default, null):Label;
+	@:skip public var missedLabel(default, null):Label;
 	
-	@:skip public var title:Label;
+	@:skip public var title(default, null):Label;
 	
-	override public function new(taskBlockData:TaskBlockData):Void {
+	override public function new(taskBlockData:TaskBlockData, flipStage = false):Void {
 		super();
 		
 		this.taskBlockData = taskBlockData;
+		this.flipStage = flipStage;
 		
 		startBtn = new OverlayButton("Start");
 		startBtn.onClickSignaler.bindVoid(function(){
@@ -107,6 +109,9 @@ class TestTouchWorld extends GameWorld, implements IStruct {
 		for (i in 0...currentTargets.length) {
 			var target = create(Target, false);
 			target.fromTargetData(currentTargets[i]);
+			if (flipStage) {
+				target.x = DeviceData.current.screenResolutionX - target.x - target.width;
+			}
 			target.moveBy(camera.x + HXP.stage.stageWidth, 0);
 			add(target);
 			if (i == 0) {
@@ -162,6 +167,7 @@ class TestTouchWorld extends GameWorld, implements IStruct {
 		log("begin", {
 			world: Type.getClassName(Type.getClass(this)),
 			taskBlockData: taskBlockData,
+			flipStage: flipStage
 			cursorManager: cm
 		});
 		
