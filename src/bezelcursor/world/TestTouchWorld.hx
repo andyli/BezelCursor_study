@@ -18,6 +18,7 @@ import bezelcursor.cursor.behavior.*;
 import bezelcursor.entity.*;
 import bezelcursor.model.*;
 using bezelcursor.Main;
+using bezelcursor.util.UnitUtil;
 
 class TestTouchWorld extends GameWorld, implements IStruct {
 	
@@ -105,7 +106,7 @@ class TestTouchWorld extends GameWorld, implements IStruct {
 		
 		for (i in 0...currentTargets.length) {
 			var target = create(Target, false);
-			target.fromObj(currentTargets[i]);
+			target.fromTargetData(currentTargets[i]);
 			target.moveBy(camera.x + HXP.stage.stageWidth, 0);
 			add(target);
 			if (i == 0) {

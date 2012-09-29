@@ -1,8 +1,6 @@
 package bezelcursor.util;
 
-import nme.geom.Rectangle;
-import nme.geom.Matrix3D;
-import nme.geom.Vector3D;
+import nme.geom.*;
 
 class RectangleUtil {
 	static public function transform3D(rect:Rectangle, m:Matrix3D):Rectangle {
@@ -57,5 +55,14 @@ class RectangleUtil {
 		}
 		if (rect1.y > rect2.y) return distance(rect1.x + rect1.width, rect1.y, rect2.x, rect2.y + rect2.height);
 		return distance(rect1.x + rect1.width, rect1.y + rect1.height, rect2.x, rect2.y);
+	}
+	
+	public static function toObj(rect:Rectangle) {
+		return {
+			x: rect.x,
+			y: rect.y,
+			width: rect.width,
+			height: rect.height
+		};
 	}
 }

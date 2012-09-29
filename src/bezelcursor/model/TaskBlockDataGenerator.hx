@@ -36,18 +36,19 @@ class TaskBlockDataGenerator implements IStruct {
 	public var deviceData(default, null):DeviceData;
 	
 	/**
-	* Target sizes to be tested.
+	* Target sizes(mm) to be tested.
 	* Name is merely a humam readable name.
 	*/
 	public var targetSizes(default, null):Array<{width:Float, height:Float, name:String}>;
 	
 	/**
-	* Minimum distances between targets.
+	* Minimum distances(mm) between targets.
 	*/
 	public var targetSeperations(default, null):Array<Float>;
 	
 	/**
 	* Regions within the screen. At least one target will be placed completely inside each region.
+	* Unit is mm.
 	*/
 	public var regionss(default, null):Array<Array<Rectangle>>;
 	
@@ -63,11 +64,12 @@ class TaskBlockDataGenerator implements IStruct {
 	
 	/**
 	* Rectangle that the size is set to match the device screen.
+	* Unit is mm.
 	*/
 	public var stageRect(default, null):Rectangle;
 	
 	/**
-	* Density of targets.
+	* Density of targets. Range: 0-1.
 	*/
 	public var targetDensity(default, null):Float;
 	
@@ -89,7 +91,9 @@ class TaskBlockDataGenerator implements IStruct {
 	public function new(deviceData:DeviceData):Void {
 		this.deviceData = deviceData;
 		
-		stageRect = new Rectangle(0, 0, deviceData.screenResolutionX, deviceData.screenResolutionY);
+		var dpi = deviceData.screenDPI;
+		
+		stageRect = new Rectangle(0, 0, (deviceData.screenResolutionX / dpi).inches2mm(), (deviceData.screenResolutionY / dpi).inches2mm());
 		
 		inputMethods = [
 			InputMethod.DirectTouch,
@@ -103,19 +107,19 @@ class TaskBlockDataGenerator implements IStruct {
 		
 		targetSizes = [
 			{
-				width:9.6.mm2inches() * deviceData.screenDPI, 
-				height:9.6.mm2inches() * deviceData.screenDPI,
+				width:9.6, 
+				height:9.6,
 				name: "9.6mm * 9.6mm"
 			},
 			{
-				width:3.mm2inches() * deviceData.screenDPI, 
-				height:3.mm2inches() * deviceData.screenDPI,
+				width:3, 
+				height:3,
 				name: "3mm * 3mm"
 			}
 		];
 		
 		targetSeperations = [
-			1.mm2inches() * deviceData.screenDPI
+			1
 		];
 		
 		targetDensity = 0.5;
@@ -133,7 +137,7 @@ class TaskBlockDataGenerator implements IStruct {
 	/**
 	* Generates regions in the form of grid.
 	*/
-	function genRegions(width:Int, height:Int):Array<Rectangle> {		
+	function genRegions(width:Int, height:Int):Array<Rectangle> {
 		var regions = [];
 		for (x in 0...width) {
 			for (y in 0...height) {

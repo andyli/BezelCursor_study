@@ -11,7 +11,8 @@ using com.eclecticdesignstudio.motion.Actuate;
 
 using bezelcursor.Main;
 import bezelcursor.cursor.*;
-import bezelcursor.model.IStruct;
+import bezelcursor.model.*;
+using bezelcursor.util.UnitUtil;
 
 using bezelcursor.world.GameWorld;
 
@@ -145,6 +146,16 @@ class Target extends Entity, implements IStruct {
 		if (isHoverBy.empty()) {
 			graphic = graphicList_default;
 		}
+	}
+	
+	public function fromTargetData(td:TargetData):Target {
+		var dpi = DeviceData.current.screenDPI;
+		x = td.x.mm2inches() * dpi;
+		y = td.y.mm2inches() * dpi;
+		width = Math.round(td.width.mm2inches() * dpi);
+		height = Math.round(td.height.mm2inches() * dpi);
+		
+		return this;
 	}
 	
 	static function getBitmapdataOfColor(width:Int, height:Int, color:Int):BitmapData {

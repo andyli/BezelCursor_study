@@ -20,15 +20,14 @@ class TaskBlockDataController extends Controller {
 		var buildData:BuildData = haxe.Unserializer.run(qs.get("buildData"));
 		var deviceData:DeviceData = haxe.Unserializer.run(qs.get("deviceData"));
 		
-		//var screenResolutionXInch = deviceData.screenResolutionX / deviceData.screenDPI;
-		//var screenResolutionYInch = deviceData.screenResolutionY / deviceData.screenDPI;
+		var screenResolutionXInch = deviceData.screenResolutionX / deviceData.screenDPI;
+		var screenResolutionYInch = deviceData.screenResolutionY / deviceData.screenDPI;
 		
 		//return deviceData.screenResolutionX + "," + deviceData.screenResolutionY + "," + deviceData.screenDPI;
 		
 		var tbds:List<TaskBlockDataStore> = TaskBlockDataStore.manager.search(
-			$screenResolutionX == deviceData.screenResolutionX && 
-			$screenResolutionY == deviceData.screenResolutionY && 
-			$screenDPI == deviceData.screenDPI,
+			$screenResolutionXInch == screenResolutionXInch && 
+			$screenResolutionYInch == screenResolutionYInch,
 			{ orderBy: -generateTime }
 		);
 		

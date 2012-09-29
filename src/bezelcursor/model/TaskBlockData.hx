@@ -16,7 +16,7 @@ class TaskBlockData implements IStruct {
 	*/
 	public var id(default,null):String;
 	
-	public var targetQueue:Array<Array<Dynamic>>;
+	public var targetQueue:Array<Array<TargetData>>;
 	
 	public function new():Void {
 		id = org.casalib.util.StringUtil.uuid();
