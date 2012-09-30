@@ -22,8 +22,8 @@ using bezelcursor.util.UnitUtil;
 
 class PracticeTouchWorld extends TestTouchWorld {
 	public var endPracticeBtn:OverlayButton;
-	override public function new(taskBlockData:TaskBlockData):Void {
-		super(taskBlockData);
+	override public function new(taskBlockData:TaskBlockData, flipStage = false):Void {
+		super(taskBlockData, flipStage);
 		
 		var dpi = DeviceData.current.screenDPI;
 		var buttonWidth = 45.mm2inches() * dpi;

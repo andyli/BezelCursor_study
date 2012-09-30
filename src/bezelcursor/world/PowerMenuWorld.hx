@@ -1,8 +1,10 @@
 package bezelcursor.world;
 
+using Std;
 using Lambda;
 using StringTools;
-import nme.geom.Rectangle;
+import nme.geom.*;
+import nme.text.*;
 import com.haxepunk.HXP;
 using com.eclecticdesignstudio.motion.Actuate;
 using org.casalib.util.ArrayUtil;
@@ -17,7 +19,12 @@ using bezelcursor.util.UnitUtil;
 class PowerMenuWorld extends GameWorld {
 	var selectedMethod:InputMethod;
 	var selectedUseStartButton:Bool;
+	var selectedLeftHand:Bool;
+	var participate:String;
 	var powerMenuStack:Array<PowerMenu>;
+
+	var buttonWidth:Float;
+	var buttonHeight:Float;
 	
 	function popPowerMenuStack():Void {
 		remove(powerMenuStack.pop());
@@ -30,7 +37,66 @@ class PowerMenuWorld extends GameWorld {
 		camera.tween(0.5, { x: powerMenu.x });
 	}
 	
-	public function startPractice():Void {
+	function enterEmail():Void {
+		var powerMenu = new PowerMenu();
+		
+		var btn = new Button("Back");
+		btn.resize(buttonWidth * 0.5, buttonHeight);
+		btn.onClickSignaler.bindVoid(popPowerMenuStack).destroyOnUse();
+		powerMenu.add(btn);
+		
+		var label = new Label("Enter your email, \nor name if you do not \nwish to receive study result.", {
+			size: Math.round(DeviceData.current.screenDPI * 0.08),
+			color: 0xFFFFFF
+		});
+		label.text2.visible = false;
+		powerMenu.add(label);
+		
+		
+		var textInput = new TextInput("email or name", Math.max(buttonWidth, HXP.stage.stageWidth - 10), buttonHeight);
+		powerMenu.add(textInput);
+		
+		var btn = new Button("OK");
+		btn.resize(buttonWidth, buttonHeight);
+		btn.onClickSignaler.bindVoid(function(){
+			participate = textInput.textInput.text;
+			startPractice();
+		});
+		powerMenu.add(btn);
+				
+		pushPowerMenuStack(powerMenu);
+	}
+	
+	function selectHandiness():Void {
+		var powerMenu = new PowerMenu();
+		
+		var btn = new Button("Back");
+		btn.resize(buttonWidth * 0.5, buttonHeight);
+		btn.onClickSignaler.bindVoid(popPowerMenuStack).destroyOnUse();
+		powerMenu.add(btn);
+		
+		var btn = new Button("Use left hand");
+		btn.resize(buttonWidth, buttonHeight);
+		btn.onClickSignaler.bindVoid(function(){
+			selectedLeftHand = true;
+			enterEmail();
+		});
+		powerMenu.add(btn);
+		
+		var btn = new Button("Use right hand");
+		btn.resize(buttonWidth, buttonHeight);
+		btn.onClickSignaler.bindVoid(function(){
+			selectedLeftHand = false;
+			enterEmail();
+		});
+		powerMenu.add(btn);
+				
+		pushPowerMenuStack(powerMenu);
+	}
+	
+	function startPractice():Void {
+		UserData.current.userName = participate;
+		
 		if (selectedUseStartButton && !selectedMethod.requireOverlayButton) {
 			selectedMethod = new InputMethod("").fromObj(selectedMethod.toObj()).fromObj({requireOverlayButton: true});
 		}
@@ -42,7 +108,7 @@ class PowerMenuWorld extends GameWorld {
 			});
 		}
 		
-		var testWorld = new PracticeTouchWorld(TaskBlockData.current[0]);
+		var testWorld = new PracticeTouchWorld(TaskBlockData.current[0], !selectedLeftHand);
 		
 		if (selectedMethod.name.indexOf("ThumbSpace") == -1) {
 			HXP.world = testWorld;
@@ -53,7 +119,7 @@ class PowerMenuWorld extends GameWorld {
 		}
 		
 		for (taskblock in TaskBlockData.current.randomize()) {
-			testWorld.worldQueue.push(new TestTouchWorld(taskblock));
+			testWorld.worldQueue.push(new TestTouchWorld(taskblock, !selectedLeftHand));
 		}
 		testWorld.worldQueue.push(new PowerMenuWorld());
 	}
@@ -62,8 +128,8 @@ class PowerMenuWorld extends GameWorld {
 		super.begin();
 		
 		var dpi = DeviceData.current.screenDPI;
-		var buttonWidth = 45.mm2inches() * dpi;
-		var buttonHeight = 9.mm2inches() * dpi;
+		buttonWidth = 45.mm2inches() * dpi;
+		buttonHeight = 9.mm2inches() * dpi;
 		
 		HXP.engine.asMain().cursorManager.inputMethod = InputMethod.DirectTouch;
 		HXP.engine.asMain().cursorManager.cursorsEnabled = true;
@@ -97,7 +163,7 @@ class PowerMenuWorld extends GameWorld {
 					btn.resize(buttonWidth, buttonHeight);
 					btn.onClickSignaler.bindVoid(function(){
 						selectedUseStartButton = true;
-						startPractice();
+						selectHandiness();
 					});
 					powerMenu.add(btn);
 		
@@ -105,7 +171,7 @@ class PowerMenuWorld extends GameWorld {
 					btn.resize(buttonWidth, buttonHeight);
 					btn.onClickSignaler.bindVoid(function(){
 						selectedUseStartButton = false;
-						startPractice();
+						selectHandiness();
 					});
 					powerMenu.add(btn);
 				

@@ -167,8 +167,9 @@ class TestTouchWorld extends GameWorld, implements IStruct {
 		log("begin", {
 			world: Type.getClassName(Type.getClass(this)),
 			taskBlockData: taskBlockData,
-			flipStage: flipStage
-			cursorManager: cm
+			flipStage: flipStage,
+			cursorManager: cm,
+			participate: UserData.current.userName
 		});
 		
 		cm.onStartSignaler.bindAdvanced(recCursorStart);
