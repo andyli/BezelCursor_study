@@ -53,7 +53,7 @@ class PowerMenuWorld extends GameWorld {
 		powerMenu.add(label);
 		
 		
-		var textInput = new TextInput("email or name", Math.max(buttonWidth, HXP.stage.stageWidth - 10), buttonHeight);
+		var textInput = new TextInput("", Math.max(buttonWidth, HXP.stage.stageWidth - 10), buttonHeight);
 		powerMenu.add(textInput);
 		
 		var btn = new Button("OK");

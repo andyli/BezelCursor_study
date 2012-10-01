@@ -12,19 +12,20 @@ using bezelcursor.world.GameWorld;
 using bezelcursor.util.UnitUtil;
 
 class TextInput extends Entity {
+	static public var defaultTextFormat(get_defaultTextFormat, null):TextFormat;
+	static function get_defaultTextFormat():TextFormat {
+		return defaultTextFormat != null ? defaultTextFormat : defaultTextFormat = new TextFormat(nme.Assets.getFont(HXP.defaultFont).fontName, Math.round(DeviceData.current.screenDPI * 0.2), 0xFFFFFF);
+	}
+	
 	public var textInput:TextField;
 	
 	public function new(label:String, width:Float, height:Float):Void {
 		super();
 		
-		var fontObj = nme.Assets.getFont(HXP.defaultFont);
-		var tf = new TextFormat(fontObj.fontName, Math.round(DeviceData.current.screenDPI * 0.2), 0xFFFFFF);
-		
 		textInput = new TextField();
+		textInput.defaultTextFormat = defaultTextFormat;
 		textInput.type = TextFieldType.INPUT;
 		textInput.text = label;
-		textInput.textColor = 0xFFFFFF;
-		textInput.setTextFormat(tf);
 		textInput.border = true;
 		textInput.borderColor = 0x999999;
 		this.width = (textInput.width = width).round();
