@@ -10,6 +10,10 @@ class HomeController extends Controller {
     public function index() {
         return new ViewResult();
     }
+	
+    public function result() {
+        return new ViewResult();
+    }
 }
 
 

@@ -1,20 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project>
 	<app 
-		title="BezelCursor" package="net.onthewings.bezelcursor" version="1.0.0" company="onthewings"
-		main="bezelcursor.Main" file="BezelCursor" path="bin" />
+		title="BezelCursor Result" package="net.onthewings.bezelcursor" version="1.0.0" company="onthewings"
+		main="bezelcursor.Result" file="BezelCursorResult" path="bin" />
 	
 	<window width="480" height="800" resizable="false" unless="mobile" />
 	<!--<window width="720" height="1280" resizable="false" unless="mobile" />-->
 	<window fps="30" orientation="portrait" />
 
 	<source path="src" />
-	
-	<section if="android">
-		<template path="template/application.xml" rename="application.xml" if="air" />
-		<template path="template/AndroidManifest.xml" rename="AndroidManifest.xml" unless="air" />
-		<template path="template/src" rename="src" include="*.java" />
-	</section>
 	
 	<haxelib name="nme" />
 	<haxelib name="HaxePunk" />
@@ -23,6 +17,7 @@
 	<haxelib name="actuate" />
 	<haxelib name="hxLINQ" />
 	<haxelib name="nape" />
+	<haxelib name="thx" />
 	<haxedef name="NAPE_RELEASE_BUILD" />
 	<haxedef name="spod_macro" />
 	

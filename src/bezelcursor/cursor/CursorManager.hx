@@ -65,6 +65,10 @@ class CursorManager implements IStruct {
 	@skip public var onClickSignaler(default, null):Signaler<Target>;
 	@skip public var onEndSignaler(default, null):Signaler<Void>;
 	
+	@skip public var onTouchStartSignaler(default, null):Signaler<TouchData>;
+	@skip public var onTouchMoveSignaler(default, null):Signaler<TouchData>;
+	@skip public var onTouchEndSignaler(default, null):Signaler<TouchData>;
+	
 	/**
 	* Basically Lib.stage.
 	*/
@@ -73,8 +77,10 @@ class CursorManager implements IStruct {
 	function set_cursorsEnabled(v:Bool):Bool {
 		if (!v) {
 			thumbSpaceEnabled = false;
-			for (cursor in cursors.array()) {
-				cursor.end();
+			if (cursors != null) {
+				for (cursor in cursors.array()) {
+					cursor.end();
+				}
 			}
 		}
 		return cursorsEnabled = v;
@@ -82,11 +88,13 @@ class CursorManager implements IStruct {
 	
 	function set_thumbSpaceEnabled(v:Bool):Bool {
 		
-		if (v) {
-			thumbSpaceViewDraw();
-			thumbSpaceView.tween(0.25, { alpha: 1.0 }).autoVisible(true);
-		} else {
-			thumbSpaceView.tween(0.25, { alpha: 0.0 }).autoVisible(true);
+		if (thumbSpaceView != null) {
+			if (v) {
+				thumbSpaceViewDraw();
+				thumbSpaceView.tween(0.25, { alpha: 1.0 }).autoVisible(true);
+			} else {
+				thumbSpaceView.tween(0.25, { alpha: 0.0 }).autoVisible(true);
+			}
 		}
 		
 		return thumbSpaceEnabled = v;
@@ -142,6 +150,10 @@ class CursorManager implements IStruct {
 		onMoveSignaler = new DirectSignaler<Target>(this);
 		onClickSignaler = new DirectSignaler<Target>(this);
 		onEndSignaler = new DirectSignaler<Void>(this);
+		
+		onTouchStartSignaler = new DirectSignaler<TouchData>(this);
+		onTouchMoveSignaler = new DirectSignaler<TouchData>(this);
+		onTouchEndSignaler = new DirectSignaler<TouchData>(this);
 		
 		thumbSpaceViewBitmap = new Bitmap(HXP.buffer, PixelSnapping.NEVER, true);//new Sprite();
 		thumbSpaceViewBitmap.alpha = 0.9;
@@ -253,6 +265,7 @@ class CursorManager implements IStruct {
 	
 	function onBegin(touch:TouchData):Void {
 		var time = haxe.Timer.stamp();
+		onTouchStartSignaler.dispatch(touch);
 		
 		var filters = {
 			x: new OneEuroFilter(Lib.stage.frameRate, 1, 0.2),
@@ -353,6 +366,7 @@ class CursorManager implements IStruct {
 	
 	function onMove(touch:TouchData):Void {
 		var time = haxe.Timer.stamp();
+		onTouchMoveSignaler.dispatch(touch);
 		
 		var filters = touchFilters.get(touch.touchPointID);
 		if (filters != null) {
@@ -401,6 +415,8 @@ class CursorManager implements IStruct {
 	}
 	
 	function onEnd(touch:TouchData):Void {
+		onTouchEndSignaler.dispatch(touch);
+		
 		switch (thumbSpaceConfigState) {
 			case Configuring:
 				if (Math.abs(thumbSpace.width) < DeviceData.current.screenDPI * 0.4) {

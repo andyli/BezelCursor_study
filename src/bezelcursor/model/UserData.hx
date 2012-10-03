@@ -5,8 +5,7 @@ class UserData implements IStruct {
 	* uuid of length 36
 	*/
 	public var id(default,null):String;
-	public var userName:String;
-	public var userEmail:Null<String>;
+	public var name:String;
 	
 	public function new():Void {
 		id = org.casalib.util.StringUtil.uuid();
@@ -29,7 +28,7 @@ class UserData implements IStruct {
 		current = new UserData();
 		
 		if (sharedObject.data.current == null) {
-			current.userName = "User";
+			current.name = "User";
 			
 			sharedObject.data.current = current.toObj();
 			sharedObject.flush();

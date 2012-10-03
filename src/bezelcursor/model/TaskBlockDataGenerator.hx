@@ -85,8 +85,8 @@ class TaskBlockDataGenerator implements IStruct {
 		return regionss.length * targetSeperations.length * targetSizes.length * regionss[0].length * timesPerRegion;
 	}
 
-	@:skip public var onProgressSignaler(default, null):Signaler<Float>;
-	@:skip public var onCompleteSignaler(default, null):Signaler<Array<TaskBlockData>>;
+	@skip public var onProgressSignaler(default, null):Signaler<Float>;
+	@skip public var onCompleteSignaler(default, null):Signaler<Array<TaskBlockData>>;
 	
 	public function new(deviceData:DeviceData):Void {
 		this.deviceData = deviceData;
@@ -182,6 +182,12 @@ class TaskBlockDataGenerator implements IStruct {
 	
 	function generateTaskBlock(targetSize:{width:Float, height:Float}, targetSeperation:Float, regions:Array<Rectangle>, timesPerRegion:Int):TaskBlockData {
 		var data = new TaskBlockData();
+		data.config = {
+			targetSize: targetSize,
+			targetSeperation: targetSeperation,
+			regions: regions,
+			timesPerRegion: timesPerRegion
+		};
 		
 		var targetSizeWithSeperationRect = new Rectangle(0, 0, targetSize.width + targetSeperation, targetSize.height + targetSeperation);
 		var numTargets = Math.round(Math.max((stageRect.width / (targetSize.width + targetSeperation)) * (stageRect.height / (targetSize.height + targetSeperation)) * targetDensity, regions.length));

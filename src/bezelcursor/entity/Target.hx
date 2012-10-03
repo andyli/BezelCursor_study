@@ -86,7 +86,9 @@ class Target extends Entity, implements IStruct {
 		onClickSignaler = new DirectSignaler<Void>(this);
 		onRollOverSignaler = new DirectSignaler<Void>(this);
 		onRollOutSignaler = new DirectSignaler<Void>(this);
-		cursorManager = HXP.engine.asMain().cursorManager;
+		
+		if (HXP.engine != null)
+			cursorManager = HXP.engine.asMain().cursorManager;
 		
 		graphic = graphicList_default = new Graphiclist();
 		graphicList_hover = new Graphiclist();

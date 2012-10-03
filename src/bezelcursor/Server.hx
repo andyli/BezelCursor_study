@@ -24,6 +24,7 @@ class Server {
 		
 		var routes = new RouteCollection();
 		routes.addRoute("/", { controller : "home", action : "index" } );
+		routes.addRoute("/result", { controller : "home", action : "result" } );
 		routes.addRoute("/taskblockdata/get/", { controller : "TaskBlockData", action : "get" } );
 		routes.addRoute("/taskblockdata/set/", { controller : "TaskBlockData", action : "set" } );
 		

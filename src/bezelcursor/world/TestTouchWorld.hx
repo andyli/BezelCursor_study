@@ -12,6 +12,7 @@ import nme.events.TouchEvent;
 import nme.geom.*;
 import nme.text.*;
 using org.casalib.util.ArrayUtil;
+import org.casalib.util.*;
 
 import bezelcursor.cursor.*;
 import bezelcursor.cursor.behavior.*;
@@ -21,29 +22,40 @@ using bezelcursor.Main;
 using bezelcursor.util.UnitUtil;
 
 class TestTouchWorld extends GameWorld, implements IStruct {
-	
-	@:skip var logData:StringBuf;
+	@skip var record:PlayRecord;
 	public function log(event:String, data:Dynamic = null):Void {
-		logData.add(haxe.Json.stringify({
-			time: haxe.Timer.stamp(),
-			event: event,
-			data: haxe.Serializer.run(data)
-		}) + ",\n");
+		record.addEvent(
+			haxe.Timer.stamp(),
+			event,
+			haxe.Serializer.run(data)
+		);
 	}
 	
-	@:skip public var currentTarget(default, null):Target;
+	@skip public var currentTarget(default, null):Target;
 	public var taskBlockData(default, null):TaskBlockData;
 	public var flipStage(default, null):Bool;
 	public var currentQueueIndex(default, null):Int;
 	
-	@:skip public var startBtn(default, null):OverlayButton;
-	@:skip public var hitLabel(default, null):Label;
-	@:skip public var missedLabel(default, null):Label;
+	@skip public var startBtn(default, null):OverlayButton;
+	@skip public var hitLabel(default, null):Label;
+	@skip public var missedLabel(default, null):Label;
 	
-	@:skip public var title(default, null):Label;
+	@skip public var title(default, null):Label;
 	
 	override public function new(taskBlockData:TaskBlockData, flipStage = false):Void {
 		super();
+		
+		record = new PlayRecord();
+		record.creationTime = Date.now().getTime();
+		record.id = StringUtil.uuid();
+		record.user = UserData.current;
+		record.device = DeviceData.current;
+		record.build = BuildData.current;
+		record.world = Type.getClassName(Type.getClass(this));
+		record.taskBlockData = taskBlockData.toObj();
+		record.flipStage = flipStage;
+		record.inputMethod = HXP.engine.asMain().cursorManager.inputMethod.name;
+		record.cursorManager = HXP.engine.asMain().cursorManager.toObj();
 		
 		this.taskBlockData = taskBlockData;
 		this.flipStage = flipStage;
@@ -161,16 +173,11 @@ class TestTouchWorld extends GameWorld, implements IStruct {
 		
 		cm.onClickSignaler.bind(onCursorClick);
 		
-
-		logData = new StringBuf();
-		logData.add("[\n");
-		log("begin", {
-			world: Type.getClassName(Type.getClass(this)),
-			taskBlockData: taskBlockData,
-			flipStage: flipStage,
-			cursorManager: cm,
-			participate: UserData.current.userName
-		});
+		log("begin");
+		
+		cm.onTouchStartSignaler.bind(recTouchStart);
+		cm.onTouchMoveSignaler.bind(recTouchMove);
+		cm.onTouchEndSignaler.bind(recTouchEnd);
 		
 		cm.onStartSignaler.bindAdvanced(recCursorStart);
 		cm.onMoveSignaler.bindAdvanced(recCursorMove);
@@ -197,13 +204,16 @@ class TestTouchWorld extends GameWorld, implements IStruct {
 	override public function end():Void {
 		var cm = HXP.engine.asMain().cursorManager;
 		
+		cm.onTouchStartSignaler.unbind(recTouchStart);
+		cm.onTouchMoveSignaler.unbind(recTouchMove);
+		cm.onTouchEndSignaler.unbind(recTouchEnd);
+		
 		cm.onStartSignaler.unbindAdvanced(recCursorStart);
 		cm.onMoveSignaler.unbindAdvanced(recCursorMove);
 		cm.onClickSignaler.unbindAdvanced(recCursorClick);
 		cm.onEndSignaler.unbindAdvanced(recCursorEnd);
 		
 		log("end");
-		logData.add("]");
 		
 		var logFileURL = 
 			#if android
@@ -215,12 +225,24 @@ class TestTouchWorld extends GameWorld, implements IStruct {
 		
 		logFileURL = logFileURL.replace(" ", "_");
 		
-		File.saveContent(logFileURL, logData.toString());
+		File.saveContent(logFileURL, record.toString());
 		
 		cm.onClickSignaler.unbind(onCursorClick);
 		cm.isValidStart = function(t) return true;
 		startBtn.stop();
 		super.end();
+	}
+	
+	function recTouchStart(touch:TouchData):Void {
+		log("touch-start", touch);
+	}
+	
+	function recTouchMove(touch:TouchData):Void {
+		log("touch-move", touch);
+	}
+	
+	function recTouchEnd(touch:TouchData):Void {
+		log("touch-end", touch);
 	}
 	
 	function recCursorStart(s:Signal<Void>):Void {

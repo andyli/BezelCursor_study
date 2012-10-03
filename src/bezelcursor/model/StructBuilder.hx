@@ -10,9 +10,11 @@ import haxe.macro.Compiler;
 
 class StructBuilder {
 	static public function hasMetaRecurive(cls:Class<Dynamic>, field:String, meta:String):Bool {
+		if (cls == null) return false;
+		
 		do {
 			var fieldMetas = haxe.rtti.Meta.getFields(cls);
-			if (Reflect.hasField(fieldMetas, field))
+			if (fieldMetas != null && Reflect.hasField(fieldMetas, field))
 				return Reflect.hasField(Reflect.field(fieldMetas, field), meta);
 		} while ((cls = Type.getSuperClass(cls)) != null);
 				
@@ -45,7 +47,9 @@ class StructBuilder {
 			if (field != null && hasMetaRecurive(cls, f, "deep")) {
 				fromObj(Reflect.field(t,f), field);
 			} else {
-				Reflect.setProperty(t, f, field);
+				try {
+					Reflect.setProperty(t, f, field);
+				} catch(e:Dynamic) {}
 			}
 		}
 		

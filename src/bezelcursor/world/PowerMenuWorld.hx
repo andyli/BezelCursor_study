@@ -95,7 +95,7 @@ class PowerMenuWorld extends GameWorld {
 	}
 	
 	function startPractice():Void {
-		UserData.current.userName = participate;
+		UserData.current.name = participate;
 		
 		if (selectedUseStartButton && !selectedMethod.requireOverlayButton) {
 			selectedMethod = new InputMethod("").fromObj(selectedMethod.toObj()).fromObj({requireOverlayButton: true});
