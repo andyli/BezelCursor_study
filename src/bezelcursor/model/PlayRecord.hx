@@ -20,35 +20,39 @@ class PlayRecord implements IStruct {
 	public var flipStage:Bool;
 	public var inputMethod:String;
 	public var cursorManager:Dynamic;
-	@skip public var eventRecords:Array<EventRecord>;
-	@skip var buf:StringBuf;
+	@skip public var events(get_events, null):Iterable<EventRecord>;
+	function get_events() {
+		return _events;
+	}
+	@skip var _events:Array<EventRecord>;
+	@skip var _events_buf:StringBuf;
 	
 	public function new():Void {
 		
 	}
 	
 	public function addEvent(time:Float, event:String, data:String):Void {
-		if (buf == null) {
-			eventRecords = [];
-			buf = new StringBuf();
+		if (_events_buf == null) {
+			_events = [];
+			_events_buf = new StringBuf();
 			var str = Json.stringify(toObj());
 			str = str.substr(0, str.length - 1); //remove last '}'
-			buf.add(str + ",\neventRecords: [");
+			_events_buf.add(str + ",\n_events: [");
 		} else {
-			buf.add(",");
+			_events_buf.add(",");
 		}
 		var evt = {
 			time: time,
 			event: event,
 			data: Serializer.run(data)
 		};
-		buf.add(Json.stringify(evt));
-		eventRecords.push(evt);
+		_events_buf.add(Json.stringify(evt));
+		_events.push(evt);
 	}
 	
 	public function toString():String {
-		buf.add("]}");
-		return buf.toString();
+		_events_buf.add("]}");
+		return _events_buf.toString();
 	}
 	
 	static public function fromString(str:String):PlayRecord {
@@ -65,19 +69,22 @@ class PlayRecord implements IStruct {
 		record.id = beginData.id == null ? StringUtil.uuid() : beginData.id;
 		record.creationTime = json[0].time;
 		//record.device = json[0].device;
-		record.user = beginData.participate;
+		record.user = new UserData(); 
+		record.user.name = beginData.participate;
 		record.world = beginData.world;
+		record.taskBlockData = cast(beginData.taskBlockData, TaskBlockData).toObj();
+		record.build = new BuildData().fromObj({"buildTime":1.349282409e+12,"isMobile":true,"isAir":false,"isLinux":false,"isWindows":false,"isMac":false,"isPhp":false,"isFlash":false,"isCpp":true,"isIos":false,"isAndroid":true,"isDebug":false});
+		record.device = new DeviceData().fromObj({"lastLocalSyncTime":1.349237504e+12,"lastRemoteSyncTime":null,"screenDPI":304.7999878,"screenResolutionY":1280,"screenResolutionX":720,"hardwareModel":"GT-I9300","systemVersion":"4.0.4","systemName":"Android","id":"20CEAD1B-FD33-49DB-B494-CED096601A50"});
 		
 		var cm:CursorManager = beginData.cursorManager;
 		record.inputMethod = cm.inputMethod.name;
 		
-		record.eventRecords = [];
 		for (ele in json) {
-			record.eventRecords.push({
-				time: ele.time,
-				event: ele.event,
-				data: ele.data
-			});
+			record.addEvent(
+				ele.time,
+				ele.event,
+				ele.data
+			);
 		}
 		return record;
 	}

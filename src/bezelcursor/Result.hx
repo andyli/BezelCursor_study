@@ -9,7 +9,7 @@ import hxLINQ.LINQ;
 import thx.csv.*;
 
 class Result {
-	static public function main():Void {
+	static public function main():Void {		
 		var folder = "/Users/andy/Documents/workspace/bezelcursor/web/playrecord/";
 		
 		var records:Array<PlayRecord> = [];
@@ -21,17 +21,18 @@ class Result {
 			var record = PlayRecord.fromString(File.getContent(folder + file));
 			records.push(record);
 			
-			if (file != record.id) {
-				FileSystem.rename(folder + file, folder + record.id);
-			}
+			File.saveContent(folder + file, record.toString());
 		}
 		
 		var csv = new Array<Array<Dynamic>>();
 		
 		for (record in records) {
+			
+			/*
 			var numOfNext = new LINQ(record.eventRecords).count(function(e:EventRecord, i) return e.event == "next");
 			
 			csv.push([record.id, record.user.name, record.world, numOfNext, record.inputMethod]);
+			*/
 		}
 		
 		/*
