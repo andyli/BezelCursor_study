@@ -147,9 +147,12 @@ class TestTouchWorld extends GameWorld, implements IStruct {
 				cm.cursorsEnabled = true;
 			}
 			
-			while(invisibleTargets.length > 0) {
-				recycle(invisibleTargets.pop());
-			}
+			haxe.Timer.delay(function(){
+				clipTargets();
+				while(invisibleTargets.length > 0) {
+					recycle(invisibleTargets.pop());
+				}
+			}, 1);
 			
 			log("next", currentQueueIndex);
 		});
