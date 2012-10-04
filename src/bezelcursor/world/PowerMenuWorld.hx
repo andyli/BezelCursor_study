@@ -146,7 +146,7 @@ class PowerMenuWorld extends GameWorld {
 				btn.onClickSignaler.bindVoid(function() {
 					selectedUseStartButton = true;
 					selectedMethod = method;
-					startPractice();
+					selectHandiness();
 				});
 			} else {
 				btn.onClickSignaler.bindVoid(function() {

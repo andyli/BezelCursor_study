@@ -31,13 +31,17 @@ class PlayRecord implements IStruct {
 		
 	}
 	
+	function init_events_buf():Void {
+		_events = [];
+		_events_buf = new StringBuf();
+		var str = Json.stringify(toObj());
+		str = str.substr(0, str.length - 1); //remove last '}'
+		_events_buf.add(str + ',\n"_events": [');
+	}
+	
 	public function addEvent(time:Float, event:String, data:Dynamic):Void {
 		if (_events_buf == null) {
-			_events = [];
-			_events_buf = new StringBuf();
-			var str = Json.stringify(toObj());
-			str = str.substr(0, str.length - 1); //remove last '}'
-			_events_buf.add(str + ',\n"_events": [');
+			init_events_buf();
 		} else {
 			_events_buf.add(",");
 		}
@@ -51,6 +55,9 @@ class PlayRecord implements IStruct {
 	}
 	
 	public function toString():String {
+		if (_events_buf == null) {
+			init_events_buf();
+		}
 		_events_buf.add("]}");
 		return _events_buf.toString();
 	}
