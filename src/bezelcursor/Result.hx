@@ -17,27 +17,19 @@ class Result {
 		for (file in FileSystem.readDirectory(folder)) {
 			if (!file.endsWith(".txt")) continue;
 
-			Json.parse(File.getContent(folder + file));
+			records.push(PlayRecord.fromString(File.getContent(folder + file)));
 			trace(file);
 		}
 		
 		var csv = new Array<Array<Dynamic>>();
-		
+		csv.push(["record.id", "record.user.name", "record.world", "numOfNext", "record.inputMethod", "worldCompleteTime"]);
 		for (record in records) {
-			
-			/*
-			var numOfNext = new LINQ(record.eventRecords).count(function(e:EventRecord, i) return e.event == "next");
-			
-			csv.push([record.id, record.user.name, record.world, numOfNext, record.inputMethod]);
-			*/
+			var numOfNext = new LINQ(record.events).count(function(e, i) return e.event == "next");
+			var worldCompleteTime = new LINQ(record.events).last(function(e,i) return e.event == "end").time - new LINQ(record.events).first(function(e,i) return e.event == "begin").time;
+			csv.push([record.id, record.user.name, record.world, numOfNext, record.inputMethod, worldCompleteTime]);
 		}
 		
-		/*
-		var users = new LINQ(records).groupBy(function(r) return r.user);
-		for (user in users) {
-			trace(user + ": " + new LINQ(user).count());
-		}
-		*/
+		File.saveContent(folder + "result.csv", Csv.encode(csv));
 		
 		Sys.exit(0);
 	}
