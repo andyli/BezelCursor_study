@@ -69,10 +69,8 @@ class Main extends Engine {
 	function onKey(evt:KeyboardEvent):Void {
 		switch(evt.keyCode) {
 			case Keyboard.ESCAPE:
-				if (Std.is(HXP.world, PowerMenuWorld)) {
+				if (!Std.is(HXP.world, TestTouchWorld)) {
 					Sys.exit(0);
-				} else if (Std.is(HXP.world, TestTouchWorld)) {
-					HXP.world = new PowerMenuWorld();
 				}
 		}
 		evt.stopImmediatePropagation();
