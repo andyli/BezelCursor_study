@@ -126,7 +126,7 @@ class CursorManager implements IStruct {
 	*/
 	var pointActivatedCursors:IntHash<PointActivatedCursor>;
 	
-	var touchFilters:IntHash<{x:OneEuroFilter, y:OneEuroFilter, next:TouchData}>;
+	@skip var touchFilters:IntHash<{x:OneEuroFilter, y:OneEuroFilter, next:TouchData}>;
 	
 	public function new():Void {
 		thumbSpace = new Rectangle(Math.NEGATIVE_INFINITY, Math.NEGATIVE_INFINITY);

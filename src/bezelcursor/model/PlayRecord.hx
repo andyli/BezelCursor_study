@@ -62,11 +62,10 @@ class PlayRecord implements IStruct {
 		return _events_buf.toString();
 	}
 	
-	static public function fromString(str:String):PlayRecord {
-		var record = new PlayRecord();
+	public function fromString(str:String):PlayRecord {
 		var json = Json.parse(str);
-		record.fromObj(json);
-		record._events = json._events;
-		return record;
+		fromObj(json);
+		_events = json._events;
+		return this;
 	}
 }

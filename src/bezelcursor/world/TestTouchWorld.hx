@@ -48,18 +48,6 @@ class TestTouchWorld extends GameWorld, implements IStruct {
 	override public function new(taskBlockData:TaskBlockData, flipStage = false):Void {
 		super();
 		
-		record = new PlayRecord();
-		record.creationTime = Date.now().getTime();
-		record.id = StringUtil.uuid();
-		record.user = UserData.current;
-		record.device = DeviceData.current;
-		record.build = BuildData.current;
-		record.world = Type.getClassName(Type.getClass(this));
-		record.taskBlockData = taskBlockData.toObj();
-		record.flipStage = flipStage;
-		record.inputMethod = HXP.engine.asMain().cursorManager.inputMethod.name;
-		record.cursorManager = HXP.engine.asMain().cursorManager.toObj();
-		
 		this.taskBlockData = taskBlockData;
 		this.flipStage = flipStage;
 		
@@ -179,8 +167,6 @@ class TestTouchWorld extends GameWorld, implements IStruct {
 		
 		cm.onClickSignaler.bind(onCursorClick);
 		
-		log("begin");
-		
 		cm.onTouchStartSignaler.bind(recTouchStart);
 		cm.onTouchMoveSignaler.bind(recTouchMove);
 		cm.onTouchEndSignaler.bind(recTouchEnd);
@@ -201,6 +187,20 @@ class TestTouchWorld extends GameWorld, implements IStruct {
 				return !currentTarget.collidePoint(currentTarget.x, currentTarget.y, worldTouchPos.x, worldTouchPos.y);
 			}
 		}
+		
+		record = new PlayRecord();
+		record.creationTime = Date.now().getTime();
+		record.id = StringUtil.uuid();
+		record.user = UserData.current;
+		record.device = DeviceData.current;
+		record.build = BuildData.current;
+		record.world = Type.getClassName(Type.getClass(this));
+		record.taskBlockData = taskBlockData.toObj();
+		record.flipStage = flipStage;
+		record.inputMethod = HXP.engine.asMain().cursorManager.inputMethod.name;
+		record.cursorManager = HXP.engine.asMain().cursorManager.toObj();
+				
+		log("begin");
 		
 		next();
 		
