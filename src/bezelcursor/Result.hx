@@ -18,6 +18,7 @@ class Result {
 			"record.id",
 			"record.user.name",
 			"record.world",
+			"targetSize",
 			"numOfNext",
 			"record.inputMethod",
 			"worldCompleteTime",
@@ -35,7 +36,7 @@ class Result {
 		for (file in FileSystem.readDirectory(folder)) {
 			if (!file.endsWith(".txt")) continue;
 
-			record.fromString(File.getContent(folder + file));
+			record.fromString(File.getContent(folder + file));			
 			
 			var numOfNext = new LINQ(record.events).count(function(e,i) return e.event == "next");
 			var worldCompleteTime = new LINQ(record.events).last(function(e,i) return e.event == "end").time - new LINQ(record.events).first(function(e,i) return e.event == "begin").time;
@@ -47,10 +48,14 @@ class Result {
 				return e.time - new LINQ(record.events).last(function(e,i) return i < success_i && e.event == "next").time;
 			});
 			
+			var target = record.taskBlockData.targetQueue[0][0];
+			var targetSize = target.width + "mm x " + target.height + "mm";
+			
 			csv.push([
 				record.id,
 				record.user.name,
 				record.world,
+				targetSize,
 				numOfNext,
 				record.inputMethod,
 				worldCompleteTime,

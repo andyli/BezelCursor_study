@@ -1,5 +1,6 @@
 package bezelcursor.model;
 
+using Lambda;
 import haxe.*;
 import org.casalib.util.*;
 
@@ -32,11 +33,16 @@ class PlayRecord implements IStruct {
 	}
 	
 	function init_events_buf():Void {
-		_events = [];
 		_events_buf = new StringBuf();
 		var str = Json.stringify(toObj());
 		str = str.substr(0, str.length - 1); //remove last '}'
 		_events_buf.add(str + ',\n"_events": [');
+		
+		if (_events == null) {
+			_events = [];
+		} else {
+			_events_buf.add(_events.map(Json.stringify).join(","));
+		}
 	}
 	
 	public function addEvent(time:Float, event:String, data:Dynamic):Void {
@@ -66,6 +72,7 @@ class PlayRecord implements IStruct {
 		var json = Json.parse(str);
 		fromObj(json);
 		_events = json._events;
+		_events_buf = null;
 		return this;
 	}
 }
