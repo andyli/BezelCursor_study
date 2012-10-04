@@ -2,6 +2,7 @@ package bezelcursor.world;
 
 using StringTools;
 using DateTools;
+import haxe.*;
 import sys.io.*;
 import hsl.haxe.*;
 import com.haxepunk.*;
@@ -24,11 +25,13 @@ using bezelcursor.util.UnitUtil;
 class TestTouchWorld extends GameWorld, implements IStruct {
 	@skip var record:PlayRecord;
 	public function log(event:String, data:Dynamic = null):Void {
+		trace("event:" + event);
 		record.addEvent(
 			haxe.Timer.stamp(),
 			event,
-			haxe.Serializer.run(data)
+			data
 		);
+		trace("added");
 	}
 	
 	@skip public var currentTarget(default, null):Target;
@@ -148,7 +151,7 @@ class TestTouchWorld extends GameWorld, implements IStruct {
 				recycle(invisibleTargets.pop());
 			}
 			
-			log("next", currentTargets);
+			log("next", currentQueueIndex);
 		});
 		
 		title.label = (currentQueueIndex+1) + " / " + taskBlockData.targetQueue.length;
@@ -234,42 +237,42 @@ class TestTouchWorld extends GameWorld, implements IStruct {
 	}
 	
 	function recTouchStart(touch:TouchData):Void {
-		log("touch-start", touch);
+		log("touch-start", touch.toObj());
 	}
 	
 	function recTouchMove(touch:TouchData):Void {
-		log("touch-move", touch);
+		log("touch-move", touch.toObj());
 	}
 	
 	function recTouchEnd(touch:TouchData):Void {
-		log("touch-end", touch);
+		log("touch-end", touch.toObj());
 	}
 	
 	function recCursorStart(s:Signal<Void>):Void {
 		log("cursor-start", {
-			cursor: s.origin
+			cursor: cast(s.origin,Cursor).toObj()
 		});
 	}
 	
 	function recCursorMove(s:Signal<Target>):Void {
 		log("cursor-move", {
-			cursor: s.origin,
-			target: s.data,
+			cursor: cast(s.origin,Cursor).toObj(),
+			target: s.data == null ? null : cast(s.data,Target).toObj(),
 			isCurrent: s.data == currentTarget
 		});
 	}
 	
 	function recCursorClick(s:Signal<Target>):Void {
 		log("cursor-click", {
-			cursor: s.origin,
-			target: s.data,
+			cursor: cast(s.origin,Cursor).toObj(),
+			target: s.data == null ? null : cast(s.data,Target).toObj(),
 			isCurrent: s.data == currentTarget
 		});
 	}
 	
 	function recCursorEnd(s:Signal<Void>):Void {
 		log("cursor-end", {
-			cursor: s.origin
+			cursor: cast(s.origin,Cursor).toObj()
 		});
 	}
 	

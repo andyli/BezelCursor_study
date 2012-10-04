@@ -56,9 +56,9 @@ class Cursor implements IStruct {
 	/**
 	* The Behavior instances that define how the cursor behaves.
 	*/
-	public var behaviors(default, null):Array<Behavior<Dynamic>>;
+	@deep public var behaviors(default, null):Array<Behavior<Dynamic>>;
 	
-	public var snapper(default, null):Snapper<Dynamic>;
+	@deep public var snapper(default, null):Snapper<Dynamic>;
 	
 	/**
 	* Color of the view.
@@ -71,9 +71,11 @@ class Cursor implements IStruct {
 	*/
 	@skip public var view(default, null):Sprite;
 	
-	var radiusFilter:OneEuroFilter;
+	@deep var radiusFilter:OneEuroFilter;
 	
 	var ignoreTime:Float;
+	
+	var _class:String;
 	
 	public function new():Void {
 		id = nextId++;
@@ -100,6 +102,8 @@ class Cursor implements IStruct {
 		onEndSignaler = new DirectSignaler<Void>(this);
 		
 		positionRecord = new List();
+		
+		_class = Type.getClassName(Type.getClass(this));
 		
 		return this;
 	}

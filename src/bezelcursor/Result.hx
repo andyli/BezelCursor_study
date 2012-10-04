@@ -16,12 +16,9 @@ class Result {
 		
 		for (file in FileSystem.readDirectory(folder)) {
 			if (!file.endsWith(".txt")) continue;
-			
+
+			Json.parse(File.getContent(folder + file));
 			trace(file);
-			var record = PlayRecord.fromString(File.getContent(folder + file));
-			records.push(record);
-			
-			File.saveContent(folder + file, record.toString());
 		}
 		
 		var csv = new Array<Array<Dynamic>>();
