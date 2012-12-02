@@ -109,13 +109,27 @@ class Result {
 			var c = new LINQ(g).select(function(r) return methods.indexOf(r[5])).distinct(function(_) return _).array().join(",");
 			comHash.set(c, comHash.get(c) + 1);
 		}
+		
+		var stat = [];
 		for (c in comHash.keys()) {
-			switch(c.substr(0, 3)){
+			if (c.length == 7) switch(c.substr(0, 3)){
 				case "0,1", "1,0", "2,3", "3,2":
-				default: continue;
+					stat.push(c + " *" + comHash.get(c));
+					continue;
 			}
-			Sys.println(c + " " + comHash.get(c));
+			stat.push(c + " " + comHash.get(c));
 		}
+		stat.sort(function(a,b) {
+			var va = a.indexOf("*") > -1;
+			var vb = b.indexOf("*") > -1;
+			return if ((va && vb) || (!va && !vb))
+				a > b ? 1 : -1;
+			else if (va)
+				1;
+			else
+				-1;
+		});
+		Sys.println(stat.join("\n"));
 		
 		File.saveContent(folder + "result.csv", Csv.encode(csv));
 		
