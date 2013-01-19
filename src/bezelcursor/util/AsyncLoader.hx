@@ -132,7 +132,7 @@ class AsyncLoader {
 			};
 			http.onStatus = function(_status:Int) {
 				if (_status != 200) {
-					onErrorSignaler.dispatch(_status);
+					onErrorSignaler.dispatch(Std.string(_status));
 					isLoading = false;
 					destroy();
 				}

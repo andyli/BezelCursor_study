@@ -51,7 +51,7 @@ class Panel extends Entity {
 	public var gapWidth:Float;
 	
 	var children:Array<Entity>;
-	public var layout(get_layout, set_layout):PanelLayout;
+	@:isVar public var layout(get_layout, set_layout):PanelLayout;
 	function get_layout():PanelLayout {
 		return layout;
 	}

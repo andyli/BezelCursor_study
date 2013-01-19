@@ -34,7 +34,7 @@ class TaskBlockData implements IStruct {
 			return sharedObject = nme.net.SharedObject.getLocal("TaskBlockData");
 	}
 	
-	public static var current(get_current, set_current):Array<TaskBlockData>;
+	@:isVar public static var current(get_current, set_current):Array<TaskBlockData>;
 	static function get_current():Array<TaskBlockData> {
 		if (current != null) return current;
 		if (sharedObject.data.current == null) return null;
