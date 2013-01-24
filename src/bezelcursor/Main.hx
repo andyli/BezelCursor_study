@@ -28,13 +28,6 @@ class Main extends Engine {
 		HXP.screen.color = 0x333333;
 		HXP.screen.scale = 1;
 		
-		#if !js
-		HXP.console.enable();
-		#end
-		#if !debug
-		HXP.console.visible = false;
-		#end
-		
 		initStorage();
 		
 		cursorManager = new CursorManager();

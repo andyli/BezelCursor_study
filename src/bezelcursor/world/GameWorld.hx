@@ -94,7 +94,7 @@ class GameWorld extends World {
 		super.update();
 		
 		var diff = Math.abs(camera.x - pCameraX) + Math.abs(camera.y - pCameraY);
-		if (diff > 0.01) {			
+		if (diff > 0.00001) {			
 			isCameraMoving = true;
 			clipTargets();
 		} else if (isCameraMoving){
