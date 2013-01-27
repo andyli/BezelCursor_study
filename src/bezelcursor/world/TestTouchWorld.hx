@@ -25,13 +25,13 @@ using bezelcursor.util.UnitUtil;
 class TestTouchWorld extends GameWorld, implements IStruct {
 	@skip var record:PlayRecord;
 	public function log(event:String, data:Dynamic = null):Void {
-		trace("event:" + event);
+		//trace("event:" + event);
 		record.addEvent(
 			haxe.Timer.stamp(),
 			event,
 			data
 		);
-		trace("added");
+		//trace("added");
 	}
 	
 	@skip public var currentTarget(default, null):Target;

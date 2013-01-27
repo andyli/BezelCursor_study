@@ -59,12 +59,27 @@ class Main extends Engine {
 		*/
 	}
 	
+	var escCount = 0;
+	var escStamp = 0.0;
 	function onKey(evt:KeyboardEvent):Void {
 		switch(evt.keyCode) {
 			case Keyboard.ESCAPE:
 				if (!Std.is(HXP.world, TestTouchWorld)) {
 					Sys.exit(0);
 				}
+				
+				if (++escCount >= 5) {
+					if (haxe.Timer.stamp() - escStamp <= 1) {
+						Sys.exit(0);
+					}
+					escCount = 0;
+				}
+
+				if (escCount == 1) {
+					escStamp = haxe.Timer.stamp();
+				}
+			default:
+				escCount = 0;
 		}
 		evt.stopImmediatePropagation();
 	}
