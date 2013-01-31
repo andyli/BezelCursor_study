@@ -37,7 +37,7 @@ class Result {
 			comHash.set(c.join(","), 0);
 		}
 		
-		var folder = "/Users/andy/Google Drive/CityU PhD/BezelCursor/UserStudyPart1_data/";
+		var folder = "/Users/andy/Google Drive/CityU PhD/BezelCursor/UserStudyPart2_data/";
 		
 		var csv = new Array<Array<Dynamic>>();
 		csv.push([
@@ -61,9 +61,12 @@ class Result {
 		
 		for (file in FileSystem.readDirectory(folder)) {
 			if (!file.endsWith(".txt")) continue;
-
-			record.fromString(File.getContent(folder + file));			
 			
+			trace(file);
+
+			record.fromString(File.getContent(folder + file).replace("Inf", "0").replace("NaN", "0"));			
+			
+			var userName:String = record.user.name;
 			var numOfNext = new LINQ(record.events).count(function(e,i) return e.event == "next");
 			var worldCompleteTime = new LINQ(record.events).last(function(e,i) return e.event == "end").time - new LINQ(record.events).first(function(e,i) return e.event == "begin").time;
 			var targetMeanTime = worldCompleteTime / numOfNext;
@@ -79,11 +82,11 @@ class Result {
 			
 			csv.push([
 				record.id,
-				record.user.name,
+				userName.toLowerCase(),
 				record.world,
 				targetSize,
 				numOfNext,
-				record.inputMethod,
+				record.inputMethod + (record.inputMethod != "ThumbSpace" && record.cursorManager.inputMethod.requireOverlayButton ? " (button)" : ""),
 				worldCompleteTime,
 				targetMeanTime,
 				successRate,
@@ -92,44 +95,6 @@ class Result {
 			
 			trace(file);
 		}
-		
-		var finishedUser = new LINQ(csv)
-			.where(function(e,i) return e[4] == 36 && e[2] == "bezelcursor.world.TestTouchWorld")
-			.groupBy(function(e) return e[1])
-			.where(function(g,i) return g.count() == 8);
-		
-		var methods = [
-			InputMethod.BezelCursor_acceleratedBubbleCursor.name,
-			InputMethod.BezelCursor_directMappingBubbleCursor.name,
-			InputMethod.BezelCursor_acceleratedDynaSpot.name,
-			InputMethod.BezelCursor_directMappingDynaSpot.name
-		];
-		
-		for (g in finishedUser) {
-			var c = new LINQ(g).select(function(r) return methods.indexOf(r[5])).distinct(function(_) return _).array().join(",");
-			comHash.set(c, comHash.get(c) + 1);
-		}
-		
-		var stat = [];
-		for (c in comHash.keys()) {
-			if (c.length == 7) switch(c.substr(0, 3)){
-				case "0,1", "1,0", "2,3", "3,2":
-					stat.push(c + " *" + comHash.get(c));
-					continue;
-			}
-			stat.push(c + " " + comHash.get(c));
-		}
-		stat.sort(function(a,b) {
-			var va = a.indexOf("*") > -1;
-			var vb = b.indexOf("*") > -1;
-			return if ((va && vb) || (!va && !vb))
-				a > b ? 1 : -1;
-			else if (va)
-				1;
-			else
-				-1;
-		});
-		Sys.println(stat.join("\n"));
 		
 		File.saveContent(folder + "result.csv", Csv.encode(csv));
 		
