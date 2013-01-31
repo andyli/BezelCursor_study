@@ -181,7 +181,7 @@ class TestTouchWorld extends GameWorld, implements IStruct {
 			cm.isValidStart = function(t:TouchData) {
 				return startBtn.collidePoint(startBtn.x, startBtn.y, t.x, t.y);
 			}
-		} else if (cm.inputMethod.name != InputMethod.DirectTouch.name && cm.inputMethod.name != InputMethod.ThumbSpace.name) {
+		} else if (cm.inputMethod.name != InputMethod.DirectTouch.name && cm.inputMethod.name != InputMethod.PracticalBezelCursor.name && cm.inputMethod.name != InputMethod.ThumbSpace.name) {
 			cm.isValidStart = function(t:TouchData) {
 				var worldTouchPos = screenToWorld(new Point(t.x, t.y));
 				return !currentTarget.collidePoint(currentTarget.x, currentTarget.y, worldTouchPos.x, worldTouchPos.y);

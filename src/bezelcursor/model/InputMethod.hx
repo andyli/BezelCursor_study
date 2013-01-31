@@ -38,6 +38,21 @@ class InputMethod implements IStruct {
 		false
 	);
 	
+	static public var PracticalBezelCursor:InputMethod = new InputMethod(
+		"Practical BezelCursor",
+		{ _class: "bezelcursor.cursor.StickCursor", data: {
+			drawRadius: null,
+			scaleFactor: 1,
+			jointActivateDistance: Math.POSITIVE_INFINITY,
+			dynaScale: null,
+			drawStick: null,
+			default_radius: 0
+		} },
+		{ _class: "bezelcursor.cursor.StickCursor", data: {} },
+		null,
+		false
+	);
+	
 	static public var DirectTouch:InputMethod = new InputMethod(
 		"Direct touch",
 		{ _class: "bezelcursor.cursor.StickCursor", data: {

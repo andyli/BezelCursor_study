@@ -139,7 +139,7 @@ class PowerMenuWorld extends GameWorld {
 		
 		var powerMenu = new PowerMenu();
 		
-		for (method in TaskBlockDataGenerator.current.inputMethods) {
+		for (method in [InputMethod.PracticalBezelCursor].concat(TaskBlockDataGenerator.current.inputMethods)) {
 			var btn = new Button(method.name);
 			btn.resize(buttonWidth, buttonHeight);
 			if (method.requireOverlayButton) {
