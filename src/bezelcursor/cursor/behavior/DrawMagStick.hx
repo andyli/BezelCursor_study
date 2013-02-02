@@ -1,5 +1,6 @@
 package bezelcursor.cursor.behavior;
 
+using Lambda;
 import nme.geom.Point;
 import com.haxepunk.HXP;
 
@@ -20,11 +21,11 @@ class DrawMagStick extends Behavior<MagStickCursor> {
 	public function new(c:MagStickCursor):Void {
 		super(c);
 		
-		lineWidthThumb = [3.5, 3.0, 2.2, 2.0];
+		lineWidthThumb = [3.5, 3.0, 2.2, 2.0].map(function(n) return n * 8).array();
 		alphaThumb = [1.0, 1.0, 1.0, 1.0];
-		lineWidthTarget = [2.0, 1.5];
+		lineWidthTarget = [2.0, 1.5].map(function(n) return n * 8).array();
 		alphaTarget = [1.0, 1.0];
-		radiusCircleLineWidth = 2.0;
+		radiusCircleLineWidth = 2.0 * 8;
 		radiusCircleAlpha = 1.0;
 	}
 	

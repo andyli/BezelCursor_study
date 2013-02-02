@@ -11,7 +11,7 @@ class DrawRadius extends Behavior<Cursor> {
 	public function new(c:Cursor):Void {
 		super(c);
 
-		lineWeight = 2;
+		lineWeight = 2 * 8;
 		alpha = 1;
 		centerSpotRadius = 0.25;
 	}

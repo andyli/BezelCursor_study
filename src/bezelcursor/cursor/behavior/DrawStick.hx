@@ -1,5 +1,6 @@
 package bezelcursor.cursor.behavior;
 
+using Lambda;
 import nme.geom.Point;
 
 import bezelcursor.cursor.Cursor;
@@ -13,7 +14,7 @@ class DrawStick extends Behavior<PointActivatedCursor> {
 	public function new(c:PointActivatedCursor):Void {
 		super(c);
 		
-		lineWidth = [3.5, 3.0, 2.2, 2.0, 1.5];
+		lineWidth = [3.5, 3.0, 2.2, 2.0, 1.5].map(function(n) return n * 8).array();
 		alpha = [1.0, 1.0, 1.0, 1.0, 1.0];
 	}
 	
