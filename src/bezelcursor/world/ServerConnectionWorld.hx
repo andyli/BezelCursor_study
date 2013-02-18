@@ -120,6 +120,13 @@ class ServerConnectionWorld extends GameWorld {
 	function onTaskBlockGenerated(taskblocks:Array<TaskBlockData>){
 		updateMsg("Sync with server...");
 		
+		haxe.Timer.delay(function(){
+			TaskBlockData.current = taskblocks;
+			ready();
+		}, 100);
+		
+		return;
+		
 		var load = new AsyncLoader(Env.website + "taskblockdata/set/", Post);
 		load.data = {
 			buildData: haxe.Serializer.run(BuildData.current),
@@ -144,6 +151,24 @@ class ServerConnectionWorld extends GameWorld {
 	var connectThead:Dynamic;
 	function connect():Void {
 		updateMsg("Connecting...");
+		
+		if (TaskBlockData.current != null) {
+			ready();
+		} else {
+			updateMsg("Generating tasks...");
+			
+			var gen = TaskBlockDataGenerator.current;
+			var pbond = gen.onProgressSignaler.bind(function(p) {
+				updateMsg("Generating tasks...\n" + p.map(0, 1, 0, 100).int() + "%");
+			});
+			gen.onCompleteSignaler.bind(function(a) {
+				onTaskBlockGenerated(a);
+				pbond.destroy();
+			}).destroyOnUse();
+			gen.generateTaskBlocks();
+		}
+		
+		return;
 		
 		var load = new AsyncLoader(Env.website + "taskblockdata/get/", Get);
 		load.data = {

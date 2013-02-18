@@ -122,7 +122,7 @@ class TaskBlockDataGenerator implements IStruct {
 			1
 		];
 		
-		targetDensity = 0.5;
+		targetDensity = 0.2;
 		
 		regionss = [
 			genRegions(3, 4)
