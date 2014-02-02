@@ -3,9 +3,9 @@ package bezelcursor.world;
 import com.haxepunk.HXP;
 import com.haxepunk.World;
 import com.haxepunk.graphics.Text;
-import nme.Lib;
-import nme.geom.Rectangle;
-import nme.text.TextFormatAlign;
+import flash.Lib;
+import flash.geom.Rectangle;
+import flash.text.TextFormatAlign;
 using org.casalib.util.RatioUtil;
 
 using bezelcursor.Main;
@@ -22,8 +22,7 @@ class ConfigThumbSpaceWorld extends GameWorld {
 		
 		panel = new Panel();
 		
-		var btn = new Button("redefine");
-		btn.text.size = Math.round(DeviceData.current.screenDPI * 0.24);
+		var btn = new Button("redefine", 0x000000, Math.round(DeviceData.current.screenDPI * 0.24));
 		btn.resize(btn.text.width + 20, btn.text.height + 20);
 		btn.onClickSignaler.bindVoid(function(){
 			var clone = new ConfigThumbSpaceWorld();
@@ -32,8 +31,7 @@ class ConfigThumbSpaceWorld extends GameWorld {
 		});
 		panel.add(btn);
 		
-		var btn = new Button("OK");
-		btn.text.size = Math.round(DeviceData.current.screenDPI * 0.48);
+		var btn = new Button("OK", 0x000000, Math.round(DeviceData.current.screenDPI * 0.48));
 		btn.resize(btn.text.width + 20, btn.text.height + 20);
 		btn.onClickSignaler.bindVoid(onOk);
 		panel.add(btn);

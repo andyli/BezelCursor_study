@@ -1,10 +1,10 @@
 package bezelcursor.cursor;
 
 using Std;
-import nme.Lib;
-import nme.display.Sprite;
-import nme.events.Event;
-import nme.geom.Point;
+import flash.Lib;
+import flash.display.Sprite;
+import flash.events.Event;
+import flash.geom.Point;
 import hsl.haxe.Signaler;
 import hsl.haxe.DirectSignaler;
 using org.casalib.util.NumberUtil;

@@ -1,10 +1,10 @@
 package bezelcursor.entity;
 
-import nme.events.MouseEvent;
-import nme.geom.Point;
+import flash.events.MouseEvent;
+import flash.geom.Point;
 import com.haxepunk.HXP;
 import hsl.haxe.Signal;
-using com.eclecticdesignstudio.motion.Actuate;
+using motion.Actuate;
 
 using bezelcursor.Main;
 import bezelcursor.cursor.Cursor;
@@ -36,10 +36,7 @@ class OverlayButton extends Button {
 	override public function resize(w:Float = -1, h:Float = -1):Void {
 		super.resize(w, h);
 		
-		for (g in graphicList_default.children) {
-			g.scrollX = g.scrollY = 0;
-		}
-		for (g in graphicList_hover.children) {
+		for (g in [graphic_default, graphic_hover]) {
 			g.scrollX = g.scrollY = 0;
 		}
 	}

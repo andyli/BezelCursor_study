@@ -4,10 +4,10 @@ using Lambda;
 using StringTools;
 import com.haxepunk.*;
 import com.haxepunk.utils.*;
-import nme.display.Sprite;
-import nme.events.KeyboardEvent;
-import nme.ui.Keyboard;
-import nme.Lib;
+import flash.display.Sprite;
+import flash.events.KeyboardEvent;
+import flash.ui.Keyboard;
+import flash.Lib;
 
 import bezelcursor.cursor.*;
 import bezelcursor.entity.*;

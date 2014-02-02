@@ -7,8 +7,8 @@ import cpp.vm.*;
 #elseif neko
 import neko.vm.*;
 #end
-import nme.events.*;
-import nme.net.*;
+import flash.events.*;
+import flash.net.*;
 import hsl.haxe.*;
 
 enum HttpMethod {

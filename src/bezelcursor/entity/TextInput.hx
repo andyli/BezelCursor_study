@@ -3,9 +3,9 @@ package bezelcursor.entity;
 using Math;
 import com.haxepunk.*;
 import com.haxepunk.graphics.*;
-import nme.geom.*;
-import nme.text.*;
-import nme.Lib;
+import flash.geom.*;
+import flash.text.*;
+import flash.Lib;
 
 import bezelcursor.model.*;
 using bezelcursor.world.GameWorld;
@@ -14,7 +14,7 @@ using bezelcursor.util.UnitUtil;
 class TextInput extends Entity {
 	static public var defaultTextFormat(get_defaultTextFormat, null):TextFormat;
 	static function get_defaultTextFormat():TextFormat {
-		return defaultTextFormat != null ? defaultTextFormat : defaultTextFormat = new TextFormat(nme.Assets.getFont(HXP.defaultFont).fontName, Math.round(DeviceData.current.screenDPI * 0.2), 0xFFFFFF);
+		return defaultTextFormat != null ? defaultTextFormat : defaultTextFormat = new TextFormat(openfl.Assets.getFont(HXP.defaultFont).fontName, Math.round(DeviceData.current.screenDPI * 0.2), 0xFFFFFF);
 	}
 	
 	public var textInput:TextField;

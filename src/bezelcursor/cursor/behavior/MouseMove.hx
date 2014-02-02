@@ -1,7 +1,7 @@
 package bezelcursor.cursor.behavior;
 
-import nme.Lib;
-import nme.geom.Rectangle;
+import flash.Lib;
+import flash.geom.Rectangle;
 using org.casalib.util.NumberUtil;
 
 import bezelcursor.cursor.PointActivatedCursor;

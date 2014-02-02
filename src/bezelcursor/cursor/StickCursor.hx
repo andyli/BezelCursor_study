@@ -1,6 +1,6 @@
 package bezelcursor.cursor;
 
-import nme.geom.*;
+import flash.geom.*;
 using org.casalib.util.NumberUtil;
 
 import bezelcursor.cursor.behavior.*;

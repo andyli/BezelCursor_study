@@ -1,7 +1,7 @@
 package bezelcursor.cursor.behavior;
 
 using Lambda;
-import nme.geom.Point;
+import flash.geom.Point;
 
 import bezelcursor.cursor.Cursor;
 import bezelcursor.cursor.PointActivatedCursor;
@@ -30,7 +30,7 @@ class DrawStick extends Behavior<PointActivatedCursor> {
 		}
 	}
 	
-	static public function drawGradientLine(g:nme.display.Graphics, start:Point, end:Point, lineWidth:Array<Float>, color:Array<Int>, alpha:Array<Float>):Void {
+	static public function drawGradientLine(g:flash.display.Graphics, start:Point, end:Point, lineWidth:Array<Float>, color:Array<Int>, alpha:Array<Float>):Void {
 		g.moveTo(start.x, start.y);
 		var v = end.subtract(start);
 		var steps = Math.min(Math.min(lineWidth.length, alpha.length), color.length);

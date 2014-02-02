@@ -2,17 +2,17 @@ package bezelcursor.cursor;
 
 using Std;
 using Lambda;
-import nme.Lib;
-import nme.display.*;
-import nme.events.*;
-import nme.geom.*;
-import nme.system.Capabilities;
-import nme.ui.*;
+import flash.Lib;
+import flash.display.*;
+import flash.events.*;
+import flash.geom.*;
+import flash.system.Capabilities;
+import flash.ui.*;
 import hsl.haxe.*;
 using org.casalib.util.NumberUtil;
 using org.casalib.util.RatioUtil;
 import com.haxepunk.HXP;
-using com.eclecticdesignstudio.motion.Actuate;
+using motion.Actuate;
 
 import bezelcursor.cursor.behavior.*;
 import bezelcursor.model.*;
@@ -119,14 +119,14 @@ class CursorManager implements IStruct {
 	/**
 	* Cursor id as key
 	*/
-	var cursors:IntHash<Cursor>;
+	var cursors:Map<Int,Cursor>;
 	
 	/**
 	* touchPointId as key
 	*/
-	var pointActivatedCursors:IntHash<PointActivatedCursor>;
+	var pointActivatedCursors:Map<Int,PointActivatedCursor>;
 	
-	@skip var touchFilters:IntHash<{x:OneEuroFilter, y:OneEuroFilter, next:TouchData}>;
+	@skip var touchFilters:Map<Int,{x:OneEuroFilter, y:OneEuroFilter, next:TouchData}>;
 	
 	public function new():Void {
 		thumbSpace = new Rectangle(Math.NEGATIVE_INFINITY, Math.NEGATIVE_INFINITY);
@@ -134,9 +134,9 @@ class CursorManager implements IStruct {
 		
 		bezelWidth = 0.15;
 		
-		cursors = new IntHash<Cursor>();
-		pointActivatedCursors = new IntHash<PointActivatedCursor>();
-		touchFilters = new IntHash<{x:OneEuroFilter, y:OneEuroFilter, next:TouchData}>();
+		cursors = new Map();
+		pointActivatedCursors = new Map();
+		touchFilters = new Map();
 		
 		init();
 		
@@ -157,7 +157,7 @@ class CursorManager implements IStruct {
 		
 		thumbSpaceViewBitmap = new Bitmap(HXP.buffer, PixelSnapping.NEVER, true);//new Sprite();
 		thumbSpaceViewBitmap.alpha = 0.9;
-		//thumbSpaceViewBitmap.filters = [new nme.filters.DropShadowFilter(0, 0, 0, 0.8, 0.05 * DeviceData.current.screenDPI, 0.05 * DeviceData.current.screenDPI)];
+		//thumbSpaceViewBitmap.filters = [new flash.filters.DropShadowFilter(0, 0, 0, 0.8, 0.05 * DeviceData.current.screenDPI, 0.05 * DeviceData.current.screenDPI)];
 		thumbSpaceView = new Sprite();
 		thumbSpaceView.addChild(thumbSpaceViewBitmap);
 		

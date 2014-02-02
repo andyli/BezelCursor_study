@@ -41,7 +41,7 @@ class PlayRecord implements IStruct {
 		if (_events == null) {
 			_events = [];
 		} else {
-			_events_buf.add(_events.map(Json.stringify).join(","));
+			_events_buf.add([for (e in _events) Json.stringify(e)].join(","));
 		}
 	}
 	

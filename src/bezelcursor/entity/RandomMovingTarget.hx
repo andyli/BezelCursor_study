@@ -2,8 +2,8 @@ package bezelcursor.entity;
 
 using Std;
 import hsl.haxe.Signal;
-import nme.geom.Point;
-import nme.geom.Rectangle;
+import flash.geom.Point;
+import flash.geom.Rectangle;
 import com.haxepunk.HXP;
 import com.haxepunk.Entity;
 import com.haxepunk.graphics.Image;

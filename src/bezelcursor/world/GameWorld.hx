@@ -2,9 +2,9 @@ package bezelcursor.world;
 
 using Std;
 import com.haxepunk.*;
-import nme.display.*;
-import nme.geom.*;
-import nme.system.Capabilities;
+import flash.display.*;
+import flash.geom.*;
+import flash.system.Capabilities;
 import hsl.haxe.*;
 import sys.io.*;
 

@@ -5,11 +5,11 @@ import hsl.haxe.*;
 import com.haxepunk.*;
 import com.haxepunk.graphics.*;
 import com.haxepunk.utils.*;
-using com.eclecticdesignstudio.motion.Actuate;
-import nme.display.Sprite;
-import nme.events.TouchEvent;
-import nme.geom.*;
-import nme.text.*;
+using motion.Actuate;
+import flash.display.Sprite;
+import flash.events.TouchEvent;
+import flash.geom.*;
+import flash.text.*;
 using org.casalib.util.ArrayUtil;
 import org.casalib.util.*;
 

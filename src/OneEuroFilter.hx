@@ -62,7 +62,7 @@ class OneEuroFilter {
 		lasttime = UndefinedTime;
 	}
 
-	public function filter(value:Float, timestamp:Float = UndefinedTime):Float {
+	public function filter(value:Float, timestamp:Float = -1):Float {
 		// update the sampling frequency based on timestamps
 		if (lasttime != UndefinedTime && timestamp != UndefinedTime) {
 			freq = 1.0 / (timestamp - lasttime);

@@ -5,7 +5,7 @@ using StringTools;
 import haxe.*;
 import sys.*;
 import sys.io.*;
-import nme.geom.*;
+import flash.geom.*;
 import bezelcursor.model.*;
 using bezelcursor.util.UnitUtil;
 import hxLINQ.LINQ;

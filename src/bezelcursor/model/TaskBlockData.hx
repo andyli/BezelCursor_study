@@ -1,7 +1,7 @@
 package bezelcursor.model;
 
 using Lambda;
-import nme.geom.*;
+import flash.geom.*;
 using org.casalib.util.ArrayUtil;
 using org.casalib.util.GeomUtil;
 using org.casalib.util.NumberUtil;
@@ -26,12 +26,12 @@ class TaskBlockData implements IStruct {
 	}
 	
 	#if !php
-	public static var sharedObject(get_sharedObject, null):nme.net.SharedObject;
-	static function get_sharedObject():nme.net.SharedObject {
+	public static var sharedObject(get_sharedObject, null):flash.net.SharedObject;
+	static function get_sharedObject():flash.net.SharedObject {
 		if (sharedObject != null) 
 			return sharedObject;
 		else
-			return sharedObject = nme.net.SharedObject.getLocal("TaskBlockData");
+			return sharedObject = flash.net.SharedObject.getLocal("TaskBlockData");
 	}
 	
 	@:isVar public static var current(get_current, set_current):Array<TaskBlockData>;

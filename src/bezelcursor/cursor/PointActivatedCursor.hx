@@ -1,13 +1,13 @@
 package bezelcursor.cursor;
 
-import nme.events.Event;
-import nme.events.TouchEvent;
-import nme.events.MouseEvent;
-import nme.geom.Point;
-import nme.geom.Rectangle;
-import nme.system.Capabilities;
-import nme.ui.Multitouch;
-import nme.ui.MultitouchInputMode;
+import flash.events.Event;
+import flash.events.TouchEvent;
+import flash.events.MouseEvent;
+import flash.geom.Point;
+import flash.geom.Rectangle;
+import flash.system.Capabilities;
+import flash.ui.Multitouch;
+import flash.ui.MultitouchInputMode;
 
 import bezelcursor.model.TouchData;
 

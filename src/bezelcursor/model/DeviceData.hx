@@ -1,10 +1,10 @@
 package bezelcursor.model;
 
 #if !php
-import nme.system.Capabilities;
+import flash.system.Capabilities;
 #end
 #if android
-import nme.JNI;
+import openfl.utils.JNI;
 #end
 
 class DeviceData implements IStruct {
@@ -26,12 +26,12 @@ class DeviceData implements IStruct {
 	}
 	
 	#if !php
-	public static var sharedObject(get_sharedObject, null):nme.net.SharedObject;
-	static function get_sharedObject():nme.net.SharedObject {
+	public static var sharedObject(get_sharedObject, null):flash.net.SharedObject;
+	static function get_sharedObject():flash.net.SharedObject {
 		if (sharedObject != null) 
 			return sharedObject;
 		else
-			return sharedObject = nme.net.SharedObject.getLocal("DeviceData");
+			return sharedObject = flash.net.SharedObject.getLocal("DeviceData");
 	}
 	
 	
@@ -63,17 +63,17 @@ class DeviceData implements IStruct {
 			}
 			
 			#if (sys && !ios)
-			current.systemVersion = getSystemVersion();
+			current.systemVersion = "";//getSystemVersion();
 			#elseif flash
 			current.systemVersion = Capabilities.os;
 			#end
 			
 			#if android
-			current.hardwareModel = getHardwareModel();
+			current.hardwareModel = "";//getHardwareModel();
 			#end
 			
-			current.screenResolutionX = nme.Lib.stage.stageWidth;
-			current.screenResolutionY = nme.Lib.stage.stageHeight;
+			current.screenResolutionX = flash.Lib.stage.stageWidth;
+			current.screenResolutionY = flash.Lib.stage.stageHeight;
 			
 			current.screenDPI = Capabilities.screenDPI;
 			

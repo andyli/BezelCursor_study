@@ -2,7 +2,7 @@ package bezelcursor.world;
 
 using Std;
 using Lambda;
-import nme.geom.*;
+import flash.geom.*;
 import com.haxepunk.*;
 import com.haxepunk.utils.*;
 import nape.callbacks.*;

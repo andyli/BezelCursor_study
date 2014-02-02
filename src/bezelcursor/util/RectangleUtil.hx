@@ -1,6 +1,6 @@
 package bezelcursor.util;
 
-import nme.geom.*;
+import flash.geom.*;
 
 class RectangleUtil {
 	static public function transform3D(rect:Rectangle, m:Matrix3D):Rectangle {

@@ -1,10 +1,10 @@
 package bezelcursor.cursor;
 
 using Lambda;
-import nme.events.Event;
-import nme.events.TouchEvent;
-import nme.geom.Point;
-import nme.geom.Rectangle;
+import flash.events.Event;
+import flash.events.TouchEvent;
+import flash.geom.Point;
+import flash.geom.Rectangle;
 using org.casalib.util.NumberUtil;
 
 import bezelcursor.cursor.behavior.Behavior;

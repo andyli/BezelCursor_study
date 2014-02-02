@@ -1,6 +1,6 @@
 package bezelcursor.cursor.snapper;
 
-import nme.geom.Point;
+import flash.geom.Point;
 import com.haxepunk.HXP;
 
 import bezelcursor.cursor.Cursor;

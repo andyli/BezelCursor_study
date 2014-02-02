@@ -12,12 +12,12 @@ class UserData implements IStruct {
 	}
 	
 
-	public static var sharedObject(get_sharedObject, null):nme.net.SharedObject;
-	static function get_sharedObject():nme.net.SharedObject {
+	public static var sharedObject(get_sharedObject, null):flash.net.SharedObject;
+	static function get_sharedObject():flash.net.SharedObject {
 		if (sharedObject != null) 
 			return sharedObject;
 		else
-			return sharedObject = nme.net.SharedObject.getLocal("UserData");
+			return sharedObject = flash.net.SharedObject.getLocal("UserData");
 	}
 	
 	

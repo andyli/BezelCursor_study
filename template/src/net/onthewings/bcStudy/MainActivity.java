@@ -1,6 +1,6 @@
 package ::APP_PACKAGE::;
 
-public class MainActivity extends org.haxe.nme.GameActivity {
+public class MainActivity extends org.haxe.lime.GameActivity {
 	static public String getSystemVersion() {
 		return android.os.Build.VERSION.RELEASE;
 	}

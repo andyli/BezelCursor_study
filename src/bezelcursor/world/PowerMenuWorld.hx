@@ -3,10 +3,10 @@ package bezelcursor.world;
 using Std;
 using Lambda;
 using StringTools;
-import nme.geom.*;
-import nme.text.*;
+import flash.geom.*;
+import flash.text.*;
 import com.haxepunk.HXP;
-using com.eclecticdesignstudio.motion.Actuate;
+using motion.Actuate;
 using org.casalib.util.ArrayUtil;
 
 using bezelcursor.Main;

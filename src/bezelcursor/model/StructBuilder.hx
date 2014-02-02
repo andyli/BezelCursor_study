@@ -56,7 +56,7 @@ class StructBuilder {
 		return t;
 	}
 	
-	@:macro static public function buildClass():Array<Field> {
+	macro static public function buildClass():Array<Field> {
 		var pos = Context.currentPos();
 		var cls = Context.getLocalClass().get();
 		var clsComplex = Context.toComplexType(Context.getType(cls.pack.concat([cls.name]).join(".")));

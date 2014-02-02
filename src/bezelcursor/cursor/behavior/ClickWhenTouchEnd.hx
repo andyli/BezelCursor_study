@@ -1,6 +1,6 @@
 package bezelcursor.cursor.behavior;
 
-import nme.system.Capabilities;
+import flash.system.Capabilities;
 using org.casalib.util.NumberUtil;
 
 import bezelcursor.model.TouchData;

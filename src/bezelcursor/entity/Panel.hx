@@ -123,8 +123,8 @@ class Panel extends Entity {
 		return e;
 	}
 	
-	override function setLayer(value:Int):Int {
-		super.setLayer(value);
+	override function set_layer(value:Int):Int {
+		super.set_layer(value);
 		for (child in children) {
 			child.layer = value + 1;
 		}

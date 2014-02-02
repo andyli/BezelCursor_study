@@ -1,18 +1,18 @@
 package bezelcursor.model;
 
-#if !macro @:build(bezelcursor.model.EnvBuilder.build("env.json")) #end
-class Env {
-	
-}
-
 #if macro
 import haxe.Json;
 import haxe.macro.Expr;
 import haxe.macro.Context;
 import sys.io.File;
 #end
+
+#if !macro @:build(bezelcursor.model.EnvBuilder.build("env.json")) #end
+class Env {
+	
+}
 class EnvBuilder {
-	@:macro public static function build(jsonFile:String) : Array<Field> {        
+	macro public static function build(jsonFile:String) : Array<Field> {        
 		var pos = Context.currentPos();
 		var fields = Context.getBuildFields();
 		

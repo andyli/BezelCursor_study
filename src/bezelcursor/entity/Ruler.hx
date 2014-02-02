@@ -1,7 +1,7 @@
 package bezelcursor.entity;
 
-import nme.display.Sprite;
-import nme.system.Capabilities;
+import flash.display.Sprite;
+import flash.system.Capabilities;
 import com.haxepunk.Entity;
 import com.haxepunk.HXP;
 

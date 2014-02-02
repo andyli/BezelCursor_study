@@ -7,11 +7,11 @@ import sys.io.*;
 import hsl.haxe.*;
 import com.haxepunk.*;
 import com.haxepunk.graphics.*;
-using com.eclecticdesignstudio.motion.Actuate;
-import nme.display.Sprite;
-import nme.events.TouchEvent;
-import nme.geom.*;
-import nme.text.*;
+using motion.Actuate;
+import flash.display.Sprite;
+import flash.events.TouchEvent;
+import flash.geom.*;
+import flash.text.*;
 using org.casalib.util.ArrayUtil;
 import org.casalib.util.*;
 
@@ -22,7 +22,7 @@ import bezelcursor.model.*;
 using bezelcursor.Main;
 using bezelcursor.util.UnitUtil;
 
-class TestTouchWorld extends GameWorld, implements IStruct {
+class TestTouchWorld extends GameWorld implements IStruct {
 	@skip var record:PlayRecord;
 	public function log(event:String, data:Dynamic = null):Void {
 		//trace("event:" + event);

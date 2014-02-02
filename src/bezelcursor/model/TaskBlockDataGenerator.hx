@@ -6,7 +6,7 @@ import cpp.vm.*;
 import neko.vm.*;
 #end
 using Lambda;
-import nme.geom.*;
+import flash.geom.*;
 import nape.callbacks.*;
 import nape.constraint.*;
 import nape.geom.*;
