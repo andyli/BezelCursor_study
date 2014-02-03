@@ -7,6 +7,10 @@ import flash.system.Capabilities;
 import openfl.utils.JNI;
 #end
 
+#if sys
+import sys.io.*;
+#end
+
 class DeviceData implements IStruct {
 	/**
 	* uuid of length 36
@@ -80,6 +84,18 @@ class DeviceData implements IStruct {
 			current.lastLocalSyncTime = Date.now().getTime();
 			sharedObject.data.current = current.toObj();
 			sharedObject.flush();
+
+			#if sys
+			var logFileURL = 
+			#if android
+			"/mnt/sdcard/BezelCursorDeviceData_"
+			#elseif sys
+			"BezelCursorDeviceData_"
+			#end
+			+ DeviceData.current.id + ".txt";
+			
+			File.saveContent(logFileURL, haxe.Json.stringify(current.toObj()));
+			#end
 		}
 		
 		return current;

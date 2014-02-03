@@ -227,7 +227,7 @@ class TestTouchWorld extends GameWorld implements IStruct {
 			#if android
 			"/mnt/sdcard/BezelCursorLog_"
 			#elseif sys
-			"BezelCursorLog"
+			"BezelCursorLog_"
 			#end
 			+ DeviceData.current.id + "_" + Date.now().format("%Y%m%d_%H%M%S") + ".txt";
 		
