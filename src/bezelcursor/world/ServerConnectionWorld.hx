@@ -105,27 +105,27 @@ class ServerConnectionWorld extends GameWorld {
 		} else {
 			updateMsg("Generating tasks...");
 			
-			// var gen = TaskBlockDataGenerator.current;
-			// var pbond = gen.onProgressSignaler.bind(function(p) {
-			// 	updateMsg("Generating tasks...\n" + p.map(0, 1, 0, 100).int() + "%");
-			// });
-			// gen.onCompleteSignaler.bind(function(a) {
-			// 	onTaskBlockGenerated(a);
-			// 	pbond.destroy();
-			// }).destroyOnUse();
-			// gen.generateTaskBlocks();
+			var gen = TaskBlockDataGenerator.current;
+			var pbond = gen.onProgressSignaler.bind(function(p) {
+				updateMsg("Generating tasks...\n" + p.map(0, 1, 0, 100).int() + "%");
+			});
+			gen.onCompleteSignaler.bind(function(a) {
+				onTaskBlockGenerated(a);
+				pbond.destroy();
+			}).destroyOnUse();
+			gen.generateTaskBlocks();
 		}
 	}
 	
 	function onTaskBlockGenerated(taskblocks:Array<TaskBlockData>){
 		updateMsg("Sync with server...");
 		
-		haxe.Timer.delay(function(){
-			TaskBlockData.current = taskblocks;
-			ready();
-		}, 100);
+		// haxe.Timer.delay(function(){
+		// 	TaskBlockData.current = taskblocks;
+		// 	ready();
+		// }, 100);
 		
-		return;
+		// return;
 		
 		var load = new AsyncLoader(Env.website + "taskblockdata/set/", Post);
 		load.data = {
@@ -152,23 +152,23 @@ class ServerConnectionWorld extends GameWorld {
 	function connect():Void {
 		updateMsg("Connecting...");
 		
-		if (TaskBlockData.current != null) {
-			ready();
-		} else {
-			updateMsg("Generating tasks...");
+		// if (TaskBlockData.current != null) {
+		// 	ready();
+		// } else {
+		// 	updateMsg("Generating tasks...");
 			
-			var gen = TaskBlockDataGenerator.current;
-			var pbond = gen.onProgressSignaler.bind(function(p) {
-				updateMsg("Generating tasks...\n" + p.map(0, 1, 0, 100).int() + "%");
-			});
-			gen.onCompleteSignaler.bind(function(a) {
-				onTaskBlockGenerated(a);
-				pbond.destroy();
-			}).destroyOnUse();
-			gen.generateTaskBlocks();
-		}
+		// 	var gen = TaskBlockDataGenerator.current;
+		// 	var pbond = gen.onProgressSignaler.bind(function(p) {
+		// 		updateMsg("Generating tasks...\n" + p.map(0, 1, 0, 100).int() + "%");
+		// 	});
+		// 	gen.onCompleteSignaler.bind(function(a) {
+		// 		onTaskBlockGenerated(a);
+		// 		pbond.destroy();
+		// 	}).destroyOnUse();
+		// 	gen.generateTaskBlocks();
+		// }
 		
-		return;
+		// return;
 		
 		var load = new AsyncLoader(Env.website + "taskblockdata/get/", Get);
 		load.data = {

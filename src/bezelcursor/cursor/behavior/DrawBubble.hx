@@ -14,7 +14,7 @@ class DrawBubble extends Behavior<PointActivatedCursor> {
 	public function new(c:PointActivatedCursor):Void {
 		super(c);
 		
-		lineWeight = 2 * 8;
+		lineWeight = 2;
 		alpha = 1;
 		centerSpotRadius = 0.25;
 	}
