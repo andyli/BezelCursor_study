@@ -111,6 +111,8 @@ class TestTouchWorld extends GameWorld implements IStruct {
 		
 		for (i in 0...currentTargets.length) {
 			var target = create(Target, false);
+			target.color = 0xFFFFFF;
+			target.color_hover = 0xFF6666;
 			target.fromTargetData(currentTargets[i]);
 			if (flipStage) {
 				target.x = DeviceData.current.screenResolutionX - target.x - target.width;

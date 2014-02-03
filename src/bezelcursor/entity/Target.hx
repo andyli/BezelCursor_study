@@ -27,8 +27,8 @@ class Target extends Entity implements IStruct {
 	@skip public var onRollOutSignaler(default, null):Signaler<Void>;
 	
 	@skip var cursorManager:CursorManager;
-	@skip var graphic_default:Graphic;
-	@skip var graphic_hover:Graphic;
+	@skip var graphicList_default:Graphiclist = new Graphiclist();
+	@skip var graphicList_hover:Graphiclist = new Graphiclist();
 	
 	
 	public var id(default, null):Int;
@@ -53,8 +53,8 @@ class Target extends Entity implements IStruct {
 		return c;
 	}
 	
-	@skip public var image_default:Graphic;
-	@skip public var image_hover:Graphic;
+	@skip public var image_default:Image;
+	@skip public var image_hover:Image;
 	@skip public var isHoverBy(default, null):Map<Int,Cursor>;
 	
 	@remove public var type:String;
@@ -90,7 +90,7 @@ class Target extends Entity implements IStruct {
 		if (HXP.engine != null)
 			cursorManager = HXP.engine.asMain().cursorManager;
 		
-		graphic = graphic_default;
+		graphic = graphicList_default;
 		
 		return this;
 	}
@@ -100,10 +100,10 @@ class Target extends Entity implements IStruct {
 		
 		resize();
 
-		// image_default.alpha = 0.0;
-		// image_hover.alpha = 0.0;
-		// image_default.tween(0.5, {alpha: alpha});
-		// image_hover.tween(0.5, {alpha: alpha});
+		image_default.alpha = 0.0;
+		image_hover.alpha = 0.0;
+		image_default.tween(0.5, {alpha: alpha});
+		image_hover.tween(0.5, {alpha: alpha});
 		
 		onAddedSignaler.dispatch();
 	}
@@ -118,32 +118,34 @@ class Target extends Entity implements IStruct {
 		image_default = new Image(getBitmapdataOfColor(width = w == -1 ? width : w, height = h == -1 ? height : h, color));
 		image_hover = new Image(getBitmapdataOfColor(width = w == -1 ? width : w, height = h == -1 ? height : h, color_hover));
 		
-		graphic_default = image_default;
+		graphicList_default.removeAll();
+		graphicList_default.add(image_default);
 		
-		graphic_hover = image_hover;
+		graphicList_hover.removeAll();
+		graphicList_hover.add(image_hover);
 	}
 	
 	public function click(?cursor:Cursor):Void {
 		onClickSignaler.dispatch();
 		
-		// image_default.alpha = 0.5;
-		// image_default.tween(0.1, {alpha: alpha});
+		image_default.alpha = 0.5;
+		image_default.tween(0.1, {alpha: alpha});
 		
-		// image_hover.alpha = 0.5;
-		// image_hover.tween(0.1, {alpha: alpha});
+		image_hover.alpha = 0.5;
+		image_hover.tween(0.1, {alpha: alpha});
 	}
 	
 	public function rollOver(?cursor:Cursor):Void {
 		isHoverBy.set(cursor == null ? -1 : cursor.id, cursor);
 		
-		graphic = graphic_hover;
+		graphic = graphicList_hover;
 	}
 	
 	public function rollOut(?cursor:Cursor):Void {
 		isHoverBy.remove(cursor == null ? -1 : cursor.id);
 		
 		if (isHoverBy.empty()) {
-			graphic = graphic_default;
+			graphic = graphicList_default;
 		}
 	}
 	
