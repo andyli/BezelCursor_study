@@ -1,13 +1,10 @@
 -main bezelcursor.Server
 -php web
 -cp src
--cp ../ufront/src
--lib hxevents
--lib erazor
--lib thx
 -lib casalib
--lib nme
+-lib openfl
+-lib openfl-native
 -lib hsl-1
---remap flash:neash
+--macro allowPackage("flash")
 -D spod_macro
 -debug

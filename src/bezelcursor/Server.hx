@@ -1,38 +1,69 @@
 package bezelcursor;
 
-import haxe.xml.Fast;
-import sys.FileSystem;
-import sys.io.File;
-import php.Lib;
-import php.Web;
-import thx.util.Imports;
-import ufront.web.AppConfiguration;
-import ufront.web.DirectoryUrlFilter;
-import ufront.web.mvc.MvcApplication;
-import ufront.web.routing.RouteCollection;
-
-import bezelcursor.model.Env;
+import Sys.*;
+import php.*;
+import haxe.*;
+import haxe.web.*;
+import sys.io.*;
+import bezelcursor.model.*;
+import bezelcursor.model.db.*;
 
 class Server {
 	static public var LOCAL_DIR(default, never):String = "BezelCursor";
 	static public var ABSOLUT_PATH(default, never):String = Web.getHostName() == "localhost" ? "http://localhost/" + LOCAL_DIR + "/" : Env.website;
 	
+	public function new():Void {}
+
+	public function doDefault():Void {
+		Sys.print(File.getContent("view/bezelcursor/home/index.html"));
+	}
+
+	public function doTaskblockdata(action:String):Void {
+		switch (action) {
+			case "get":
+				var params = Request.getParams();
+				var deviceData:DeviceData = Unserializer.run(params.get("deviceData"));
+				
+				var screenResolutionXInch = deviceData.screenResolutionX / deviceData.screenDPI;
+				var screenResolutionYInch = deviceData.screenResolutionY / deviceData.screenDPI;
+				
+				//return deviceData.screenResolutionX + "," + deviceData.screenResolutionY + "," + deviceData.screenDPI;
+				
+				var tbds:List<TaskBlockDataStore> = TaskBlockDataStore.manager.search(
+					$screenResolutionXInch == screenResolutionXInch && 
+					$screenResolutionYInch == screenResolutionYInch,
+					{ orderBy: -generateTime }
+				);
+				
+				if (tbds.length > 0){
+					print(Serializer.run(tbds.first().taskBlockDatas));
+				} else {
+					print(null);
+				}
+			case "set":
+				var params = Request.getParams();
+				var deviceData:DeviceData = Unserializer.run(params.get("deviceData"));
+				var taskBlockDatas:Array<TaskBlockData> = Unserializer.run(params.get("taskblocks"));
+				print(params.get("deviceData"));
+				return;
+				var screenResolutionXInch = deviceData.screenResolutionX / deviceData.screenDPI;
+				var screenResolutionYInch = deviceData.screenResolutionY / deviceData.screenDPI;
+				
+				var tbds = new TaskBlockDataStore();
+				tbds.screenResolutionX = deviceData.screenResolutionX;
+				tbds.screenResolutionY = deviceData.screenResolutionY;
+				tbds.screenDPI = deviceData.screenDPI;
+				tbds.screenResolutionXInch = deviceData.screenResolutionX / deviceData.screenDPI;
+				tbds.screenResolutionYInch = deviceData.screenResolutionY / deviceData.screenDPI;
+				tbds.generateTime = Date.now();
+				tbds.taskBlockDatas = taskBlockDatas;
+				tbds.insert();
+				
+				print("ok");
+		}
+	}
+
 	static function main():Void {
-		Imports.pack("bezelcursor.controller", true);
-		var config = new AppConfiguration("bezelcursor.controller", true);
-		
-		
-		var routes = new RouteCollection();
-		routes.addRoute("/", { controller : "home", action : "index" } );
-		routes.addRoute("/result", { controller : "home", action : "result" } );
-		routes.addRoute("/taskblockdata/get/", { controller : "TaskBlockData", action : "get" } );
-		routes.addRoute("/taskblockdata/set/", { controller : "TaskBlockData", action : "set" } );
-		
-		var application = new MvcApplication(config, routes);
-		
-		if (Web.getHostName() == "localhost")
-			application.httpContext.addUrlFilter(new DirectoryUrlFilter(LOCAL_DIR));		
-		
-		application.execute();
+		Dispatch.run(Web.getURI(), Web.getParams(), new Server());
 	}
 }

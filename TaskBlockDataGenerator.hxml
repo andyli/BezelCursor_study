@@ -1,0 +1,14 @@
+-cpp TaskBlockDataGenerator-bin
+-main bezelcursor.model.TaskBlockDataGenerator
+-cp src
+-lib openfl
+-lib openfl-native
+-lib HaxePunk
+-lib casalib
+-lib hsl-pico-1
+-lib hsl-1
+-lib actuate
+-lib hxLINQ
+-lib nape
+--macro allowPackage("flash")
+#-cmd ./TaskBlockDataGenerator-bin/TaskBlockDataGenerator /Users/andy/Google\ Drive/CityU\ PhD/BezelCursor/BezelCursorDeviceData_01A4BDA9-3D78-40CA-AE6E-FB9536202D0A.txt

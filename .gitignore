@@ -1,4 +1,5 @@
 bin
+*-bin
 *.keystore
 env.nmml
 env.json

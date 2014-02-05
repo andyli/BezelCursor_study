@@ -5,7 +5,10 @@ import cpp.vm.*;
 #elseif neko
 import neko.vm.*;
 #end
+using Std;
 using Lambda;
+import haxe.*;
+import sys.io.*;
 import flash.geom.*;
 import nape.callbacks.*;
 import nape.constraint.*;
@@ -19,10 +22,69 @@ using org.casalib.util.GeomUtil;
 using org.casalib.util.NumberUtil;
 
 import bezelcursor.model.*;
+import bezelcursor.util.*;
 using bezelcursor.util.RectangleUtil;
 using bezelcursor.util.UnitUtil;
 
 class TaskBlockDataGenerator implements IStruct {
+	static function main():Void {
+		var args = Sys.args();
+		var deviceDataFile = args[0];
+		trace(deviceDataFile);
+		var deviceData = new DeviceData();
+		deviceData.fromObj(haxe.Json.parse(File.getContent(deviceDataFile)));
+		trace(deviceData);
+		var gen = new TaskBlockDataGenerator(deviceData);
+
+		function onError(details:String):Void {
+			trace("Error: " + details);
+			Sys.exit(1);
+		}
+
+		function onTaskBlockGenerated(taskblocks:Array<TaskBlockData>){
+			trace("Sync with server...");
+			
+			// haxe.Timer.delay(function(){
+			// 	TaskBlockData.current = taskblocks;
+			// 	ready();
+			// }, 100);
+			
+			// return;
+			
+			var load = new AsyncLoader(Env.website + "taskblockdata/set/", Post);
+			load.data = {
+				buildData: Serializer.run(BuildData.current),
+				deviceData: Serializer.run(deviceData),
+				taskblocks: Serializer.run(taskblocks)
+			}
+			load.onCompleteSignaler.bind(function(respond){
+				if (respond != "ok") {
+					onError(respond);
+				} else {
+					haxe.Timer.delay(function(){
+						trace("Done");
+						Sys.exit(0);
+					}, 100);
+				} 
+			}).destroyOnUse();
+			load.onErrorSignaler.bind(onError).destroyOnUse();
+			load.load();
+		}
+
+		var done = false;
+		var pbond = gen.onProgressSignaler.bind(function(p) {
+			trace("Generating tasks...\n" + p.map(0, 1, 0, 100).int() + "%");
+		});
+		gen.onCompleteSignaler.bind(function(a) {
+			onTaskBlockGenerated(a);
+			pbond.destroy();
+		}).destroyOnUse();
+		gen.generateTaskBlocks();
+		while(!done) {
+			Sys.sleep(1);
+		}
+	}
+
 	#if !php
 	static public var current(get_current, null):TaskBlockDataGenerator;
 	static function get_current() {
@@ -165,7 +227,8 @@ class TaskBlockDataGenerator implements IStruct {
 			for (regions in regionss)
 			for (targetSeperation in targetSeperations)
 			for (targetSize in targetSizes) 
-			{
+			{	
+				//trace('regions: $regions, targetSeperation: $targetSeperation, targetSize: $targetSize');
 				taskBlockDatas.push(generateTaskBlock(
 					targetSize,
 					targetSeperation,
@@ -286,9 +349,12 @@ class TaskBlockDataGenerator implements IStruct {
 					body.position.y = rect.y + targetSize.height * 0.5;
 				}
 				
-				while (space.liveBodies.length > 0) {
+				var i = 1000;
+				while (space.liveBodies.length > 0 && i-->0) {
 					space.step(1/30);
 				}
+
+				//Sys.print(".");
 				
 				//trace(space.bodies.length + " all slept");
 			

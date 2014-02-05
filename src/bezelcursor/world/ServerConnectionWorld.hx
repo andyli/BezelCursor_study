@@ -120,12 +120,12 @@ class ServerConnectionWorld extends GameWorld {
 	function onTaskBlockGenerated(taskblocks:Array<TaskBlockData>){
 		updateMsg("Sync with server...");
 		
-		// haxe.Timer.delay(function(){
-		// 	TaskBlockData.current = taskblocks;
-		// 	ready();
-		// }, 100);
+		haxe.Timer.delay(function(){
+			TaskBlockData.current = taskblocks;
+			ready();
+		}, 100);
 		
-		// return;
+		return;
 		
 		var load = new AsyncLoader(Env.website + "taskblockdata/set/", Post);
 		load.data = {
