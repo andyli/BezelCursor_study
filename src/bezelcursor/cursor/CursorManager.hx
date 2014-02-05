@@ -47,13 +47,6 @@ class CursorManager implements IStruct {
 	
 	public var cursorsEnabled(default, set_cursorsEnabled):Bool;
 	public var thumbSpaceEnabled(default, set_thumbSpaceEnabled):Bool;
-
-	/**
-	* Width in inches to be considered as bezel.
-	*/
-	public var bezelWidth(default, null):Float;
-	var bezelOut:Rectangle;
-	var bezelIn:Rectangle;
 	
 	public var thumbSpace(default, null):Rectangle;
 	@skip public var thumbSpaceView(default, null):Sprite;
@@ -142,8 +135,6 @@ class CursorManager implements IStruct {
 		thumbSpace = new Rectangle(Math.NEGATIVE_INFINITY, Math.NEGATIVE_INFINITY);
 		thumbSpaceConfigState = NotConfigured;
 		
-		bezelWidth = 0.15;
-		
 		cursors = new Map();
 		pointActivatedCursors = new Map();
 		touchFilters = new Map();
@@ -175,18 +166,8 @@ class CursorManager implements IStruct {
 		return this;
 	}
 	
-	public function onResize(evt:Event = null):Void {
-		bezelOut = new Rectangle(0, 0, stage.stageWidth, stage.stageHeight);
-		bezelIn = bezelOut.clone();
-		
-		var bezelWidthPx = DeviceData.current.screenDPI * bezelWidth;
-		bezelIn.inflate(-bezelWidthPx, -bezelWidthPx); 
-	}
-	
 	public function start():Void {
 		cursorsEnabled = true;
-		
-		onResize();
 		
 		if (Multitouch.supportsTouchEvents) {
 			stage.addEventListener(TouchEvent.TOUCH_BEGIN, onTouchBegin);
@@ -201,12 +182,10 @@ class CursorManager implements IStruct {
 		}
 		
 		stage.addEventListener(Event.ENTER_FRAME, onFrame);
-		stage.addEventListener(Event.RESIZE, onResize);
 	}
 	
 	public function end():Void {
 		stage.removeEventListener(Event.ENTER_FRAME, onFrame);
-		stage.removeEventListener(Event.RESIZE, onResize);
 		
 		if (Multitouch.supportsTouchEvents) {
 			stage.removeEventListener(TouchEvent.TOUCH_BEGIN, onTouchBegin);
@@ -264,11 +243,6 @@ class CursorManager implements IStruct {
 		}
 	}
 	
-	function insideBezel(touch:TouchData):Bool {
-		var pt = new Point(touch.x, touch.y);
-		return bezelOut.containsPoint(pt) && !bezelIn.containsPoint(pt);
-	}
-	
 	function insideThumbSpace(touch:TouchData):Bool {
 		var pt = new Point(touch.x, touch.y);
 		return thumbSpace.containsPoint(pt);
@@ -300,8 +274,16 @@ class CursorManager implements IStruct {
 		if (!cursorsEnabled) return;
 		
 		if (!isValidStart(touch)) return;
-		
-		var createFor = if (inputMethod.forBezel != null && insideBezel(touch)) {
+
+		if (inputMethod.forThumbSpace != null) {
+			var testTouchWorld = HXP.world.instance(TestTouchWorld);
+			var startBtn = testTouchWorld == null ? null : testTouchWorld.startBtn;
+			if (startBtn != null && startBtn.visible && startBtn.collidePoint(startBtn.x, startBtn.y, touch.x, touch.y)) {
+				return;
+			}
+		}		
+
+		var createFor = if (inputMethod.forBezel != null && inputMethod.insideBezel(touch)) {
 			ForBezel;
 		} else if (thumbSpaceEnabled && inputMethod.forThumbSpace != null && insideThumbSpace(touch)) {
 			ForThumbSpace;

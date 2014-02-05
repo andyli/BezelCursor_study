@@ -54,9 +54,6 @@ class TestTouchWorld extends GameWorld implements IStruct {
 		startBtn = new OverlayButton("Start");
 		startBtn.onClickSignaler.bindVoid(function(){
 			var cm = HXP.engine.asMain().cursorManager;
-			if (cm.inputMethod.forBezel != null || cm.inputMethod.forScreen != null || cm.inputMethod.forThumbSpace != null) {
-				cm.cursorsEnabled = true;
-			}
 			if (cm.inputMethod.forThumbSpace != null) {
 				cm.thumbSpaceEnabled = true;
 			}
@@ -130,12 +127,8 @@ class TestTouchWorld extends GameWorld implements IStruct {
 			
 			if (cm.inputMethod.requireOverlayButton){
 				startBtn.visible = true;
-				if (cm.inputMethod.name.startsWith("BezelCursor")) {
-					cm.cursorsEnabled = true;
-				}
-			} else {
-				cm.cursorsEnabled = true;
 			}
+			cm.cursorsEnabled = true;
 			
 			haxe.Timer.delay(function(){
 				clipTargets();
@@ -177,18 +170,6 @@ class TestTouchWorld extends GameWorld implements IStruct {
 		cm.onMoveSignaler.bindAdvanced(recCursorMove);
 		cm.onClickSignaler.bindAdvanced(recCursorClick);
 		cm.onEndSignaler.bindAdvanced(recCursorEnd);
-		
-		
-		if (cm.inputMethod.requireOverlayButton && cm.inputMethod.name.startsWith("BezelCursor")) {
-			cm.isValidStart = function(t:TouchData) {
-				return startBtn.collidePoint(startBtn.x, startBtn.y, t.x, t.y);
-			}
-		} else if (cm.inputMethod.name != InputMethod.DirectTouch.name && cm.inputMethod.name != InputMethod.PracticalBezelCursor.name && cm.inputMethod.name != InputMethod.ThumbSpace.name) {
-			cm.isValidStart = function(t:TouchData) {
-				var worldTouchPos = screenToWorld(new Point(t.x, t.y));
-				return !currentTarget.collidePoint(currentTarget.x, currentTarget.y, worldTouchPos.x, worldTouchPos.y);
-			}
-		}
 		
 		record = new PlayRecord();
 		record.creationTime = Date.now().getTime();

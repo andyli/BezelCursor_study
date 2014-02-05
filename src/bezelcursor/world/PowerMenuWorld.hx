@@ -139,45 +139,13 @@ class PowerMenuWorld extends GameWorld {
 		
 		var powerMenu = new PowerMenu();
 		
-		for (method in [InputMethod.PracticalBezelCursor].concat(TaskBlockDataGenerator.current.inputMethods)) {
+		for (method in TaskBlockDataGenerator.current.inputMethods) {
 			var btn = new Button(method.name);
 			btn.resize(buttonWidth, buttonHeight);
-			if (method.requireOverlayButton) {
-				btn.onClickSignaler.bindVoid(function() {
-					selectedUseStartButton = true;
-					selectedMethod = method;
-					selectHandiness();
-				});
-			} else {
-				btn.onClickSignaler.bindVoid(function() {
-					selectedMethod = method;
-				
-					var powerMenu = new PowerMenu();
-		
-					var btn = new Button("Back");
-					btn.resize(buttonWidth * 0.5, buttonHeight);
-					btn.onClickSignaler.bindVoid(popPowerMenuStack).destroyOnUse();
-					powerMenu.add(btn);
-		
-					var btn = new Button("Use start button");
-					btn.resize(buttonWidth, buttonHeight);
-					btn.onClickSignaler.bindVoid(function(){
-						selectedUseStartButton = true;
-						selectHandiness();
-					});
-					powerMenu.add(btn);
-		
-					var btn = new Button("No start button");
-					btn.resize(buttonWidth, buttonHeight);
-					btn.onClickSignaler.bindVoid(function(){
-						selectedUseStartButton = false;
-						selectHandiness();
-					});
-					powerMenu.add(btn);
-				
-					pushPowerMenuStack(powerMenu);
-				});
-			}
+			btn.onClickSignaler.bindVoid(function() {
+				selectedMethod = method;
+				selectHandiness();
+			});
 			powerMenu.add(btn);
 		}
 

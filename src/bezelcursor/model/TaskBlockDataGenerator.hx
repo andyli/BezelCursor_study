@@ -159,10 +159,8 @@ class TaskBlockDataGenerator implements IStruct {
 		
 		inputMethods = [
 			InputMethod.DirectTouch,
-			InputMethod.BezelCursor_acceleratedBubbleCursor,
-			InputMethod.BezelCursor_directMappingBubbleCursor,
-			InputMethod.BezelCursor_acceleratedDynaSpot,
-			InputMethod.BezelCursor_directMappingDynaSpot,
+			InputMethod.PracticalBezelCursor,
+			InputMethod.PracticalButtonCursor,
 			InputMethod.MagStick,
 			InputMethod.ThumbSpace,
 		];
