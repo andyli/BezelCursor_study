@@ -15,7 +15,7 @@ class OneEuroFilter {
 	var x:LowPassFilter;
 	var dx:LowPassFilter;
 	var lasttime:Float;
-	inline static var UndefinedTime:Float = -1;
+	inline static var UndefinedTime:Float = -1.0;
 
 	function alpha(cutoff:Float):Float {
 		var te:Float = 1.0 / freq;
@@ -62,7 +62,7 @@ class OneEuroFilter {
 		lasttime = UndefinedTime;
 	}
 
-	public function filter(value:Float, timestamp:Float = -1):Float {
+	public function filter(value:Float, timestamp:Float = UndefinedTime):Float {
 		// update the sampling frequency based on timestamps
 		if (lasttime != UndefinedTime && timestamp != UndefinedTime) {
 			freq = 1.0 / (timestamp - lasttime);
