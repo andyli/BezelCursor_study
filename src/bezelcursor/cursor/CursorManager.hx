@@ -92,8 +92,10 @@ class CursorManager implements IStruct {
 			if (v) {
 				thumbSpaceViewDraw();
 				thumbSpaceView.tween(0.25, { alpha: 1.0 }).autoVisible(true);
+				Lib.stage.addEventListener(Event.ENTER_FRAME, thumbSpaceViewOnFrame);
 			} else {
 				thumbSpaceView.tween(0.25, { alpha: 0.0 }).autoVisible(true);
+				Lib.stage.removeEventListener(Event.ENTER_FRAME, thumbSpaceViewOnFrame);
 			}
 		}
 		
@@ -102,8 +104,7 @@ class CursorManager implements IStruct {
 	
 	function thumbSpaceViewDraw():Void {
 		var thumbSpace = thumbSpace.normalize();
-		
-		thumbSpaceViewBitmap.bitmapData = HXP.buffer;
+
 		thumbSpaceViewBitmap.x = thumbSpace.x;
 		thumbSpaceViewBitmap.y = thumbSpace.y;
 		thumbSpaceViewBitmap.width = thumbSpace.width;
@@ -114,6 +115,15 @@ class CursorManager implements IStruct {
 		thumbSpaceView.graphics.drawRect(thumbSpace.x, thumbSpace.y, thumbSpace.width, thumbSpace.height);
 		thumbSpaceView.graphics.lineStyle(1, 0xFFFFFF, 1, true, LineScaleMode.NONE);
 		thumbSpaceView.graphics.drawRect(thumbSpace.x - 1, thumbSpace.y - 1, thumbSpace.width + 2, thumbSpace.height + 2);
+	}
+
+	function thumbSpaceViewOnFrame(evt):Void {
+		thumbSpaceView.visible = false;
+		thumbSpaceViewBitmap.bitmapData.lock();
+		thumbSpaceViewBitmap.bitmapData.fillRect(thumbSpaceViewBitmap.bitmapData.rect, 0x333333);
+		thumbSpaceViewBitmap.bitmapData.draw(Lib.current);
+		thumbSpaceViewBitmap.bitmapData.unlock();
+		thumbSpaceView.visible = true;
 	}
 	
 	/**
@@ -155,7 +165,8 @@ class CursorManager implements IStruct {
 		onTouchMoveSignaler = new DirectSignaler<TouchData>(this);
 		onTouchEndSignaler = new DirectSignaler<TouchData>(this);
 		
-		thumbSpaceViewBitmap = new Bitmap(HXP.buffer, PixelSnapping.NEVER, true);//new Sprite();
+		var bd = new BitmapData(Lib.stage.stageWidth, Lib.stage.stageHeight, false);
+		thumbSpaceViewBitmap = new Bitmap(bd, PixelSnapping.NEVER, true);//new Sprite();
 		thumbSpaceViewBitmap.alpha = 0.9;
 		//thumbSpaceViewBitmap.filters = [new flash.filters.DropShadowFilter(0, 0, 0, 0.8, 0.05 * DeviceData.current.screenDPI, 0.05 * DeviceData.current.screenDPI)];
 		thumbSpaceView = new Sprite();
