@@ -9,6 +9,7 @@ import bezelcursor.cursor.BubbleStickCursor;
 import bezelcursor.cursor.MagStickCursor;
 import bezelcursor.cursor.MouseCursor;
 import bezelcursor.cursor.StickCursor;
+import bezelcursor.cursor.TouchCursor;
 import bezelcursor.world.*;
 import flash.Lib;
 import flash.geom.*;
@@ -71,12 +72,7 @@ class InputMethod implements IStruct {
 	
 	static public var PracticalBezelCursor(default, never):InputMethod = new InputMethod(
 		"BezelCursor",
-		{ _class: "bezelcursor.cursor.StickCursor", data: {
-			drawRadius: null,
-			scaleFactor: 1,
-			jointActivateDistance: Math.POSITIVE_INFINITY,
-			dynaScale: null,
-			drawStick: null,
+		{ _class: "bezelcursor.cursor.TouchCursor", data: {
 			default_radius: 0
 		} },
 		{ _class: "bezelcursor.cursor.StickCursor", data: {} },
@@ -86,12 +82,7 @@ class InputMethod implements IStruct {
 	
 	static public var PracticalButtonCursor(default, never):InputMethod = new InputMethod(
 		"ButtonCursor",
-		{ _class: "bezelcursor.cursor.StickCursor", data: {
-			drawRadius: null,
-			scaleFactor: 1,
-			jointActivateDistance: Math.POSITIVE_INFINITY,
-			dynaScale: null,
-			drawStick: null,
+		{ _class: "bezelcursor.cursor.TouchCursor", data: {
 			default_radius: 0
 		} },
 		{ _class: "bezelcursor.cursor.StickCursor", data: {} },
@@ -109,12 +100,7 @@ class InputMethod implements IStruct {
 	
 	static public var DirectTouch(default, never):InputMethod = new InputMethod(
 		"Direct touch",
-		{ _class: "bezelcursor.cursor.StickCursor", data: {
-			drawRadius: null,
-			scaleFactor: 1,
-			jointActivateDistance: Math.POSITIVE_INFINITY,
-			dynaScale: null,
-			drawStick: null,
+		{ _class: "bezelcursor.cursor.TouchCursor", data: {
 			default_radius: 0
 		} },
 		null,
@@ -164,12 +150,7 @@ class InputMethod implements IStruct {
 	
 	static public var ThumbSpace(default, never):InputMethod = new InputMethod(
 		"ThumbSpace",
-		{ _class: "bezelcursor.cursor.StickCursor", data: {
-			drawRadius: null,
-			scaleFactor: 1,
-			jointActivateDistance: Math.POSITIVE_INFINITY,
-			dynaScale: null,
-			drawStick: null,
+		{ _class: "bezelcursor.cursor.TouchCursor", data: {
 			default_radius: 0
 		} },
 		null,

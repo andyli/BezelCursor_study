@@ -26,6 +26,7 @@ class Cursor implements IStruct {
 	@skip public var onMoveSignaler(default, null):Signaler<Target>;
 	@skip public var onClickSignaler(default, null):Signaler<Target>;
 	@skip public var onEndSignaler(default, null):Signaler<Void>;
+	@skip public var onDragSignaler(default, null):Signaler<Void>;
 	
 	public var id(default, null):Int;
 	
@@ -100,6 +101,7 @@ class Cursor implements IStruct {
 		onMoveSignaler = new DirectSignaler<Target>(this);
 		onClickSignaler = new DirectSignaler<Target>(this);
 		onEndSignaler = new DirectSignaler<Void>(this);
+		onDragSignaler = new DirectSignaler<Void>(this);
 		
 		positionRecord = new List();
 		
