@@ -33,6 +33,7 @@ class TouchCursor extends PointActivatedCursor {
 
 		if (!isDragging && activatedPoint != null && Point.distance(pt, activatedPoint) > maxDistance){
 			isDragging = true;
+			enabled = false;
 		}
 
 		if (isDragging) {

@@ -34,8 +34,8 @@ class Cursor implements IStruct {
 	* Position of where the cursor is pointing to.
 	*/
 	@skip public var position(get_position, set_position):Point;
-	var target_position:Point;
-	var current_position:Point;
+	var target_position:Point = null;
+	var current_position:Point = null;
 	function get_position():Point { return current_position; }
 	function set_position(v:Point):Point { return target_position = v; }
 	
@@ -48,9 +48,9 @@ class Cursor implements IStruct {
 	* The radius(in inch) of this cursor, which define the interest area used by snapper.
 	*/
 	@skip public var radius(get_radius, set_radius):Float;
-	var default_radius:Float;
+	var default_radius:Float = 0.001;
 	var target_radius:Float;
-	var current_radius:Float;
+	var current_radius:Float = 0.001;
 	function get_radius():Float { return current_radius; }
 	function set_radius(v:Float):Float { return target_radius = v; }
 	
@@ -64,7 +64,19 @@ class Cursor implements IStruct {
 	/**
 	* Color of the view.
 	*/
-	public var color:Int;
+	public var color:Int = 0xFF0000;
+
+	public var enabled(default, set):Bool = true;
+	function set_enabled(v:Bool):Bool {
+		enabled = v;
+		if (!enabled) {
+			var lastTarget = snapper.target;
+			if (lastTarget != null) {
+				lastTarget.rollOut(this);
+			}
+		}
+		return enabled;
+	}
 	
 	/**
 	* The visual graphics of the cursor.
@@ -74,19 +86,12 @@ class Cursor implements IStruct {
 	
 	@deep var radiusFilter:OneEuroFilter;
 	
-	var ignoreTime:Float;
+	var ignoreTime:Float = 0.05;
 	
 	var _class:String;
 	
 	public function new():Void {
 		id = nextId++;
-		color = 0xFF0000;
-		current_position = null;
-		target_position = null;
-		current_radius =  0.001;
-		target_radius =  0.001;
-		default_radius = 0.001;
-		ignoreTime = 0.05;
 		
 		behaviors = [];
 		snapper = new SimpleSnapper(this);
@@ -144,14 +149,16 @@ class Cursor implements IStruct {
 				behavior.onFrame(timestamp);
 			}
 
-			var lastTarget = snapper.target;
-			snapper.run();
-			if (snapper.target != lastTarget) {
-				if (lastTarget != null) {
-					lastTarget.rollOut(this);
-				}
-				if (snapper.target != null) {
-					snapper.target.rollOver(this);
+			if (enabled) {
+				var lastTarget = snapper.target;
+				snapper.run();
+				if (snapper.target != lastTarget) {
+					if (lastTarget != null) {
+						lastTarget.rollOut(this);
+					}
+					if (snapper.target != null) {
+						snapper.target.rollOver(this);
+					}
 				}
 			}
 		
