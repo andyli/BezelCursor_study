@@ -57,6 +57,7 @@ class CursorManager implements IStruct {
 	@skip public var onMoveSignaler(default, null):Signaler<Target>;
 	@skip public var onClickSignaler(default, null):Signaler<Target>;
 	@skip public var onEndSignaler(default, null):Signaler<Void>;
+	@skip public var onDragSignaler(default, null):Signaler<Void>;
 	
 	@skip public var onTouchStartSignaler(default, null):Signaler<TouchData>;
 	@skip public var onTouchMoveSignaler(default, null):Signaler<TouchData>;
@@ -151,6 +152,7 @@ class CursorManager implements IStruct {
 		onMoveSignaler = new DirectSignaler<Target>(this);
 		onClickSignaler = new DirectSignaler<Target>(this);
 		onEndSignaler = new DirectSignaler<Void>(this);
+		onDragSignaler = new DirectSignaler<Void>(this);
 		
 		onTouchStartSignaler = new DirectSignaler<TouchData>(this);
 		onTouchMoveSignaler = new DirectSignaler<TouchData>(this);
@@ -319,6 +321,7 @@ class CursorManager implements IStruct {
 		cursor.onMoveSignaler.addBubblingTarget(onMoveSignaler);
 		cursor.onClickSignaler.addBubblingTarget(onClickSignaler);
 		cursor.onEndSignaler.addBubblingTarget(onEndSignaler);
+		cursor.onDragSignaler.addBubblingTarget(onDragSignaler);
 		
 		cursor.onEndSignaler.bindAdvanced(function(signal:Signal<Void>):Void {
 			var cursor:Cursor = cast signal.origin;
@@ -327,6 +330,7 @@ class CursorManager implements IStruct {
 			cursor.onMoveSignaler.removeBubblingTarget(onMoveSignaler);
 			cursor.onClickSignaler.removeBubblingTarget(onClickSignaler);
 			cursor.onEndSignaler.removeBubblingTarget(onEndSignaler);
+			cursor.onDragSignaler.removeBubblingTarget(onDragSignaler);
 			
 			cursors.remove(cursor.id);
 			if (cursor.is(PointActivatedCursor))
