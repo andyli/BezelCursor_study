@@ -11,7 +11,6 @@ import flash.ui.*;
 import hsl.haxe.*;
 using org.casalib.util.NumberUtil;
 using org.casalib.util.RatioUtil;
-import com.haxepunk.HXP;
 using motion.Actuate;
 
 import bezelcursor.cursor.behavior.*;
@@ -158,7 +157,7 @@ class CursorManager implements IStruct {
 		onTouchMoveSignaler = new DirectSignaler<TouchData>(this);
 		onTouchEndSignaler = new DirectSignaler<TouchData>(this);
 		
-		var bd = new BitmapData(Lib.stage.stageWidth, Lib.stage.stageHeight, false);
+		var bd = new BitmapData(stage.stageWidth, stage.stageHeight, false);
 		thumbSpaceViewBitmap = new Bitmap(bd, PixelSnapping.NEVER, true);//new Sprite();
 		thumbSpaceViewBitmap.alpha = 0.9;
 		//thumbSpaceViewBitmap.filters = [new flash.filters.DropShadowFilter(0, 0, 0, 0.8, 0.05 * DeviceData.current.screenDPI, 0.05 * DeviceData.current.screenDPI)];
@@ -255,8 +254,8 @@ class CursorManager implements IStruct {
 		onTouchStartSignaler.dispatch(touch);
 		
 		var filters = {
-			x: new OneEuroFilter(Lib.stage.frameRate, 1, 0.2),
-			y: new OneEuroFilter(Lib.stage.frameRate, 1, 0.2),
+			x: new OneEuroFilter(stage.frameRate, 1, 0.2),
+			y: new OneEuroFilter(stage.frameRate, 1, 0.2),
 			next: touch
 		};
 		touchFilters.set(touch.touchPointID, filters);
@@ -276,14 +275,6 @@ class CursorManager implements IStruct {
 		if (!cursorsEnabled) return;
 		
 		if (!isValidStart(touch)) return;
-
-		if (inputMethod.forThumbSpace != null) {
-			var testTouchWorld = HXP.world.instance(TestTouchWorld);
-			var startBtn = testTouchWorld == null ? null : testTouchWorld.startBtn;
-			if (startBtn != null && startBtn.visible && startBtn.collidePoint(startBtn.x, startBtn.y, touch.x, touch.y)) {
-				return;
-			}
-		}		
 
 		var createFor = if (inputMethod.forBezel != null && inputMethod.insideBezel(touch)) {
 			ForBezel;
@@ -354,9 +345,9 @@ class CursorManager implements IStruct {
 				cursor.onEndSignaler.bindVoid(function(){
 					if (!cursorsEnabled) return;
 					
-					if (HXP.world.is(TestTouchWorld)) {
-						cast(HXP.world, TestTouchWorld).startBtn.visible = true;
-					}
+					// if (HXP.world.is(TestTouchWorld)) {
+					// 	cast(HXP.world, TestTouchWorld).startBtn.visible = true;
+					// }
 				}).destroyOnUse();
 		}
 	}
@@ -394,8 +385,10 @@ class CursorManager implements IStruct {
 					if (flipY) thumbSpace.height *= -1;
 					
 					var normalized = thumbSpace.normalize();
-					if (!HXP.bounds.containsRect(normalized)) {
-						var constrainted = normalized.scaleToFit(normalized.intersection(HXP.bounds));
+
+					var bound = new Rectangle(0, 0, stage.stageWidth, stage.stageHeight);
+					if (!bound.containsRect(normalized)) {
+						var constrainted = normalized.scaleToFit(normalized.intersection(bound));
 						
 						thumbSpace.width = constrainted.width;
 						thumbSpace.height = constrainted.height;

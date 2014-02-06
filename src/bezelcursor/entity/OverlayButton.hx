@@ -28,9 +28,6 @@ class OverlayButton extends Button {
 		
 		alpha = 0.8;
 		layer = -1;
-		
-		x = (HXP.stage.stageWidth - width) * 0.5;
-		y = HXP.stage.stageHeight - dpi * (HEIGHT + 2.mm2inches());
 	}
 	
 	override public function resize(w:Float = -1, h:Float = -1):Void {
@@ -42,6 +39,10 @@ class OverlayButton extends Button {
 		for (g in graphicList_hover.children) {
 			g.scrollX = g.scrollY = 0;
 		}
+		
+		var dpi = DeviceData.current.screenDPI;
+		x = (HXP.stage.stageWidth - width) * 0.5;
+		y = HXP.stage.stageHeight - dpi * (HEIGHT + 2.mm2inches());
 	}
 	
 	override public function added():Void {

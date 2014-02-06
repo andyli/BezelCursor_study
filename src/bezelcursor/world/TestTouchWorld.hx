@@ -172,6 +172,14 @@ class TestTouchWorld extends GameWorld implements IStruct {
 			add(startBtn);
 			startBtn.tween(0.5, {alpha:0.5}).reflect(true).repeat(-1);
 		}
+
+		if (cm.inputMethod.forThumbSpace != null) {
+			cm.isValidStart = function(t) {
+				return !(!cm.thumbSpaceEnabled && startBtn.collidePoint(startBtn.x, startBtn.y, t.x, t.y));
+			}
+		} else {
+			cm.isValidStart = function(t) return true;
+		}
 		
 		cm.onClickSignaler.bind(onCursorClick);
 		cm.onDragSignaler.bindAdvanced(onDrag);
@@ -233,6 +241,7 @@ class TestTouchWorld extends GameWorld implements IStruct {
 		cm.onClickSignaler.unbind(onCursorClick);
 		cm.onDragSignaler.unbindAdvanced(onDrag);
 		cm.isValidStart = function(t) return true;
+		
 		startBtn.stop();
 		super.end();
 	}
