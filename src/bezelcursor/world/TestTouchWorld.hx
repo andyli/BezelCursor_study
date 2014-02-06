@@ -149,7 +149,7 @@ class TestTouchWorld extends GameWorld implements IStruct {
 
 	function onDrag(s:Signal<Void>):Void {
 		if (!draggingEnabled) return;
-		
+
 		var cursor = cast(s.origin, TouchCursor);
 		var deltaY = cursor.currentTouchPoint.y - cursor.pFrameTouchPoint.y;
 		camera.y -= deltaY;
@@ -160,6 +160,9 @@ class TestTouchWorld extends GameWorld implements IStruct {
 		super.begin();
 		
 		var cm = HXP.engine.asMain().cursorManager;
+
+		startBtn.text.text = cm.inputMethod.name;
+		startBtn.resize(DeviceData.current.screenDPI * 30.mm2inches());
 		
 		if (cm.inputMethod.forThumbSpace != null) {
 			HXP.stage.addChild(cm.thumbSpaceView);
