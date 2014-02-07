@@ -22,6 +22,8 @@ class GameWorld extends World {
 	public var invisibleTargets:Array<Target>;
 	
 	public var worldQueue:Array<GameWorld>;
+
+	public var bound:Rectangle;
 	
 	public function new():Void {
 		super();
@@ -33,6 +35,9 @@ class GameWorld extends World {
 		
 		pCameraX = camera.x;
 		pCameraY = camera.y;
+
+		bound = HXP.bounds.clone();
+		bound.inflate(0, 10 * HXP.bounds.height);
 	}
 	
 	function nextWorld():Void {
@@ -42,7 +47,7 @@ class GameWorld extends World {
 	}
 	
 	function isTargetInBound(target:Target):Bool {
-		return HXP.bounds.intersects(new Rectangle(target.x - camera.x, target.y - camera.y, target.width, target.height));
+		return bound.intersects(new Rectangle(target.x - camera.x, target.y - camera.y, target.width, target.height));
 	}
 	
 	override public function add<E:Entity>(e:E):E {
