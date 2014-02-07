@@ -58,8 +58,17 @@ class TestTouchWorld extends GameWorld implements IStruct {
 			if (cm.inputMethod.forThumbSpace != null) {
 				cm.thumbSpaceEnabled = true;
 			}
-			
-			startBtn.visible = false;
+
+			if (cm.inputMethod == InputMethod.MagStick) {
+				if (cm.inputMethod.forScreen._class == "bezelcursor.cursor.MagStickCursor") {
+					cm.inputMethod.forScreen = InputMethod.DirectTouch.forScreen;
+				} else {
+					cm.inputMethod.forScreen = { _class: "bezelcursor.cursor.MagStickCursor", data: {} };
+				}
+				updateStartBtnLabel();
+			} else {
+				startBtn.visible = false;
+			}
 		});
 		
 		missedLabel = new Label("MISSED", {
@@ -154,6 +163,23 @@ class TestTouchWorld extends GameWorld implements IStruct {
 		var deltaY = cursor.currentTouchPoint.y - cursor.pFrameTouchPoint.y;
 		camera.y -= deltaY;
 	}
+
+	function updateStartBtnLabel():Void {
+		var cm = HXP.engine.asMain().cursorManager;
+		startBtn.text.text = if (cm.inputMethod == InputMethod.MagStick) {
+			switch (cm.inputMethod.forScreen._class) {
+				case "bezelcursor.cursor.MagStickCursor":
+					InputMethod.MagStick.name;
+				case "bezelcursor.cursor.TouchCursor":
+					InputMethod.DirectTouch.name;
+				case _class:
+					throw _class;
+			}
+		} else {
+			cm.inputMethod.name;
+		}
+		startBtn.resize(DeviceData.current.screenDPI * 30.mm2inches());
+	}
 	
 	override public function begin():Void {		
 		//cpp.vm.Profiler.start();
@@ -161,8 +187,7 @@ class TestTouchWorld extends GameWorld implements IStruct {
 		
 		var cm = HXP.engine.asMain().cursorManager;
 
-		startBtn.text.text = cm.inputMethod.name;
-		startBtn.resize(DeviceData.current.screenDPI * 30.mm2inches());
+		updateStartBtnLabel();
 		
 		if (cm.inputMethod.forThumbSpace != null) {
 			HXP.stage.addChild(cm.thumbSpaceView);
@@ -176,6 +201,10 @@ class TestTouchWorld extends GameWorld implements IStruct {
 		if (cm.inputMethod.forThumbSpace != null) {
 			cm.isValidStart = function(t) {
 				return !(!cm.thumbSpaceEnabled && startBtn.collidePoint(startBtn.x, startBtn.y, t.x, t.y));
+			}
+		} else if (cm.inputMethod == InputMethod.MagStick) {
+			cm.isValidStart = function(t) {
+				return !(startBtn.collidePoint(startBtn.x, startBtn.y, t.x, t.y));
 			}
 		} else {
 			cm.isValidStart = function(t) return true;
