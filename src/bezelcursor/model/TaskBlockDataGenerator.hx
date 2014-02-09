@@ -101,12 +101,25 @@ class TaskBlockDataGenerator implements IStruct {
 	* Target sizes(mm) to be tested.
 	* Name is merely a humam readable name.
 	*/
-	public var targetSizes(default, null):Array<{width:Float, height:Float, name:String}>;
+	public var targetSizes(default, null):Array<{width:Float, height:Float, name:String}> = [
+		{
+			width:9.6, 
+			height:9.6,
+			name: "9.6mm * 9.6mm"
+		},
+		{
+			width:3, 
+			height:3,
+			name: "3mm * 3mm"
+		}
+	];
 	
 	/**
 	* Minimum distances(mm) between targets.
 	*/
-	public var targetSeperations(default, null):Array<Float>;
+	public var targetSeperations(default, null):Array<Float> = [
+		1
+	];
 	
 	/**
 	* Regions within the screen. At least one target will be placed completely inside each region.
@@ -117,12 +130,18 @@ class TaskBlockDataGenerator implements IStruct {
 	/**
 	* Input methods to be tested.
 	*/
-	public var inputMethods:Array<InputMethod>;
+	public var inputMethods:Array<InputMethod> = [
+		InputMethod.DirectTouch,
+		InputMethod.PracticalBezelCursor,
+		InputMethod.PracticalButtonCursor,
+		InputMethod.MagStick,
+		InputMethod.ThumbSpace,
+	];
 	
 	/**
 	* How many times should one region be tested.
 	*/
-	public var timesPerRegion:Int;
+	public var timesPerRegion:Int = 3;
 	
 	/**
 	* Rectangle that the size is set to match the device screen.
@@ -133,7 +152,7 @@ class TaskBlockDataGenerator implements IStruct {
 	/**
 	* Density of targets. Range: 0-1.
 	*/
-	public var targetDensity(default, null):Float;
+	public var targetDensity(default, null):Float = 0.5;
 	
 	/**
 	* Number of red targets have been generated.
@@ -157,38 +176,9 @@ class TaskBlockDataGenerator implements IStruct {
 		
 		stageRect = new Rectangle(0, 0, (deviceData.screenResolutionX / dpi).inches2mm(), (deviceData.screenResolutionY / dpi).inches2mm());
 		
-		inputMethods = [
-			InputMethod.DirectTouch,
-			InputMethod.PracticalBezelCursor,
-			InputMethod.PracticalButtonCursor,
-			InputMethod.MagStick,
-			InputMethod.ThumbSpace,
-		];
-		
-		targetSizes = [
-			{
-				width:9.6, 
-				height:9.6,
-				name: "9.6mm * 9.6mm"
-			},
-			{
-				width:3, 
-				height:3,
-				name: "3mm * 3mm"
-			}
-		];
-		
-		targetSeperations = [
-			1
-		];
-		
-		targetDensity = 0.5;
-		
 		regionss = [
 			genRegions(3, 4)
 		];
-		
-		timesPerRegion = 3;
 		
 		onProgressSignaler = new DirectSignaler<Float>(this);
 		onCompleteSignaler = new DirectSignaler<Array<TaskBlockData>>(this);
