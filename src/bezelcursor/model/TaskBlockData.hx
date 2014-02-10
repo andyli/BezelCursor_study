@@ -6,15 +6,17 @@ using org.casalib.util.ArrayUtil;
 using org.casalib.util.GeomUtil;
 using org.casalib.util.NumberUtil;
 
-import bezelcursor.model.*;
 using bezelcursor.util.RectangleUtil;
 using bezelcursor.util.UnitUtil;
 
+@:allow(bezelcursor.model.TaskBlockDataGenerator)
 class TaskBlockData implements IStruct {
 	/**
 	* uuid of length 36
 	*/
-	public var id(default,null):String;
+	public var id(default, null):String;
+
+	public var version(default, null):Int = 1;
 	
 	public var targetQueue:Array<Array<TargetData>>;
 	

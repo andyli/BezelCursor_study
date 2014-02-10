@@ -27,12 +27,16 @@ using bezelcursor.util.RectangleUtil;
 using bezelcursor.util.UnitUtil;
 
 class TaskBlockDataGenerator implements IStruct {
+	static public var version(default, never):Int = 2;
 	static function main():Void {
 		var args = Sys.args();
 		var deviceDataFile = args[0];
-		trace(deviceDataFile);
-		var deviceData = new DeviceData();
-		deviceData.fromObj(haxe.Json.parse(File.getContent(deviceDataFile)));
+		
+		var deviceData = if (deviceDataFile == null)
+			DeviceData.current;
+		else {
+			new DeviceData().fromObj(haxe.Json.parse(File.getContent(deviceDataFile)));
+		}
 		trace(deviceData);
 		var gen = new TaskBlockDataGenerator(deviceData);
 
@@ -50,6 +54,9 @@ class TaskBlockDataGenerator implements IStruct {
 			// }, 100);
 			
 			// return;
+
+			var fileURL = "TaskBlockData.txt";
+			File.saveContent(fileURL, Serializer.run(taskblocks));
 			
 			var load = new AsyncLoader(Env.website + "taskblockdata/set/", Post);
 			load.data = {
@@ -141,7 +148,7 @@ class TaskBlockDataGenerator implements IStruct {
 	/**
 	* How many times should one region be tested.
 	*/
-	public var timesPerRegion:Int = 3;
+	public var timesPerRegion:Int = 1;
 	
 	/**
 	* Rectangle that the size is set to match the device screen.
@@ -174,10 +181,10 @@ class TaskBlockDataGenerator implements IStruct {
 		
 		var dpi = deviceData.screenDPI;
 		
-		stageRect = new Rectangle(0, 0, (deviceData.screenResolutionX / dpi).inches2mm(), (deviceData.screenResolutionY / dpi).inches2mm());
+		stageRect = new Rectangle(0, 0, (deviceData.screenResolutionX / dpi).inches2mm(), (deviceData.screenResolutionY / dpi).inches2mm() * 3);
 		
 		regionss = [
-			genRegions(3, 4)
+			genRegions(3, 12)
 		];
 		
 		onProgressSignaler = new DirectSignaler<Float>(this);
@@ -233,6 +240,7 @@ class TaskBlockDataGenerator implements IStruct {
 	
 	function generateTaskBlock(targetSize:{width:Float, height:Float}, targetSeperation:Float, regions:Array<Rectangle>, timesPerRegion:Int):TaskBlockData {
 		var data = new TaskBlockData();
+		data.version = version;
 		data.config = {
 			targetSize: targetSize,
 			targetSeperation: targetSeperation,
@@ -298,7 +306,7 @@ class TaskBlockDataGenerator implements IStruct {
 			rectShape.material.dynamicFriction = 0;
 			rectShape.material.staticFriction = 0;
 			rectShape.material.rollingFriction = 0;
-					
+
 			var body = new Body();
 			body.shapes.add(circleShape);
 			body.shapes.add(rectShape);
@@ -310,7 +318,9 @@ class TaskBlockDataGenerator implements IStruct {
 				
 		for (r in 0...regionsMultiplied.length) {
 			var region = regionsMultiplied[r];
+			var i;
 			do {
+				Sys.println("");
 				var rect = GeomUtil.randomlyPlaceRectangle(
 					region, 
 					targetSizeWithSeperationRect, 
@@ -337,19 +347,21 @@ class TaskBlockDataGenerator implements IStruct {
 					body.position.y = rect.y + targetSize.height * 0.5;
 				}
 				
-				var i = 1000;
+				i = 500;
 				while (space.liveBodies.length > 0 && i-->0) {
 					space.step(1/30);
 				}
 
-				//Sys.print(".");
-				
-				//trace(space.bodies.length + " all slept");
+				if (i <= 0)
+					Sys.print(".");
 			
-			} while (space.bodies.exists(function(body) {
+			} while (i <= 0 || space.bodies.exists(function(body) {
 				for (arbiter in body.arbiters) {
 					for (contact in arbiter.collisionArbiter.contacts) {
-						if (contact.penetration > 1) return true;
+						if (contact.penetration > 0.5) {
+							Sys.print(",");
+							return true;
+						}
 					}
 				}
 				return false;

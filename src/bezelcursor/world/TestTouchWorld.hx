@@ -13,6 +13,7 @@ import flash.events.TouchEvent;
 import flash.geom.*;
 import flash.text.*;
 using org.casalib.util.ArrayUtil;
+using org.casalib.util.NumberUtil;
 import org.casalib.util.*;
 
 import bezelcursor.cursor.*;
@@ -38,7 +39,7 @@ class TestTouchWorld extends GameWorld implements IStruct {
 	public var taskBlockData(default, null):TaskBlockData;
 	public var flipStage(default, null):Bool;
 	public var currentQueueIndex(default, null):Int;
-	public var draggingEnabled:Bool = false;
+	public var draggingEnabled:Bool = true;
 	
 	@skip public var startBtn(default, null):OverlayButton;
 	@skip public var hitLabel(default, null):Label;
@@ -131,7 +132,7 @@ class TestTouchWorld extends GameWorld implements IStruct {
 			}
 		}
 		
-		camera.y = 0;
+		camera.y = DeviceData.current.screenResolutionY;
 		camera.tween(0.5, {x: camera.x + HXP.stage.stageWidth}).onComplete(function() {
 			currentTarget.color = 0xFF0000;
 			currentTarget.color_hover = 0x66FF66;
@@ -161,7 +162,7 @@ class TestTouchWorld extends GameWorld implements IStruct {
 
 		var cursor = cast(s.origin, TouchCursor);
 		var deltaY = cursor.currentTouchPoint.y - cursor.pFrameTouchPoint.y;
-		camera.y -= deltaY;
+		camera.y = (camera.y - deltaY).constrain(0, DeviceData.current.screenResolutionY * 2);
 	}
 
 	function updateStartBtnLabel():Void {

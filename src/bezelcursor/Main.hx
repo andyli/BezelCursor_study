@@ -8,6 +8,7 @@ import flash.display.Sprite;
 import flash.events.KeyboardEvent;
 import flash.ui.Keyboard;
 import flash.Lib;
+import sys.io.*;
 
 import bezelcursor.cursor.*;
 import bezelcursor.entity.*;
@@ -32,12 +33,16 @@ class Main extends Engine {
 		
 		cursorManager = new CursorManager();
 		cursorManager.start();
-		
-		if (TaskBlockData.current == null){
-			HXP.world = new ServerConnectionWorld();
-		} else {
-			HXP.world = new PowerMenuWorld();
-		}
+
+		var fileURL = 
+			#if android
+			"/mnt/sdcard/TaskBlockData.txt";
+			#elseif sys
+			"TaskBlockData.txt";
+			#end
+		TaskBlockData.current = haxe.Unserializer.run(File.getContent(fileURL));
+	
+		HXP.world = new PowerMenuWorld();
 		
 		Input.define("menu", [Keyboard.SPACE, 0x01000012]);
 		Input.define("back", [Keyboard.ESCAPE]);

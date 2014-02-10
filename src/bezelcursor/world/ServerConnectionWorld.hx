@@ -100,21 +100,25 @@ class ServerConnectionWorld extends GameWorld {
 		//trace(respond);
 		
 		if (respond != null && respond != "null"){
-			TaskBlockData.current = haxe.Unserializer.run(respond);
-			ready();
-		} else {
-			updateMsg("Generating tasks...");
-			
-			var gen = TaskBlockDataGenerator.current;
-			var pbond = gen.onProgressSignaler.bind(function(p) {
-				updateMsg("Generating tasks...\n" + p.map(0, 1, 0, 100).int() + "%");
-			});
-			gen.onCompleteSignaler.bind(function(a) {
-				onTaskBlockGenerated(a);
-				pbond.destroy();
-			}).destroyOnUse();
-			gen.generateTaskBlocks();
+			var taskBlockData:Array<TaskBlockData> = haxe.Unserializer.run(respond);
+			if (taskBlockData[0].version == TaskBlockDataGenerator.version) {
+				TaskBlockData.current = taskBlockData;
+				ready();
+				return;
+			}
 		}
+
+		updateMsg("Generating tasks...");
+		
+		var gen = TaskBlockDataGenerator.current;
+		var pbond = gen.onProgressSignaler.bind(function(p) {
+			updateMsg("Generating tasks...\n" + p.map(0, 1, 0, 100).int() + "%");
+		});
+		gen.onCompleteSignaler.bind(function(a) {
+			onTaskBlockGenerated(a);
+			pbond.destroy();
+		}).destroyOnUse();
+		gen.generateTaskBlocks();
 	}
 	
 	function onTaskBlockGenerated(taskblocks:Array<TaskBlockData>){
