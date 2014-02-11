@@ -44,6 +44,9 @@ class TestTouchWorld extends GameWorld implements IStruct {
 	@skip public var startBtn(default, null):OverlayButton;
 	@skip public var hitLabel(default, null):Label;
 	@skip public var missedLabel(default, null):Label;
+
+	@skip public var arrowUp(default, null):Entity;
+	@skip public var arrowDown(default, null):Entity;
 	
 	@skip public var title(default, null):Label;
 	
@@ -100,11 +103,31 @@ class TestTouchWorld extends GameWorld implements IStruct {
 		title.layer = 5;
 		title.alpha = 0.5;
 		//add(title);
+
+		var img = new Image("gfx/arrow-up.png");
+		img.centerOrigin();
+		img.scrollX = img.scrollY = 0;
+		arrowUp = addGraphic(img);
+		arrowUp.x = screenBound.width * 0.5;
+		arrowUp.y = screenBound.height * 0.25;
+		arrowUp.layer = -1;
+		arrowUp.visible = false;
+
+		var img = new Image("gfx/arrow-down.png");
+		img.centerOrigin();
+		img.scrollX = img.scrollY = 0;
+		arrowDown = addGraphic(img);
+		arrowDown.x = screenBound.width * 0.5;
+		arrowDown.y = screenBound.height * 0.75;
+		arrowDown.layer = -1;
+		arrowDown.visible = false;
 	}
 	
 	public function next():Void {
 		var cm = HXP.engine.asMain().cursorManager;
 		cm.cursorsEnabled = false;
+		arrowUp.visible = false;
+		arrowDown.visible = false;
 		
 		if (cm.inputMethod.requireOverlayButton){
 			startBtn.visible = false;
@@ -147,6 +170,8 @@ class TestTouchWorld extends GameWorld implements IStruct {
 				while(invisibleTargets.length > 0) {
 					recycle(invisibleTargets.pop());
 				}
+
+				showArrowIfNeeded();
 			}, 1);
 			
 			log("next", currentQueueIndex);
@@ -157,12 +182,30 @@ class TestTouchWorld extends GameWorld implements IStruct {
 		++currentQueueIndex;
 	}
 
+	function showArrowIfNeeded():Void {
+		var currentTargetScreenRect = new Rectangle(currentTarget.x - camera.x, currentTarget.y - camera.y, currentTarget.width, currentTarget.height);
+		
+		if (currentTargetScreenRect.bottom <= 0) {
+			arrowUp.visible = true;
+		} else {
+			arrowUp.visible = false;
+		}
+		if (currentTargetScreenRect.top >= screenBound.height) {
+			arrowDown.visible = true;
+		} else {
+			arrowDown.visible = false;
+		}
+	}
+
 	function onDrag(s:Signal<Void>):Void {
 		if (!draggingEnabled) return;
 
 		var cursor = cast(s.origin, TouchCursor);
 		var deltaY = cursor.currentTouchPoint.y - cursor.pFrameTouchPoint.y;
-		camera.y = (camera.y - deltaY).constrain(0, DeviceData.current.screenResolutionY * 2);
+		var out = DeviceData.current.screenDPI * 12.mm2inches();
+		camera.y = (camera.y - deltaY).constrain(0, DeviceData.current.screenResolutionY * 2 + out);
+
+		showArrowIfNeeded();
 	}
 
 	function updateStartBtnLabel():Void {

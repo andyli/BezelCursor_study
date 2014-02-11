@@ -27,7 +27,7 @@ class OverlayButton extends Button {
 		resize(Math.round(dpi * WIDTH), Math.round(dpi * HEIGHT));
 		
 		alpha = 0.8;
-		layer = -1;
+		layer = -10;
 	}
 	
 	override public function resize(w:Float = -1, h:Float = -1):Void {
