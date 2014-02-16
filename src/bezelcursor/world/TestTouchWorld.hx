@@ -1,5 +1,6 @@
 package bezelcursor.world;
 
+using Math;
 using StringTools;
 using DateTools;
 import haxe.*;
@@ -20,6 +21,8 @@ import bezelcursor.cursor.*;
 import bezelcursor.cursor.behavior.*;
 import bezelcursor.entity.*;
 import bezelcursor.model.*;
+import bezelcursor.model.WorldRegion.VPos.*;
+import bezelcursor.model.WorldRegion.HPos.*;
 using bezelcursor.Main;
 using bezelcursor.util.UnitUtil;
 
@@ -36,10 +39,13 @@ class TestTouchWorld extends GameWorld implements IStruct {
 	}
 	
 	@skip public var currentTarget(default, null):Target;
+	public var currentTargetColor = 0xFF0000;
+	public var currentTargetHoverColor = 0x66FF66;
 	public var taskBlockData(default, null):TaskBlockData;
 	public var flipStage(default, null):Bool;
 	public var currentQueueIndex(default, null):Int;
-	public var draggingEnabled:Bool = true;
+	public var draggingXEnabled:Bool = false;
+	public var draggingYEnabled:Bool = true;
 	
 	@skip public var startBtn(default, null):OverlayButton;
 	@skip public var hitLabel(default, null):Label;
@@ -49,6 +55,15 @@ class TestTouchWorld extends GameWorld implements IStruct {
 	@skip public var arrowDown(default, null):Entity;
 	
 	@skip public var title(default, null):Label;
+
+	public var region(default, set):WorldRegion;
+	function set_region(v:WorldRegion):WorldRegion {
+		camera
+			.tween(0.5, { x: v.x * DeviceData.current.screenResolutionX, y: v.y * DeviceData.current.screenResolutionY })
+			.onUpdate(showArrowIfNeeded);
+
+		return region = v;
+	}
 	
 	override public function new(taskBlockData:TaskBlockData, flipStage = false):Void {
 		super();
@@ -138,44 +153,57 @@ class TestTouchWorld extends GameWorld implements IStruct {
 			return;
 		}
 		
-		var currentTargets = taskBlockData.targetQueue[currentQueueIndex];
-		
-		for (i in 0...currentTargets.length) {
+		var pTargets:Array<Target> = [];
+		getType(Target.TYPE, pTargets);
+		var currentTargets = [];
+		for (_t in taskBlockData.targetQueue[currentQueueIndex]) {
 			var target = create(Target, false);
 			target.color = 0xFFFFFF;
 			target.color_hover = 0xFF6666;
-			target.fromTargetData(currentTargets[i]);
+			target.fromTargetData(_t);
 			if (flipStage) {
 				target.x = DeviceData.current.screenResolutionX - target.x - target.width;
 			}
-			target.moveBy(camera.x + HXP.stage.stageWidth, 0);
+			target.moveBy(DeviceData.current.screenResolutionX, 0);
 			add(target);
-			if (i == 0) {
-				currentTarget = target;
-			}
+			currentTargets.push(target);
 		}
+		currentTarget = currentTargets[0];
 		
-		camera.y = DeviceData.current.screenResolutionY;
-		camera.tween(0.5, {x: camera.x + HXP.stage.stageWidth}).onComplete(function() {
-			currentTarget.color = 0xFF0000;
-			currentTarget.color_hover = 0x66FF66;
-			
-			if (cm.inputMethod.requireOverlayButton){
-				startBtn.visible = true;
-			}
-			cm.cursorsEnabled = true;
-			
-			haxe.Timer.delay(function(){
-				clipTargets();
-				while(invisibleTargets.length > 0) {
-					recycle(invisibleTargets.pop());
-				}
+		region = MiddleCenter;
 
-				showArrowIfNeeded();
-			}, 1);
-			
-			log("next", currentQueueIndex);
-		});
+		var alpha = { alpha:0.0 };
+		alpha
+			.tween(0.5, { alpha:1.0 })
+			.onUpdate(
+				function() {
+					for (t in currentTargets) {
+						t.image_default.alpha = t.image_hover.alpha = alpha.alpha;
+					}
+					for (t in pTargets) {
+						t.image_default.alpha = t.image_hover.alpha = 1 - alpha.alpha;
+					}
+				}
+			)
+			.onComplete(function() {
+				currentTarget.color = currentTargetColor;
+				currentTarget.color_hover = currentTargetHoverColor;
+				
+				if (cm.inputMethod.requireOverlayButton){
+					startBtn.visible = true;
+				}
+				cm.cursorsEnabled = true;
+				
+				haxe.Timer.delay(function(){
+					for (t in pTargets) {
+						recycle(t);
+					}
+
+					showArrowIfNeeded();
+				}, 1);
+				
+				log("next", currentQueueIndex);
+			});
 		
 		title.label = (currentQueueIndex+1) + " / " + taskBlockData.targetQueue.length;
 		
@@ -183,6 +211,11 @@ class TestTouchWorld extends GameWorld implements IStruct {
 	}
 
 	function showArrowIfNeeded():Void {
+		if (currentTarget.color_hover != currentTargetHoverColor) {
+			arrowUp.visible = arrowDown.visible = false;
+			return;
+		}
+
 		var currentTargetScreenRect = new Rectangle(currentTarget.x - camera.x, currentTarget.y - camera.y, currentTarget.width, currentTarget.height);
 		
 		if (currentTargetScreenRect.bottom <= 0) {
@@ -198,14 +231,40 @@ class TestTouchWorld extends GameWorld implements IStruct {
 	}
 
 	function onDrag(s:Signal<Void>):Void {
-		if (!draggingEnabled) return;
+		if (!draggingXEnabled && !draggingYEnabled) return;
 
 		var cursor = cast(s.origin, TouchCursor);
-		var deltaY = cursor.currentTouchPoint.y - cursor.pFrameTouchPoint.y;
-		var out = DeviceData.current.screenDPI * 12.mm2inches();
-		camera.y = (camera.y - deltaY).constrain(0, DeviceData.current.screenResolutionY * 2 + out);
+
+		if (draggingYEnabled) {
+			var deltaY = cursor.currentTouchPoint.y - cursor.pFrameTouchPoint.y;
+			camera.y = (camera.y - deltaY).constrain(0, DeviceData.current.screenResolutionY * 2);
+		}
+
+		if (draggingXEnabled) {
+			var deltaX = cursor.currentTouchPoint.x - cursor.pFrameTouchPoint.x;
+			camera.x = (camera.x - deltaX).constrain(0, DeviceData.current.screenResolutionX * 2);
+		}
 
 		showArrowIfNeeded();
+	}
+
+	function onDragEnd(s:Signal<Void>):Void {
+		if (!draggingXEnabled && !draggingYEnabled) return;
+
+		var cursor = cast(s.origin, TouchCursor);
+
+		var minD = DeviceData.current.screenDPI * 20.mm2inches();
+		if (draggingYEnabled) {
+			var deltaY = cursor.pFrameTouchPoint.y - cursor.activatedPoint.y;
+			var move = if (deltaY < -minD)
+				Bottom;
+			else if (deltaY > minD)
+				Top;
+			else
+				Middle;
+
+			region = region.getNeighbor(Center, move);
+		}
 	}
 
 	function updateStartBtnLabel():Void {
@@ -256,6 +315,7 @@ class TestTouchWorld extends GameWorld implements IStruct {
 		
 		cm.onClickSignaler.bind(onCursorClick);
 		cm.onDragSignaler.bindAdvanced(onDrag);
+		cm.onDragEndSignaler.bindAdvanced(onDragEnd);
 		
 		cm.onTouchStartSignaler.bind(recTouchStart);
 		cm.onTouchMoveSignaler.bind(recTouchMove);
@@ -313,6 +373,7 @@ class TestTouchWorld extends GameWorld implements IStruct {
 		
 		cm.onClickSignaler.unbind(onCursorClick);
 		cm.onDragSignaler.unbindAdvanced(onDrag);
+		cm.onDragEndSignaler.unbindAdvanced(onDragEnd);
 		cm.isValidStart = function(t) return true;
 		
 		startBtn.stop();

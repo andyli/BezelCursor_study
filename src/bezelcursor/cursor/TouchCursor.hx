@@ -43,7 +43,7 @@ class TouchCursor extends PointActivatedCursor {
 	
 	override function onTouchEnd(touch:TouchData):Void {
 		if (isDragging) {
-
+			onDragEndSignaler.dispatch();
 		} else {
 			click();
 		}
