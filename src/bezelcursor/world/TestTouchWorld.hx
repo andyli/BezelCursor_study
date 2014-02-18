@@ -44,9 +44,7 @@ class TestTouchWorld extends GameWorld implements IStruct {
 	public var taskBlockData(default, null):TaskBlockData;
 	public var flipStage(default, null):Bool;
 	public var currentQueueIndex(default, null):Int;
-	public var draggingXEnabled:Bool = false;
-	public var draggingYEnabled:Bool = true;
-	public var worldRegions(default, null):Array<WorldRegion> = [TopCenter, MiddleCenter, BottomCenter];
+	public var verticalScrollDirection(default, null):Bool;
 	
 	@skip public var startBtn(default, null):OverlayButton;
 	@skip public var hitLabel(default, null):Label;
@@ -66,12 +64,13 @@ class TestTouchWorld extends GameWorld implements IStruct {
 		return region = v;
 	}
 	
-	override public function new(taskBlockData:TaskBlockData, flipStage = false):Void {
+	override public function new(taskBlockData:TaskBlockData, flipStage:Bool, verticalScrollDirection:Bool):Void {
 		super();
 		
 		this.taskBlockData = taskBlockData;
 		this.taskBlockData.targetQueue = this.taskBlockData.targetQueue.randomize();
 		this.flipStage = flipStage;
+		this.verticalScrollDirection = verticalScrollDirection;
 		
 		startBtn = new OverlayButton("Start");
 		startBtn.onClickSignaler.bindVoid(function(){
@@ -154,6 +153,10 @@ class TestTouchWorld extends GameWorld implements IStruct {
 			nextWorld();
 			return;
 		}
+
+		var worldRegions:Array<WorldRegion> = verticalScrollDirection ? 
+			[TopCenter, MiddleCenter, BottomCenter]:
+			[MiddleLeft, MiddleCenter, MiddleRight];
 
 		region = MiddleCenter;
 		
@@ -264,16 +267,12 @@ class TestTouchWorld extends GameWorld implements IStruct {
 	}
 
 	function onDrag(s:Signal<Void>):Void {
-		if (!draggingXEnabled && !draggingYEnabled) return;
-
 		var cursor = cast(s.origin, TouchCursor);
 
-		if (draggingYEnabled) {
+		if (verticalScrollDirection) {
 			var deltaY = cursor.currentTouchPoint.y - cursor.pFrameTouchPoint.y;
 			camera.y = (camera.y - deltaY).constrain(0, DeviceData.current.screenResolutionY * 2);
-		}
-
-		if (draggingXEnabled) {
+		} else {
 			var deltaX = cursor.currentTouchPoint.x - cursor.pFrameTouchPoint.x;
 			camera.x = (camera.x - deltaX).constrain(0, DeviceData.current.screenResolutionX * 2);
 		}
@@ -282,12 +281,10 @@ class TestTouchWorld extends GameWorld implements IStruct {
 	}
 
 	function onDragEnd(s:Signal<Void>):Void {
-		if (!draggingXEnabled && !draggingYEnabled) return;
-
 		var cursor = cast(s.origin, TouchCursor);
 
 		var minD = DeviceData.current.screenDPI * 20.mm2inches();
-		if (draggingYEnabled) {
+		if (verticalScrollDirection) {
 			var deltaY = cursor.pFrameTouchPoint.y - cursor.activatedPoint.y;
 			var move = if (deltaY < -minD)
 				Bottom;
@@ -297,6 +294,16 @@ class TestTouchWorld extends GameWorld implements IStruct {
 				Middle;
 
 			region = region.getNeighbor(Center, move);
+		} else {
+			var deltaX = cursor.pFrameTouchPoint.x - cursor.activatedPoint.x;
+			var move = if (deltaX < -minD)
+				Right;
+			else if (deltaX > minD)
+				Left;
+			else
+				Center;
+
+			region = region.getNeighbor(move, Middle);
 		}
 	}
 

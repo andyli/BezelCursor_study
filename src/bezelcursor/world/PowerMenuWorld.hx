@@ -20,6 +20,7 @@ class PowerMenuWorld extends GameWorld {
 	var selectedMethod:InputMethod;
 	var selectedUseStartButton:Bool;
 	var selectedLeftHand:Bool;
+	var selectedVerticalScrollDirection:Bool;
 	var participate:String;
 	var powerMenuStack:Array<PowerMenu>;
 
@@ -36,6 +37,33 @@ class PowerMenuWorld extends GameWorld {
 		powerMenuStack.push(add(powerMenu));
 		camera.tween(0.5, { x: powerMenu.x });
 	}
+
+	function selectScrollDirection():Void {
+		var powerMenu = new PowerMenu();
+		
+		var btn = new Button("Back");
+		btn.resize(buttonWidth * 0.5, buttonHeight);
+		btn.onClickSignaler.bindVoid(popPowerMenuStack).destroyOnUse();
+		powerMenu.add(btn);
+		
+		var btn = new Button("Vertical Scrolling");
+		btn.resize(buttonWidth, buttonHeight);
+		btn.onClickSignaler.bindVoid(function(){
+			selectedVerticalScrollDirection = true;
+			selectHandiness();
+		});
+		powerMenu.add(btn);
+		
+		var btn = new Button("Horizontal Scrolling");
+		btn.resize(buttonWidth, buttonHeight);
+		btn.onClickSignaler.bindVoid(function(){
+			selectedVerticalScrollDirection = false;
+			selectHandiness();
+		});
+		powerMenu.add(btn);
+				
+		pushPowerMenuStack(powerMenu);
+	}
 	
 	function enterEmail():Void {
 		var powerMenu = new PowerMenu();
@@ -45,7 +73,7 @@ class PowerMenuWorld extends GameWorld {
 		btn.onClickSignaler.bindVoid(popPowerMenuStack).destroyOnUse();
 		powerMenu.add(btn);
 		
-		var label = new Label("Enter your email, \nor name if you do not \nwish to receive study result.", {
+		var label = new Label("Enter your name.\n Nickname will be fine.", {
 			size: Math.round(DeviceData.current.screenDPI * 0.08),
 			color: 0xFFFFFF
 		});
@@ -108,7 +136,7 @@ class PowerMenuWorld extends GameWorld {
 			});
 		}
 		
-		var testWorld = new PracticeTouchWorld(TaskBlockData.current[0], !selectedLeftHand);
+		var testWorld = new PracticeTouchWorld(TaskBlockData.current[0], !selectedLeftHand, selectedVerticalScrollDirection);
 		
 		if (selectedMethod.name.indexOf("ThumbSpace") == -1) {
 			HXP.world = testWorld;
@@ -119,7 +147,7 @@ class PowerMenuWorld extends GameWorld {
 		}
 		
 		for (taskblock in TaskBlockData.current.randomize()) {
-			testWorld.worldQueue.push(new TestTouchWorld(taskblock, !selectedLeftHand));
+			testWorld.worldQueue.push(new TestTouchWorld(taskblock, !selectedLeftHand, selectedVerticalScrollDirection));
 		}
 		testWorld.worldQueue.push(new PowerMenuWorld());
 	}
@@ -144,7 +172,7 @@ class PowerMenuWorld extends GameWorld {
 			btn.resize(buttonWidth, buttonHeight);
 			btn.onClickSignaler.bindVoid(function() {
 				selectedMethod = method;
-				selectHandiness();
+				selectScrollDirection();
 			});
 			powerMenu.add(btn);
 		}
