@@ -52,6 +52,8 @@ class TestTouchWorld extends GameWorld implements IStruct {
 
 	@skip public var arrowUp(default, null):Entity;
 	@skip public var arrowDown(default, null):Entity;
+	@skip public var arrowLeft(default, null):Entity;
+	@skip public var arrowRight(default, null):Entity;
 	
 	@skip public var title(default, null):Label;
 
@@ -137,6 +139,24 @@ class TestTouchWorld extends GameWorld implements IStruct {
 		arrowDown.y = screenBound.height * 0.75;
 		arrowDown.layer = -1;
 		arrowDown.visible = false;
+
+		var img = new Image("gfx/arrow-left.png");
+		img.centerOrigin();
+		img.scrollX = img.scrollY = 0;
+		arrowLeft = addGraphic(img);
+		arrowLeft.x = screenBound.width * 0.25;
+		arrowLeft.y = screenBound.height * 0.5;
+		arrowLeft.layer = -1;
+		arrowLeft.visible = false;
+
+		var img = new Image("gfx/arrow-right.png");
+		img.centerOrigin();
+		img.scrollX = img.scrollY = 0;
+		arrowRight = addGraphic(img);
+		arrowRight.x = screenBound.width * 0.75;
+		arrowRight.y = screenBound.height * 0.5;
+		arrowRight.layer = -1;
+		arrowRight.visible = false;
 	}
 	
 	public function next():Void {
@@ -144,6 +164,8 @@ class TestTouchWorld extends GameWorld implements IStruct {
 		cm.cursorsEnabled = false;
 		arrowUp.visible = false;
 		arrowDown.visible = false;
+		arrowLeft.visible = false;
+		arrowRight.visible = false;
 		
 		if (cm.inputMethod.requireOverlayButton){
 			startBtn.visible = false;
@@ -248,7 +270,7 @@ class TestTouchWorld extends GameWorld implements IStruct {
 
 	function showArrowIfNeeded():Void {
 		if (currentTarget.color_hover != currentTargetHoverColor) {
-			arrowUp.visible = arrowDown.visible = false;
+			arrowUp.visible = arrowDown.visible = arrowLeft.visible = arrowRight.visible = false;
 			return;
 		}
 
@@ -263,6 +285,16 @@ class TestTouchWorld extends GameWorld implements IStruct {
 			arrowDown.visible = true;
 		} else {
 			arrowDown.visible = false;
+		}
+		if (currentTargetScreenRect.right <= 0) {
+			arrowLeft.visible = true;
+		} else {
+			arrowLeft.visible = false;
+		}
+		if (currentTargetScreenRect.left >= screenBound.width) {
+			arrowRight.visible = true;
+		} else {
+			arrowRight.visible = false;
 		}
 	}
 
