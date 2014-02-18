@@ -57,11 +57,9 @@ class Main extends Engine {
 			isFirstRun = true;
 		}
 		
-		/*
-		trace(isFirstRun ? "isFirstRun" : "not isFirstRun");
-		trace(DeviceData.current.id);
-		trace(UserData.current.id);
-		*/
+		
+		//trace(isFirstRun ? "isFirstRun" : "not isFirstRun");
+		trace(DeviceData.current.toObj());
 	}
 	
 	var escCount = 0;
