@@ -18,7 +18,7 @@ class TaskBlockData implements IStruct {
 
 	public var version(default, null):Int = 1;
 	
-	public var targetQueue:Array<Array<TargetData>>;
+	public var targetQueue:Array<LevelData>;
 	
 	public var config:Dynamic;
 	

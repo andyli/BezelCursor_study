@@ -46,6 +46,7 @@ class TestTouchWorld extends GameWorld implements IStruct {
 	public var currentQueueIndex(default, null):Int;
 	public var draggingXEnabled:Bool = false;
 	public var draggingYEnabled:Bool = true;
+	public var worldRegions(default, null):Array<WorldRegion> = [TopCenter, MiddleCenter, BottomCenter];
 	
 	@skip public var startBtn(default, null):OverlayButton;
 	@skip public var hitLabel(default, null):Label;
@@ -69,6 +70,7 @@ class TestTouchWorld extends GameWorld implements IStruct {
 		super();
 		
 		this.taskBlockData = taskBlockData;
+		this.taskBlockData.targetQueue = this.taskBlockData.targetQueue.randomize();
 		this.flipStage = flipStage;
 		
 		startBtn = new OverlayButton("Start");
@@ -152,11 +154,17 @@ class TestTouchWorld extends GameWorld implements IStruct {
 			nextWorld();
 			return;
 		}
+
+		region = MiddleCenter;
 		
 		var pTargets:Array<Target> = [];
 		getType(Target.TYPE, pTargets);
 		var currentTargets = [];
-		for (_t in taskBlockData.targetQueue[currentQueueIndex]) {
+		var levels = [];
+		var level = taskBlockData.targetQueue[currentQueueIndex];
+		levels.push(level);
+		var wr = worldRegions[level.region];
+		for (_t in level) {
 			var target = create(Target, false);
 			target.color = 0xFFFFFF;
 			target.color_hover = 0xFF6666;
@@ -164,13 +172,38 @@ class TestTouchWorld extends GameWorld implements IStruct {
 			if (flipStage) {
 				target.x = DeviceData.current.screenResolutionX - target.x - target.width;
 			}
-			target.moveBy(DeviceData.current.screenResolutionX, 0);
+			target.moveBy(wr.x * DeviceData.current.screenResolutionX, wr.y * DeviceData.current.screenResolutionY);
 			add(target);
 			currentTargets.push(target);
 		}
 		currentTarget = currentTargets[0];
-		
-		region = MiddleCenter;
+
+		for (_wr in worldRegions) {
+			if (_wr == wr) continue;
+
+			
+			var level = {
+				var _level;
+				do {
+					_level = taskBlockData.targetQueue.random();
+				} while (levels.indexOf(_level) >= 0);
+				_level;
+			};
+			levels.push(level);
+			var wr = _wr;
+			for (_t in level) {
+				var target = create(Target, false);
+				target.color = 0xFFFFFF;
+				target.color_hover = 0xFF6666;
+				target.fromTargetData(_t);
+				if (flipStage) {
+					target.x = DeviceData.current.screenResolutionX - target.x - target.width;
+				}
+				target.moveBy(wr.x * DeviceData.current.screenResolutionX, wr.y * DeviceData.current.screenResolutionY);
+				add(target);
+				currentTargets.push(target);
+			}
+		}
 
 		var alpha = { alpha:0.0 };
 		alpha

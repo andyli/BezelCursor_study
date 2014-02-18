@@ -133,6 +133,8 @@ class TaskBlockDataGenerator implements IStruct {
 	* Unit is mm.
 	*/
 	public var regionss(default, null):Array<Array<Rectangle>>;
+
+	public var worldRegions(default, null) = [0, 1, 2];
 	
 	/**
 	* Input methods to be tested.
@@ -170,7 +172,7 @@ class TaskBlockDataGenerator implements IStruct {
 	* Compute the total number of red targets based on the current setting.
 	*/
 	public function getTotalRedTargets():Int {
-		return regionss.length * targetSeperations.length * targetSizes.length * regionss[0].length * timesPerRegion;
+		return regionss.length * targetSeperations.length * targetSizes.length * regionss[0].length * timesPerRegion * worldRegions.length;
 	}
 
 	@skip public var onProgressSignaler(default, null):Signaler<Float>;
@@ -181,10 +183,10 @@ class TaskBlockDataGenerator implements IStruct {
 		
 		var dpi = deviceData.screenDPI;
 		
-		stageRect = new Rectangle(0, 0, (deviceData.screenResolutionX / dpi).inches2mm(), (deviceData.screenResolutionY / dpi).inches2mm() * 3);
+		stageRect = new Rectangle(0, 0, (deviceData.screenResolutionX / dpi).inches2mm(), (deviceData.screenResolutionY / dpi).inches2mm());
 		
 		regionss = [
-			genRegions(3, 12)
+			genRegions(3, 4)
 		];
 		
 		onProgressSignaler = new DirectSignaler<Float>(this);
@@ -253,7 +255,7 @@ class TaskBlockDataGenerator implements IStruct {
 		
 		var regionsMultiplied = [];
 		for (tpr in 0...timesPerRegion) {
-			regionsMultiplied = regionsMultiplied.concat(regions.randomize());
+			regionsMultiplied = regionsMultiplied.concat(regions);
 		}
 		
 		var space = new Space(Broadphase.SWEEP_AND_PRUNE);
@@ -315,7 +317,8 @@ class TaskBlockDataGenerator implements IStruct {
 			body.space = space;
 			bodys.push(body);
 		}
-				
+		
+		for (regionI in worldRegions)
 		for (r in 0...regionsMultiplied.length) {
 			var region = regionsMultiplied[r];
 			var i;
@@ -367,14 +370,16 @@ class TaskBlockDataGenerator implements IStruct {
 				return false;
 			}));
 			
-			data.targetQueue.push(bodys.map(function(body) {
+			var level = new LevelData(regionI);
+			level.targets = bodys.map(function(body) {
 				return {
 					x: body.position.x - targetSize.width * 0.5,
 					y: body.position.y - targetSize.height * 0.5,
 					width: targetSize.width,
 					height: targetSize.height
 				};
-			}).array());
+			});
+			data.targetQueue.push(level);
 			
 			++generatedRedTargets;
 			onProgressSignaler.dispatch(generatedRedTargets/getTotalRedTargets());
