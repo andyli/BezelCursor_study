@@ -397,6 +397,8 @@ class TestTouchWorld extends GameWorld implements IStruct {
 		cm.onMoveSignaler.bindAdvanced(recCursorMove);
 		cm.onClickSignaler.bindAdvanced(recCursorClick);
 		cm.onEndSignaler.bindAdvanced(recCursorEnd);
+		cm.onDragSignaler.bindAdvanced(recCursorDrag);
+		cm.onDragEndSignaler.bindAdvanced(recCursorDragEnd);
 		
 		record = new PlayRecord();
 		record.creationTime = Date.now().getTime();
@@ -428,6 +430,8 @@ class TestTouchWorld extends GameWorld implements IStruct {
 		cm.onMoveSignaler.unbindAdvanced(recCursorMove);
 		cm.onClickSignaler.unbindAdvanced(recCursorClick);
 		cm.onEndSignaler.unbindAdvanced(recCursorEnd);
+		cm.onDragSignaler.unbindAdvanced(recCursorDrag);
+		cm.onDragEndSignaler.unbindAdvanced(recCursorDragEnd);
 		
 		log("end");
 		
@@ -483,6 +487,18 @@ class TestTouchWorld extends GameWorld implements IStruct {
 			cursor: cast(s.origin,Cursor).toObj(),
 			target: s.data == null ? null : cast(s.data,Target).toObj(),
 			isCurrent: s.data == currentTarget
+		});
+	}
+	
+	function recCursorDrag(s:Signal<Void>):Void {
+		log("cursor-drag", {
+			cursor: cast(s.origin,Cursor).toObj()
+		});
+	}
+	
+	function recCursorDragEnd(s:Signal<Void>):Void {
+		log("cursor-dragend", {
+			cursor: cast(s.origin,Cursor).toObj()
 		});
 	}
 	
