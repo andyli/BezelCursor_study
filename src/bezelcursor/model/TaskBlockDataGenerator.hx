@@ -186,7 +186,7 @@ class TaskBlockDataGenerator implements IStruct {
 		stageRect = new Rectangle(0, 0, (deviceData.screenResolutionX / dpi).inches2mm(), (deviceData.screenResolutionY / dpi).inches2mm());
 		
 		regionss = [
-			genRegions(3, 4)
+			genRegions(3, 4, 12)
 		];
 		
 		onProgressSignaler = new DirectSignaler<Float>(this);
@@ -195,9 +195,11 @@ class TaskBlockDataGenerator implements IStruct {
 	
 	/**
 	* Generates regions in the form of grid.
+	* padding_bottom is the space at the bottom doesn't assigned as region, in mm.
 	*/
-	function genRegions(width:Int, height:Int):Array<Rectangle> {
+	function genRegions(width:Int, height:Int, padding_bottom:Float):Array<Rectangle> {
 		var regions = [];
+		var stageRect = new Rectangle(stageRect.x, stageRect.y, stageRect.width, stageRect.height - padding_bottom);
 		for (x in 0...width) {
 			for (y in 0...height) {
 				var region = new Rectangle(
