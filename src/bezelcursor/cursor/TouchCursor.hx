@@ -4,6 +4,7 @@ import flash.geom.*;
 import bezelcursor.cursor.behavior.*;
 import bezelcursor.cursor.snapper.*;
 import bezelcursor.model.*;
+using bezelcursor.util.UnitUtil;
 
 
 class TouchCursor extends PointActivatedCursor {
@@ -12,7 +13,7 @@ class TouchCursor extends PointActivatedCursor {
 	
 	public function new():Void {
 		super();
-		maxDistance = DeviceData.current.screenDPI * 0.1;
+		maxDistance = DeviceData.current.screenDPI * 2.mm2inches();
 	}
 	
 	override function start():Void {

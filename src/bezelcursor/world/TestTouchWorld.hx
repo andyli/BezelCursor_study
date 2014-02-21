@@ -315,7 +315,7 @@ class TestTouchWorld extends GameWorld implements IStruct {
 	function onDragEnd(s:Signal<Void>):Void {
 		var cursor = cast(s.origin, TouchCursor);
 
-		var minD = DeviceData.current.screenDPI * 20.mm2inches();
+		var minD = DeviceData.current.screenDPI * 5.mm2inches();
 		if (verticalScrollDirection) {
 			var deltaY = cursor.pFrameTouchPoint.y - cursor.activatedPoint.y;
 			var move = if (deltaY < -minD)
