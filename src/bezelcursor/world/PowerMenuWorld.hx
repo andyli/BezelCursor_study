@@ -21,6 +21,7 @@ class PowerMenuWorld extends GameWorld {
 	var selectedUseStartButton:Bool;
 	var selectedLeftHand:Bool;
 	var selectedVerticalScrollDirection:Bool;
+	var selectedBiggerTargetFirst:Bool;
 	var participate:String;
 	var powerMenuStack:Array<PowerMenu>;
 
@@ -38,6 +39,33 @@ class PowerMenuWorld extends GameWorld {
 		camera.tween(0.5, { x: powerMenu.x });
 	}
 
+	function selectTargetSize():Void {
+		var powerMenu = new PowerMenu();
+		
+		var btn = new Button("Back");
+		btn.resize(buttonWidth * 0.5, buttonHeight);
+		btn.onClickSignaler.bindVoid(popPowerMenuStack).destroyOnUse();
+		powerMenu.add(btn);
+		
+		var btn = new Button("9.6mm x 9.6mm First");
+		btn.resize(buttonWidth, buttonHeight);
+		btn.onClickSignaler.bindVoid(function(){
+			selectedBiggerTargetFirst = true;
+			selectHandiness();
+		});
+		powerMenu.add(btn);
+		
+		var btn = new Button("3mm x 3mm First");
+		btn.resize(buttonWidth, buttonHeight);
+		btn.onClickSignaler.bindVoid(function(){
+			selectedBiggerTargetFirst = false;
+			selectHandiness();
+		});
+		powerMenu.add(btn);
+				
+		pushPowerMenuStack(powerMenu);
+	}
+
 	function selectScrollDirection():Void {
 		var powerMenu = new PowerMenu();
 		
@@ -50,7 +78,7 @@ class PowerMenuWorld extends GameWorld {
 		btn.resize(buttonWidth, buttonHeight);
 		btn.onClickSignaler.bindVoid(function(){
 			selectedVerticalScrollDirection = true;
-			selectHandiness();
+			selectTargetSize();
 		});
 		powerMenu.add(btn);
 		
@@ -58,7 +86,7 @@ class PowerMenuWorld extends GameWorld {
 		btn.resize(buttonWidth, buttonHeight);
 		btn.onClickSignaler.bindVoid(function(){
 			selectedVerticalScrollDirection = false;
-			selectHandiness();
+			selectTargetSize();
 		});
 		powerMenu.add(btn);
 				
@@ -146,7 +174,10 @@ class PowerMenuWorld extends GameWorld {
 			HXP.world = configThumbSpaceWorld;
 		}
 		
-		for (taskblock in TaskBlockData.current.randomize()) {
+		for (taskblock in (selectedBiggerTargetFirst ?
+			TaskBlockData.current :
+			[TaskBlockData.current[1], TaskBlockData.current[0]]
+		)) {
 			testWorld.worldQueue.push(new TestTouchWorld(taskblock, !selectedLeftHand, selectedVerticalScrollDirection));
 		}
 		testWorld.worldQueue.push(new PowerMenuWorld());
