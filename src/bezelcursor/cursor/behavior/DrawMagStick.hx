@@ -21,11 +21,11 @@ class DrawMagStick extends Behavior<MagStickCursor> {
 	public function new(c:MagStickCursor):Void {
 		super(c);
 		
-		lineWidthThumb = [3.5, 3.0, 2.2, 2.0];
+		lineWidthThumb = [3.5, 3.0, 2.2, 2.0].map(function(_) return _ * 2);
 		alphaThumb = [1.0, 1.0, 1.0, 1.0];
-		lineWidthTarget = [2.0, 1.5];
+		lineWidthTarget = [2.0, 1.5].map(function(_) return _ * 2);
 		alphaTarget = [1.0, 1.0];
-		radiusCircleLineWidth = 2.;
+		radiusCircleLineWidth = 2 * 2;
 		radiusCircleAlpha = 1.0;
 	}
 	
