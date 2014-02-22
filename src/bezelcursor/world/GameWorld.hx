@@ -18,6 +18,8 @@ class GameWorld extends World {
 
 	public var bound:Rectangle;
 	public var screenBound:Rectangle;
+
+	@skip public var currentTargets(default, null):Array<Target> = [];
 	
 	public function new():Void {
 		super();
@@ -28,6 +30,18 @@ class GameWorld extends World {
 
 		bound = HXP.bounds.clone();
 		bound.inflate(0, 10 * HXP.bounds.height);
+	}
+
+	override public function add<E:Entity>(e:E):E {
+		if (e.type == Target.TYPE)
+			this.currentTargets.push(cast e);
+		return super.add(e);
+	}
+
+	override public function remove<E:Entity>(e:E):E {
+		if (e.type == Target.TYPE)
+			this.currentTargets.remove(cast e);
+		return super.remove(e);
 	}
 	
 	function nextWorld():Void {

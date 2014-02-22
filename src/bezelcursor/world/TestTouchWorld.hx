@@ -182,9 +182,8 @@ class TestTouchWorld extends GameWorld implements IStruct {
 
 		region = MiddleCenter;
 		
-		var pTargets:Array<Target> = [];
-		getType(Target.TYPE, pTargets);
-		var currentTargets = [];
+		var pTargets:Array<Target> = currentTargets.copy();
+		var new_currentTargets = [];
 		var levels = [];
 		var level = taskBlockData.targetQueue[currentQueueIndex];
 		levels.push(level);
@@ -199,9 +198,9 @@ class TestTouchWorld extends GameWorld implements IStruct {
 			}
 			target.moveBy(wr.x * DeviceData.current.screenResolutionX, wr.y * DeviceData.current.screenResolutionY);
 			add(target);
-			currentTargets.push(target);
+			new_currentTargets.push(target);
 		}
-		currentTarget = currentTargets[0];
+		currentTarget = new_currentTargets[0];
 
 		for (_wr in worldRegions) {
 			if (_wr == wr) continue;
@@ -226,7 +225,7 @@ class TestTouchWorld extends GameWorld implements IStruct {
 				}
 				target.moveBy(wr.x * DeviceData.current.screenResolutionX, wr.y * DeviceData.current.screenResolutionY);
 				add(target);
-				currentTargets.push(target);
+				new_currentTargets.push(target);
 			}
 		}
 
@@ -235,7 +234,7 @@ class TestTouchWorld extends GameWorld implements IStruct {
 			.tween(0.5, { alpha:1.0 })
 			.onUpdate(
 				function() {
-					for (t in currentTargets) {
+					for (t in new_currentTargets) {
 						t.image_default.alpha = t.image_hover.alpha = alpha.alpha;
 					}
 					for (t in pTargets) {

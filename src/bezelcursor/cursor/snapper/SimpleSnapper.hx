@@ -10,8 +10,7 @@ using bezelcursor.world.GameWorld;
 
 class SimpleSnapper extends Snapper<Cursor> {	
 	override public function run():Void {
-		var targets:Array<Target> = [];
-		HXP.world.getType(Target.TYPE, targets);
+		var targets = HXP.world.asGameWorld().currentTargets;
 		
 		interestedTargets = [];
 
