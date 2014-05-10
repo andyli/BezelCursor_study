@@ -12,6 +12,7 @@ import hsl.haxe.*;
 using org.casalib.util.NumberUtil;
 using org.casalib.util.RatioUtil;
 using motion.Actuate;
+import cpp.vm.Gc;
 
 import bezelcursor.cursor.behavior.*;
 import bezelcursor.model.*;
@@ -67,6 +68,8 @@ class CursorManager implements IStruct {
 	* Basically Lib.stage.
 	*/
 	@skip public var stage(default, null):Stage;
+
+	@skip var gcPaused = false;
 	
 	function set_cursorsEnabled(v:Bool):Bool {
 		if (!v) {
@@ -252,6 +255,11 @@ class CursorManager implements IStruct {
 	}
 	
 	function onBegin(touch:TouchData):Void {
+		if (!gcPaused) {
+			Gc.enable(false);
+			gcPaused = true;
+		}
+
 		var time = haxe.Timer.stamp();
 		onTouchStartSignaler.dispatch(touch);
 		
@@ -428,6 +436,11 @@ class CursorManager implements IStruct {
 		}
 		
 		touchFilters.remove(touch.touchPointID);
+
+		if (gcPaused) {
+			Gc.enable(true);
+			gcPaused = false;
+		}
 	}
 	
 	function onTouchBegin(evt:TouchEvent):Void {

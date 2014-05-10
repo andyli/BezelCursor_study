@@ -2,10 +2,16 @@ package bezelcursor.model;
 
 using Lambda;
 import haxe.*;
-import org.casalib.util.*;
+import sys.io.*;
+import cpp.vm.*;
 
 import bezelcursor.cursor.*;
 import bezelcursor.model.*;
+
+private enum LoggerMsg {
+	LLog(time:Float, event:String, data:String);
+	LClose;
+}
 
 class PlayRecord implements IStruct {
 	/**
@@ -21,58 +27,51 @@ class PlayRecord implements IStruct {
 	public var flipStage:Bool;
 	public var inputMethod:String;
 	public var cursorManager:Dynamic;
-	@skip public var events(get_events, null):Array<EventRecord>;
-	function get_events() {
-		return _events;
-	}
-	@skip var _events:Array<EventRecord>;
-	@skip var _events_buf:StringBuf;
+	@skip var _file:FileOutput;
+
+	public var isLogging(default, null) = true;
+	@skip var thread:Thread;
+	@skip var deque = new Deque<LoggerMsg>();
 	
-	public function new():Void {
-		
-	}
-	
-	function init_events_buf():Void {
-		_events_buf = new StringBuf();
+	public function new(file:FileOutput):Void {
+		_file = file;
+
 		var str = Json.stringify(toObj());
 		str = str.substr(0, str.length - 1); //remove last '}'
-		_events_buf.add(str + ',\n"_events": [');
-		
-		if (_events == null) {
-			_events = [];
-		} else {
-			_events_buf.add([for (e in _events) Json.stringify(e)].join(","));
-		}
+		_file.writeString(str + ',\n"_events": [');
+
+		thread = Thread.create(run);
 	}
 	
 	public function addEvent(time:Float, event:String, data:Dynamic):Void {
-		if (_events_buf == null) {
-			init_events_buf();
+		if (isLogging){
+			deque.add(LLog(time, event, Json.stringify(data)));
 		} else {
-			_events_buf.add(",");
+			trace("Logger is already closed.");
 		}
-		var evt = {
-			time: time,
-			event: event,
-			data: data
-		};
-		_events_buf.add(Json.stringify(evt));
-		_events.push(evt);
 	}
 	
-	public function toString():String {
-		if (_events_buf == null) {
-			init_events_buf();
+	public function close():Void {
+		if (isLogging) {
+			isLogging = false;
+			deque.add(LClose);
+		} else {
+			trace("Logger is already closed.");
 		}
-		_events_buf.add("]}");
-		return _events_buf.toString();
 	}
-	
-	public function fromString(str:String):PlayRecord {
-		var json = Json.parse(str);
-		fromObj(json);
-		_events = json._events;
-		_events_buf = null;
-		return this;
+
+	function run():Void {
+		while (true) {
+			switch (deque.pop(true)) {
+				case LLog(time, event, data):
+					_file.writeString('\n,{"event":$event,"data":$data,"time":$time}');
+				case LClose:
+					_file.writeString("]}");
+					_file.close();
+					break;
+				case null:
+					throw "Message should not be null";
+			}
+		}
 	}
 }

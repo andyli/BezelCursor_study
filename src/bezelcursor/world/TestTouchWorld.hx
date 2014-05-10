@@ -400,8 +400,18 @@ class TestTouchWorld extends GameWorld implements IStruct {
 		cm.onEndSignaler.bindAdvanced(recCursorEnd);
 		cm.onDragSignaler.bindAdvanced(recCursorDrag);
 		cm.onDragEndSignaler.bindAdvanced(recCursorDragEnd);
+
+		var logFileURL = 
+			#if android
+			"/mnt/sdcard/BezelCursorLog_"
+			#elseif sys
+			"BezelCursorLog_"
+			#end
+			+ DeviceData.current.id + "_" + Date.now().format("%Y%m%d_%H%M%S") + ".txt";
 		
-		record = new PlayRecord();
+		logFileURL = logFileURL.replace(" ", "_");
+
+		record = new PlayRecord(File.write(logFileURL, false));
 		record.creationTime = Date.now().getTime();
 		record.id = StringUtil.uuid();
 		record.user = UserData.current;
@@ -436,17 +446,7 @@ class TestTouchWorld extends GameWorld implements IStruct {
 		
 		log("end");
 		
-		var logFileURL = 
-			#if android
-			"/mnt/sdcard/BezelCursorLog_"
-			#elseif sys
-			"BezelCursorLog_"
-			#end
-			+ DeviceData.current.id + "_" + Date.now().format("%Y%m%d_%H%M%S") + ".txt";
-		
-		logFileURL = logFileURL.replace(" ", "_");
-		
-		File.saveContent(logFileURL, record.toString());
+		record.close();
 		
 		cm.onClickSignaler.unbind(onCursorClick);
 		cm.onDragSignaler.unbindAdvanced(onDrag);
