@@ -324,7 +324,8 @@ class TestTouchWorld extends GameWorld implements IStruct {
 			else
 				Middle;
 
-			region = region.getNeighbor(Center, move);
+			var targetRegion = region.getNeighbor(Center, move);
+			region = targetRegion == null ? region : targetRegion;
 		} else {
 			var deltaX = cursor.pFrameTouchPoint.x - cursor.activatedPoint.x;
 			var move = if (deltaX < -minD)
@@ -334,7 +335,8 @@ class TestTouchWorld extends GameWorld implements IStruct {
 			else
 				Center;
 
-			region = region.getNeighbor(move, Middle);
+			var targetRegion = region.getNeighbor(move, Middle);
+			region = targetRegion == null ? region : targetRegion;
 		}
 	}
 

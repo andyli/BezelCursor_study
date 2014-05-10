@@ -39,25 +39,25 @@ private typedef _WorldRegion = {
 		};
 	}
 
-	static function eq(r0:_WorldRegion, r1:_WorldRegion):Bool {
-		return r0.x == r1.x && r0.y == r1.y;
-	}
-
 	public function getNeighbor(x:HPos, y:VPos):WorldRegion {
-		return switch ({
+		var target = {
 			x: (this.x:Int) + (x:Int) - 1,
 			y: (this.y:Int) + (y:Int) - 1
-		}) {
-			case eq.bind(WorldRegion.TopLeft) => true: TopLeft;
-			case eq.bind(WorldRegion.TopCenter) => true: TopCenter;
-			case eq.bind(WorldRegion.TopRight) => true: TopRight;
-			case eq.bind(WorldRegion.MiddleLeft) => true: MiddleLeft;
-			case eq.bind(WorldRegion.MiddleCenter) => true: MiddleCenter;
-			case eq.bind(WorldRegion.MiddleRight) => true: MiddleRight;
-			case eq.bind(WorldRegion.BottomLeft) => true: BottomLeft;
-			case eq.bind(WorldRegion.BottomCenter) => true: BottomCenter;
-			case eq.bind(WorldRegion.BottomRight) => true: BottomRight;
-			case _: cast this;
+		};
+		for (r in [
+			TopLeft, 
+			TopCenter, 
+			TopRight, 
+			MiddleLeft, 
+			MiddleCenter, 
+			MiddleRight, 
+			BottomLeft, 
+			BottomCenter, 
+			BottomRight
+		]) {
+			if (r.x == target.x && r.y == target.y)
+				return r;
 		}
+		return null;
 	}
 }
