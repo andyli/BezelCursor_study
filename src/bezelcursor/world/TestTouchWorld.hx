@@ -57,6 +57,8 @@ class TestTouchWorld extends GameWorld implements IStruct {
 	
 	@skip public var title(default, null):Label;
 
+	@skip public var taptap:TapTap;
+
 	public var region(default, set):WorldRegion;
 	function set_region(v:WorldRegion):WorldRegion {
 		camera
@@ -79,6 +81,14 @@ class TestTouchWorld extends GameWorld implements IStruct {
 			var cm = HXP.engine.asMain().cursorManager;
 			if (cm.inputMethod.forThumbSpace != null) {
 				cm.thumbSpaceEnabled = true;
+			}
+
+			if (cm.inputMethod == InputMethod.TapTap) {
+				cm.onTouchEndSignaler.bindVoid(function(){
+					Timer.delay(function(){
+						taptap.enabled = true;
+					}, 1);
+				}).destroyOnUse();
 			}
 
 			if (cm.inputMethod == InputMethod.MagStick) {
@@ -385,6 +395,12 @@ class TestTouchWorld extends GameWorld implements IStruct {
 		} else {
 			cm.isValidStart = function(t) return true;
 		}
+
+		if (cm.inputMethod == InputMethod.TapTap) {
+			taptap = new TapTap(cm);
+			taptap.enabled = false;
+			HXP.stage.addChild(taptap.view);
+		}
 		
 		cm.onClickSignaler.bind(onCursorClick);
 		cm.onDragSignaler.bindAdvanced(onDrag);
@@ -443,6 +459,11 @@ class TestTouchWorld extends GameWorld implements IStruct {
 		cm.onEndSignaler.unbindAdvanced(recCursorEnd);
 		cm.onDragSignaler.unbindAdvanced(recCursorDrag);
 		cm.onDragEndSignaler.unbindAdvanced(recCursorDragEnd);
+
+		if (taptap != null) {
+			taptap.enabled = false;
+			HXP.stage.removeChild(taptap.view);
+		}
 		
 		log("end");
 		

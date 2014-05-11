@@ -160,4 +160,12 @@ class InputMethod implements IStruct {
 		}},
 		true
 	);
+
+	static public var TapTap(default, never):InputMethod = new InputMethod(
+		"TapTap",
+		null,
+		null,
+		null,
+		true
+	);
 }

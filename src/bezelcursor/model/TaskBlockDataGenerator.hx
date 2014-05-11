@@ -142,7 +142,7 @@ class TaskBlockDataGenerator implements IStruct {
 	public var inputMethods:Array<InputMethod> = [
 		InputMethod.DirectTouch,
 		InputMethod.PracticalBezelCursor,
-		InputMethod.PracticalButtonCursor,
+		InputMethod.TapTap,
 		InputMethod.MagStick,
 		InputMethod.ThumbSpace,
 	];

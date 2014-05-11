@@ -89,10 +89,10 @@ class CursorManager implements IStruct {
 			if (v) {
 				thumbSpaceViewDraw();
 				thumbSpaceView.tween(0.25, { alpha: 1.0 }).autoVisible(true);
-				Lib.stage.addEventListener(Event.ENTER_FRAME, thumbSpaceViewOnFrame);
+				stage.addEventListener(Event.ENTER_FRAME, thumbSpaceViewOnFrame);
 			} else {
 				thumbSpaceView.tween(0.25, { alpha: 0.0 }).autoVisible(true);
-				Lib.stage.removeEventListener(Event.ENTER_FRAME, thumbSpaceViewOnFrame);
+				stage.removeEventListener(Event.ENTER_FRAME, thumbSpaceViewOnFrame);
 			}
 		}
 		
