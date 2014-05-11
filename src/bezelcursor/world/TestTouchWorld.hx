@@ -9,6 +9,7 @@ import hsl.haxe.*;
 import com.haxepunk.*;
 import com.haxepunk.graphics.*;
 using motion.Actuate;
+import flash.*;
 import flash.display.Sprite;
 import flash.events.TouchEvent;
 import flash.geom.*;
@@ -400,6 +401,10 @@ class TestTouchWorld extends GameWorld implements IStruct {
 			taptap = new TapTap(cm);
 			taptap.enabled = false;
 			HXP.stage.addChild(taptap.view);
+
+			cm.isValidStart = function(t) {
+				return taptap.view.visible && taptap.view.getBounds(Lib.stage).contains(t.x, t.y);
+			}
 		}
 		
 		cm.onClickSignaler.bind(onCursorClick);
@@ -463,6 +468,7 @@ class TestTouchWorld extends GameWorld implements IStruct {
 		if (taptap != null) {
 			taptap.enabled = false;
 			HXP.stage.removeChild(taptap.view);
+			taptap = null;
 		}
 		
 		log("end");

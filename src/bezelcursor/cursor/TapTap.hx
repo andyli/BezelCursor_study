@@ -4,16 +4,20 @@ import flash.*;
 import flash.display.*;
 import flash.events.*;
 import flash.geom.*;
+import haxe.*;
 import hsl.haxe.*;
 import bezelcursor.model.*;
 using bezelcursor.util.UnitUtil;
+using Std;
 
 class TapTap {
+	inline static public var scale:Float = 3;
 	var stage:Stage = Lib.stage;
 	var cm:CursorManager;
 	@skip public var view(default, null):Sprite;
 	@skip public var viewBitmap(default, null):Bitmap;
 	public var matrix(default, null):Matrix;
+	@skip public var cursor:Cursor;
 
 	@:isVar public var enabled(default, set):Bool;
 	function set_enabled(v:Bool):Bool {
@@ -42,35 +46,43 @@ class TapTap {
 
 		matrix = new Matrix();
 		var dpi = DeviceData.current.screenDPI;
-		//var marginx = 
-		var bd = new BitmapData(stage.stageWidth, stage.stageHeight, false);
+		var marginx = 5.mm2inches() * dpi;
+		var marginy = 5.mm2inches() * dpi;
+		var bd = new BitmapData((stage.stageWidth - marginx*2).int(), (stage.stageHeight - marginy*2).int(), false);
 		viewBitmap = new Bitmap(bd, PixelSnapping.NEVER, true);
-		viewBitmap.alpha = 0.9;
+		// viewBitmap.alpha = 0.9;
 		view = new Sprite();
+		view.x = (stage.stageWidth - bd.width) * 0.5;
+		view.y = (stage.stageHeight - bd.height) * 0.5;
 		view.addChild(viewBitmap);
+		view.addEventListener(TouchEvent.TOUCH_MOVE, onTouchMoveOnView);
 	}
 
-	public function onTouchEnd(td:TouchData):Void {
+	function onTouchEnd(td:TouchData):Void {
 		if (!showView) {
-			var scale = 3.0;
 			matrix.identity();
 			matrix.translate(-td.x, -td.y);
 			matrix.scale(scale, scale);
 			matrix.translate(viewBitmap.width*0.5, viewBitmap.height*0.5);
-
+			viewDraw();
 			showView = true;
-		} else {
-			//TODO click on target
-			showView = false;
+		}
+	}
+
+	function onTouchMoveOnView(evt:TouchEvent):Void {
+		if (cursor != null) {
+			var m = matrix.clone();
+			m.invert();
+			cursor.setImmediatePosition(m.transformPoint(new Point(evt.localX, evt.localY)));
 		}
 	}
 	
 	function viewDraw():Void {
 		view.graphics.clear();
 		view.graphics.lineStyle(1, 0x000000, 1, true, LineScaleMode.NONE);
-		view.graphics.drawRect(view.x, view.y, view.width, view.height);
+		view.graphics.drawRect(0, 0, view.width, view.height);
 		view.graphics.lineStyle(1, 0xFFFFFF, 1, true, LineScaleMode.NONE);
-		view.graphics.drawRect(view.x - 1, view.y - 1, view.width + 2, view.height + 2);
+		view.graphics.drawRect(-1, -1, view.width + 2, view.height + 2);
 	}
 
 	function viewOnFrame(evt):Void {

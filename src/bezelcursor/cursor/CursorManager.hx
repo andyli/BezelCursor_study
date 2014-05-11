@@ -2,6 +2,7 @@ package bezelcursor.cursor;
 
 using Std;
 using Lambda;
+import haxe.*;
 import flash.Lib;
 import flash.display.*;
 import flash.events.*;
@@ -13,6 +14,7 @@ using org.casalib.util.NumberUtil;
 using org.casalib.util.RatioUtil;
 using motion.Actuate;
 import cpp.vm.Gc;
+import com.haxepunk.*;
 
 import bezelcursor.cursor.behavior.*;
 import bezelcursor.model.*;
@@ -347,7 +349,18 @@ class CursorManager implements IStruct {
 				if(cursor.is(PointActivatedCursor))
 					cursor.behaviors.push(new DrawStick(untyped cursor));
 			case ForScreen:
-				
+				if (inputMethod == InputMethod.TapTap) {
+					if (HXP.world.is(TestTouchWorld)) {
+						var taptap = cast(HXP.world, TestTouchWorld).taptap;
+						taptap.cursor = cursor;
+						cursor.onClickSignaler.bindVoid(function(){
+							taptap.cursor = null;
+							Timer.delay(function(){
+								taptap.enabled = false;
+							}, 1);
+						}).destroyOnUse();
+					}
+				}
 			case ForThumbSpace:
 				cursor.setImmediatePosition(new Point(
 					touch.x.map(thumbSpace.left, thumbSpace.right, 0, stage.stageWidth),

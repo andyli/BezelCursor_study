@@ -163,7 +163,13 @@ class InputMethod implements IStruct {
 
 	static public var TapTap(default, never):InputMethod = new InputMethod(
 		"TapTap",
-		null,
+		{ _class: "bezelcursor.cursor.MouseCursor", data: {
+			drawRadius: null,
+			drawStick: null,
+			dynaScale: null,
+			default_radius: 0,
+			mouseMove: null
+		}},
 		null,
 		null,
 		true
