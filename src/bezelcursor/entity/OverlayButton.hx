@@ -16,6 +16,12 @@ class OverlayButton extends Button {
 	inline static public var TYPE = "OverlayButton";
 	inline static public var WIDTH:Float = 18.mm2inches();
 	inline static public var HEIGHT:Float = 9.mm2inches();
+
+	public var pressed(default, null) = false;
+	public var dragged(default, null) = false;
+	var startPressPt = new Point();
+	var px:Float;
+	var py:Float;
 	
 	public function new(labelText:String):Void {
 		super(labelText);
@@ -48,16 +54,47 @@ class OverlayButton extends Button {
 	override public function added():Void {
 		super.added();
 		HXP.stage.addEventListener(MouseEvent.MOUSE_DOWN, onPressed);
+		HXP.stage.addEventListener(MouseEvent.MOUSE_MOVE, onMoved);
+		HXP.stage.addEventListener(MouseEvent.MOUSE_UP, onReleased);
 	}
 	
 	override public function removed():Void {
 		super.removed();
 		HXP.stage.removeEventListener(MouseEvent.MOUSE_DOWN, onPressed);
+		HXP.stage.removeEventListener(MouseEvent.MOUSE_MOVE, onMoved);
+		HXP.stage.removeEventListener(MouseEvent.MOUSE_UP, onReleased);
 	}
 	
 	function onPressed(evt:MouseEvent):Void {
-		if (visible && collidePoint(x, y, evt.stageX, evt.stageY)) {			
-			click();
+		if (visible && collidePoint(x, y, evt.stageX, evt.stageY)) {
+			pressed = true;
+			dragged = false;
+			startPressPt.x = px = evt.stageX;
+			startPressPt.y = py = evt.stageY;
+		}
+	}
+
+	function onMoved(evt:MouseEvent):Void {
+		if (pressed) {
+			if (!dragged && Point.distance(startPressPt, new Point(evt.stageX, evt.stageY)) > DeviceData.current.screenDPI * 2.mm2inches()) {
+				dragged = true;
+			}
+
+			if (dragged) {
+				moveBy(evt.stageX - px, evt.stageY - py);
+			}
+			px = evt.stageX;
+			py = evt.stageY;
+		}
+	}
+
+	function onReleased(evt:MouseEvent):Void {
+		if (visible && collidePoint(x, y, evt.stageX, evt.stageY) && pressed) {
+			if (!dragged) {
+				click();
+			}
+			pressed = false;
+			dragged = false;
 		}
 	}
 }

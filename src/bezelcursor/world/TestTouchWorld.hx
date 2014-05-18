@@ -85,11 +85,9 @@ class TestTouchWorld extends GameWorld implements IStruct {
 			}
 
 			if (cm.inputMethod == InputMethod.TapTap) {
-				cm.onTouchEndSignaler.bindVoid(function(){
-					Timer.delay(function(){
-						taptap.enabled = true;
-					}, 1);
-				}).destroyOnUse();
+				Timer.delay(function(){
+					taptap.enabled = true;
+				}, 1);
 			}
 
 			if (cm.inputMethod == InputMethod.MagStick) {

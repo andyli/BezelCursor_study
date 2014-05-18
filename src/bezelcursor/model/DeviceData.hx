@@ -8,6 +8,7 @@ import openfl.utils.JNI;
 #end
 
 #if sys
+import sys.*;
 import sys.io.*;
 #end
 
@@ -52,39 +53,6 @@ class DeviceData implements IStruct {
 		}
 		
 		{
-			current.systemName = if (BuildData.current.isAndroid) {
-				"Android";
-			} else if (BuildData.current.isIos) {
-				"iOS";
-			} else {
-				#if sys
-				Sys.systemName();
-				#elseif flash
-				"Flash";
-				#else
-				"";
-				#end
-			}
-			
-			#if (sys && !ios)
-			current.systemVersion = "";//getSystemVersion();
-			#elseif flash
-			current.systemVersion = Capabilities.os;
-			#end
-			
-			#if android
-			current.hardwareModel = "";//getHardwareModel();
-			#end
-			
-			current.screenResolutionX = flash.Lib.stage.stageWidth;
-			current.screenResolutionY = flash.Lib.stage.stageHeight;
-			
-			current.screenDPI = Capabilities.screenDPI;
-			
-			current.lastLocalSyncTime = Date.now().getTime();
-			sharedObject.data.current = current.toObj();
-			sharedObject.flush();
-
 			#if sys
 			var logFileURL = 
 			#if android
@@ -93,8 +61,45 @@ class DeviceData implements IStruct {
 			"BezelCursorDeviceData_"
 			#end
 			+ DeviceData.current.id + ".txt";
-			
-			File.saveContent(logFileURL, haxe.Json.stringify(current.toObj()));
+
+			if (FileSystem.exists(logFileURL)) {
+				current.fromObj(haxe.Json.parse(File.getContent(logFileURL)));
+			} else {
+				current.systemName = if (BuildData.current.isAndroid) {
+					"Android";
+				} else if (BuildData.current.isIos) {
+					"iOS";
+				} else {
+					#if sys
+					Sys.systemName();
+					#elseif flash
+					"Flash";
+					#else
+					"";
+					#end
+				}
+				
+				#if (sys && !ios)
+				current.systemVersion = "";//getSystemVersion();
+				#elseif flash
+				current.systemVersion = Capabilities.os;
+				#end
+				
+				#if android
+				current.hardwareModel = "";//getHardwareModel();
+				#end
+				
+				current.screenResolutionX = flash.Lib.stage.stageWidth;
+				current.screenResolutionY = flash.Lib.stage.stageHeight;
+				
+				current.screenDPI = Capabilities.screenDPI;
+				
+				current.lastLocalSyncTime = Date.now().getTime();
+				sharedObject.data.current = current.toObj();
+				sharedObject.flush();
+				
+				File.saveContent(logFileURL, haxe.Json.stringify(current.toObj()));
+			}
 			#end
 		}
 		
