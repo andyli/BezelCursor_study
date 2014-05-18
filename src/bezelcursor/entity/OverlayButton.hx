@@ -3,7 +3,7 @@ package bezelcursor.entity;
 import flash.events.MouseEvent;
 import flash.geom.Point;
 import com.haxepunk.HXP;
-import hsl.haxe.Signal;
+import hsl.haxe.*;
 using motion.Actuate;
 
 using bezelcursor.Main;
@@ -17,6 +17,8 @@ class OverlayButton extends Button {
 	inline static public var WIDTH:Float = 18.mm2inches();
 	inline static public var HEIGHT:Float = 9.mm2inches();
 
+
+	@skip public var onDragEndSignaler(default, null):Signaler<Void>;
 	public var pressed(default, null) = false;
 	public var dragged(default, null) = false;
 	var startPressPt = new Point();
@@ -34,6 +36,8 @@ class OverlayButton extends Button {
 		
 		alpha = 0.8;
 		layer = -10;
+
+		onDragEndSignaler = new DirectSignaler<Void>(this);
 	}
 	
 	override public function resize(w:Float = -1, h:Float = -1):Void {
@@ -92,6 +96,8 @@ class OverlayButton extends Button {
 		if (visible && collidePoint(x, y, evt.stageX, evt.stageY) && pressed) {
 			if (!dragged) {
 				click();
+			} else {
+				onDragEndSignaler.dispatch();
 			}
 			pressed = false;
 			dragged = false;

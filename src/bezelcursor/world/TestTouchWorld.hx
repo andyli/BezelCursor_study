@@ -79,6 +79,11 @@ class TestTouchWorld extends GameWorld implements IStruct {
 		
 		startBtn = new OverlayButton("Start");
 		startBtn.onClickSignaler.bindVoid(function(){
+			log("startBtn-click", {
+				x: startBtn.x,
+				y: startBtn.y
+			});
+
 			var cm = HXP.engine.asMain().cursorManager;
 			if (cm.inputMethod.forThumbSpace != null) {
 				cm.thumbSpaceEnabled = true;
@@ -104,6 +109,12 @@ class TestTouchWorld extends GameWorld implements IStruct {
 			Timer.delay(function(){
 				startBtn.visible = false;
 			}, 1);
+		});
+		startBtn.onDragEndSignaler.bindVoid(function(){
+			log("startBtn-dragEnd", {
+				x: startBtn.x,
+				y: startBtn.y
+			});
 		});
 		
 		missedLabel = new Label("MISSED", {
@@ -314,6 +325,7 @@ class TestTouchWorld extends GameWorld implements IStruct {
 	function onDrag(s:Signal<Void>):Void {
 		return;
 
+		log("drag");
 		var cursor = cast(s.origin, TouchCursor);
 
 		if (verticalScrollDirection) {
@@ -330,6 +342,7 @@ class TestTouchWorld extends GameWorld implements IStruct {
 	function onDragEnd(s:Signal<Void>):Void {
 		return;
 		
+		log("drag-end");
 		var cursor = cast(s.origin, TouchCursor);
 
 		var minD = DeviceData.current.screenDPI * 5.mm2inches();
