@@ -46,7 +46,7 @@ class TaskBlockDataGenerator implements IStruct {
 		}
 
 		function onTaskBlockGenerated(taskblocks:Array<TaskBlockData>){
-			trace("Sync with server...");
+			// trace("Sync with server...");
 			
 			// haxe.Timer.delay(function(){
 			// 	TaskBlockData.current = taskblocks;
@@ -57,25 +57,25 @@ class TaskBlockDataGenerator implements IStruct {
 
 			var fileURL = "TaskBlockData.txt";
 			File.saveContent(fileURL, Serializer.run(taskblocks));
-			
-			var load = new AsyncLoader(Env.website + "taskblockdata/set/", Post);
-			load.data = {
-				buildData: Serializer.run(BuildData.current),
-				deviceData: Serializer.run(deviceData),
-				taskblocks: Serializer.run(taskblocks)
-			}
-			load.onCompleteSignaler.bind(function(respond){
-				if (respond != "ok") {
-					onError(respond);
-				} else {
-					haxe.Timer.delay(function(){
-						trace("Done");
-						Sys.exit(0);
-					}, 100);
-				} 
-			}).destroyOnUse();
-			load.onErrorSignaler.bind(onError).destroyOnUse();
-			load.load();
+			Sys.exit(0);
+			// var load = new AsyncLoader(Env.website + "taskblockdata/set/", Post);
+			// load.data = {
+			// 	buildData: Serializer.run(BuildData.current),
+			// 	deviceData: Serializer.run(deviceData),
+			// 	taskblocks: Serializer.run(taskblocks)
+			// }
+			// load.onCompleteSignaler.bind(function(respond){
+			// 	if (respond != "ok") {
+			// 		onError(respond);
+			// 	} else {
+			// 		haxe.Timer.delay(function(){
+			// 			trace("Done");
+			// 			Sys.exit(0);
+			// 		}, 100);
+			// 	} 
+			// }).destroyOnUse();
+			// load.onErrorSignaler.bind(onError).destroyOnUse();
+			// load.load();
 		}
 
 		var done = false;
@@ -134,7 +134,7 @@ class TaskBlockDataGenerator implements IStruct {
 	*/
 	public var regionss(default, null):Array<Array<Rectangle>>;
 
-	public var worldRegions(default, null) = [0, 1, 2];
+	public var worldRegions(default, null) = [0];
 	
 	/**
 	* Input methods to be tested.
@@ -186,7 +186,7 @@ class TaskBlockDataGenerator implements IStruct {
 		stageRect = new Rectangle(0, 0, (deviceData.screenResolutionX / dpi).inches2mm(), (deviceData.screenResolutionY / dpi).inches2mm());
 		
 		regionss = [
-			genRegions(3, 4, 12)
+			genRegions(3, 4, 0)
 		];
 		
 		onProgressSignaler = new DirectSignaler<Float>(this);

@@ -89,6 +89,9 @@ class Main extends Engine {
 	
 	static public function main():Void {
 		Lib.current.addChild(new Main());
+		// var tbd = haxe.Unserializer.run(File.getContent("/Users/andy/Google Drive/new-user-study-II/data/TaskBlockData.txt"));
+		// trace(haxe.Json.stringify(tbd));
+		// File.saveContent("/Users/andy/Google Drive/new-user-study-II/data/TaskBlockData.json", haxe.Json.stringify(tbd));
 	}
 	
 	static public function asMain(e:Engine):Main {

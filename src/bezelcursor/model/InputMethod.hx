@@ -72,9 +72,10 @@ class InputMethod implements IStruct {
 	
 	static public var PracticalBezelCursor(default, never):InputMethod = new InputMethod(
 		"BezelCursor",
-		{ _class: "bezelcursor.cursor.TouchCursor", data: {
-			default_radius: 0
-		} },
+		// { _class: "bezelcursor.cursor.TouchCursor", data: {
+		// 	default_radius: 0
+		// } },
+		null,
 		{ _class: "bezelcursor.cursor.StickCursor", data: {} },
 		null,
 		false
@@ -150,9 +151,10 @@ class InputMethod implements IStruct {
 	
 	static public var ThumbSpace(default, never):InputMethod = new InputMethod(
 		"ThumbSpace",
-		{ _class: "bezelcursor.cursor.TouchCursor", data: {
-			default_radius: 0
-		} },
+		// { _class: "bezelcursor.cursor.TouchCursor", data: {
+		// 	default_radius: 0
+		// } },
+		null,
 		null,
 		{ _class: "bezelcursor.cursor.BubbleMouseCursor", data: { 
 			drawBubble: null,

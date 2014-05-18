@@ -187,9 +187,10 @@ class TestTouchWorld extends GameWorld implements IStruct {
 			return;
 		}
 
-		var worldRegions:Array<WorldRegion> = verticalScrollDirection ? 
-			[TopCenter, MiddleCenter, BottomCenter]:
-			[MiddleLeft, MiddleCenter, MiddleRight];
+		var worldRegions:Array<WorldRegion> = [MiddleCenter];
+		// var worldRegions:Array<WorldRegion> = verticalScrollDirection ? 
+		// 	[TopCenter, MiddleCenter, BottomCenter]:
+		// 	[MiddleLeft, MiddleCenter, MiddleRight];
 
 		region = MiddleCenter;
 		
@@ -309,6 +310,8 @@ class TestTouchWorld extends GameWorld implements IStruct {
 	}
 
 	function onDrag(s:Signal<Void>):Void {
+		return;
+
 		var cursor = cast(s.origin, TouchCursor);
 
 		if (verticalScrollDirection) {
@@ -323,6 +326,8 @@ class TestTouchWorld extends GameWorld implements IStruct {
 	}
 
 	function onDragEnd(s:Signal<Void>):Void {
+		return;
+		
 		var cursor = cast(s.origin, TouchCursor);
 
 		var minD = DeviceData.current.screenDPI * 5.mm2inches();
