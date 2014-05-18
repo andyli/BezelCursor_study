@@ -90,16 +90,20 @@ class TestTouchWorld extends GameWorld implements IStruct {
 				}, 1);
 			}
 
-			if (cm.inputMethod == InputMethod.MagStick) {
-				if (cm.inputMethod.forScreen._class == "bezelcursor.cursor.MagStickCursor") {
-					cm.inputMethod.forScreen = InputMethod.DirectTouch.forScreen;
-				} else {
-					cm.inputMethod.forScreen = { _class: "bezelcursor.cursor.MagStickCursor", data: {} };
-				}
-				updateStartBtnLabel();
-			} else {
+			// if (cm.inputMethod == InputMethod.MagStick) {
+			// 	if (cm.inputMethod.forScreen._class == "bezelcursor.cursor.MagStickCursor") {
+			// 		cm.inputMethod.forScreen = InputMethod.DirectTouch.forScreen;
+			// 	} else {
+			// 		cm.inputMethod.forScreen = { _class: "bezelcursor.cursor.MagStickCursor", data: {} };
+			// 	}
+			// 	updateStartBtnLabel();
+			// } else {
+			// 	startBtn.visible = false;
+			// }
+
+			Timer.delay(function(){
 				startBtn.visible = false;
-			}
+			}, 1);
 		});
 		
 		missedLabel = new Label("MISSED", {
@@ -394,7 +398,13 @@ class TestTouchWorld extends GameWorld implements IStruct {
 			}
 		} else if (cm.inputMethod == InputMethod.MagStick) {
 			cm.isValidStart = function(t) {
-				return !(startBtn.collidePoint(startBtn.x, startBtn.y, t.x, t.y));
+				var worldTouchPos = screenToWorld(new Point(t.x, t.y));
+				return !startBtn.visible && !(currentTarget.collidePoint(currentTarget.x, currentTarget.y, worldTouchPos.x, worldTouchPos.y));
+			}
+		} else if (cm.inputMethod != InputMethod.DirectTouch) {
+			cm.isValidStart = function(t) {
+				var worldTouchPos = screenToWorld(new Point(t.x, t.y));
+				return !(currentTarget.collidePoint(currentTarget.x, currentTarget.y, worldTouchPos.x, worldTouchPos.y));
 			}
 		} else {
 			cm.isValidStart = function(t) return true;
