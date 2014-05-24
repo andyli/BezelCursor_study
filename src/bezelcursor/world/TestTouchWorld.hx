@@ -11,9 +11,10 @@ import com.haxepunk.graphics.*;
 using motion.Actuate;
 import flash.*;
 import flash.display.Sprite;
-import flash.events.TouchEvent;
+import flash.events.*;
 import flash.geom.*;
 import flash.text.*;
+import flash.sensors.*;
 using org.casalib.util.ArrayUtil;
 using org.casalib.util.NumberUtil;
 import org.casalib.util.*;
@@ -59,6 +60,8 @@ class TestTouchWorld extends GameWorld implements IStruct {
 	@skip public var title(default, null):Label;
 
 	@skip public var taptap:TapTap;
+
+	@skip public var accelerometer:Accelerometer;
 
 	public var region(default, set):WorldRegion;
 	function set_region(v:WorldRegion):WorldRegion {
@@ -471,6 +474,9 @@ class TestTouchWorld extends GameWorld implements IStruct {
 		record.cursorManager = HXP.engine.asMain().cursorManager.toObj();
 				
 		log("begin");
+
+		accelerometer = new Accelerometer();
+		accelerometer.addEventListener(AccelerometerEvent.UPDATE, onAccel);
 		
 		next();
 		
@@ -496,6 +502,8 @@ class TestTouchWorld extends GameWorld implements IStruct {
 			HXP.stage.removeChild(taptap.view);
 			taptap = null;
 		}
+
+		accelerometer.removeEventListener(AccelerometerEvent.UPDATE, onAccel);
 		
 		log("end");
 		
@@ -508,6 +516,14 @@ class TestTouchWorld extends GameWorld implements IStruct {
 		
 		startBtn.stop();
 		super.end();
+	}
+
+	function onAccel(evt:AccelerometerEvent):Void {
+		log("accel", {
+			x: evt.accelerationX,
+			y: evt.accelerationY,
+			z: evt.accelerationZ
+		});
 	}
 	
 	function recTouchStart(touch:TouchData):Void {

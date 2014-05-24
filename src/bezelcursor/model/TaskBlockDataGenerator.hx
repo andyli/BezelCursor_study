@@ -150,7 +150,7 @@ class TaskBlockDataGenerator implements IStruct {
 	/**
 	* How many times should one region be tested.
 	*/
-	public var timesPerRegion:Int = 1;
+	public var timesPerRegion:Int = 3;
 	
 	/**
 	* Rectangle that the size is set to match the device screen.
