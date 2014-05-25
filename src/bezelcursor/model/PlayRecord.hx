@@ -64,9 +64,9 @@ class PlayRecord implements IStruct {
 		while (true) {
 			switch (deque.pop(true)) {
 				case LLog(time, event, data):
-					_file.writeString('\n,{"event":$event,"data":$data,"time":$time}');
+					_file.writeString('\n{"event":"$event","data":$data,"time":$time},');
 				case LClose:
-					_file.writeString("]}");
+					_file.writeString('\n{"event":"close","data":null,"time":${haxe.Timer.stamp()}}]}');
 					_file.close();
 					break;
 				case null:
