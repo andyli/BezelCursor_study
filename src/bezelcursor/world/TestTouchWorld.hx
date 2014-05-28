@@ -472,7 +472,8 @@ class TestTouchWorld extends GameWorld implements IStruct {
 		record.flipStage = flipStage;
 		record.inputMethod = HXP.engine.asMain().cursorManager.inputMethod.name;
 		record.cursorManager = HXP.engine.asMain().cursorManager.toObj();
-				
+		
+		record.begin();
 		log("begin");
 
 		accelerometer = new Accelerometer();

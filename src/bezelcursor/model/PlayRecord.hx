@@ -29,12 +29,16 @@ class PlayRecord implements IStruct {
 	public var cursorManager:Dynamic;
 	@skip var _file:FileOutput;
 
-	public var isLogging(default, null) = true;
+	public var isLogging(default, null) = false;
 	@skip var thread:Thread;
 	@skip var deque = new Deque<LoggerMsg>();
 	
 	public function new(file:FileOutput):Void {
 		_file = file;
+	}
+
+	public function begin():Void {
+		isLogging = true;
 
 		var str = Json.stringify(toObj());
 		str = str.substr(0, str.length - 1); //remove last '}'
