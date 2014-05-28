@@ -33,7 +33,14 @@ class Target extends Entity implements IStruct {
 	
 	public var id(default, null):Int;
 	
-	public var alpha:Float;
+	public var alpha(default, set):Float;
+	function set_alpha(v:Float):Float {
+		if (image_default != null)
+			image_default.alpha = v;
+		if (image_hover != null)
+			image_hover.alpha = v;
+		return alpha = v;
+	}
 	
 	@skip public var color(get_color, set_color):Int;
 	var _color:Int;
@@ -113,6 +120,8 @@ class Target extends Entity implements IStruct {
 		image_default = new Image(getBitmapdataOfColor(width = w == -1 ? width : w, height = h == -1 ? height : h, color));
 		image_hover = new Image(getBitmapdataOfColor(width = w == -1 ? width : w, height = h == -1 ? height : h, color_hover));
 		
+		image_default.alpha = image_hover.alpha = alpha;
+
 		graphicList_default.removeAll();
 		graphicList_default.add(image_default);
 		

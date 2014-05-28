@@ -17,7 +17,23 @@ class TapTap {
 	@skip public var view(default, null):Sprite;
 	@skip public var viewBitmap(default, null):Bitmap;
 	public var matrix(default, null):Matrix;
-	@skip public var cursor:Cursor;
+	@skip public var cursor(default, set):PointActivatedCursor;
+	function set_cursor(v:PointActivatedCursor):PointActivatedCursor {
+		if (cursor != null) {
+			cursor.onClickSignaler.unbindVoid(onCursorClick);
+		}
+		cursor = v;
+		if (cursor != null) {
+			syncCursor(view.globalToLocal(cursor.activatedPoint));
+			cursor.onClickSignaler.bindVoid(onCursorClick);
+		}
+		return v;
+	}
+
+	function onCursorClick():Void {
+		cursor = null;
+		enabled = false;
+	}
 
 	@:isVar public var enabled(default, set):Bool;
 	function set_enabled(v:Bool):Bool {
@@ -71,10 +87,14 @@ class TapTap {
 
 	function onTouchMoveOnView(evt:TouchEvent):Void {
 		if (cursor != null) {
-			var m = matrix.clone();
-			m.invert();
-			cursor.setImmediatePosition(m.transformPoint(new Point(evt.localX, evt.localY)));
+			syncCursor(new Point(evt.localX, evt.localY));
 		}
+	}
+
+	function syncCursor(localPt:Point):Void {
+		var m = matrix.clone();
+		m.invert();
+		cursor.setImmediatePosition(m.transformPoint(localPt));
 	}
 	
 	function viewDraw():Void {

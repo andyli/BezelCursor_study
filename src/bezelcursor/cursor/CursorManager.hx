@@ -352,13 +352,7 @@ class CursorManager implements IStruct {
 				if (inputMethod == InputMethod.TapTap) {
 					if (HXP.world.is(TestTouchWorld)) {
 						var taptap = cast(HXP.world, TestTouchWorld).taptap;
-						taptap.cursor = cursor;
-						cursor.onClickSignaler.bindVoid(function(){
-							taptap.cursor = null;
-							Timer.delay(function(){
-								taptap.enabled = false;
-							}, 1);
-						}).destroyOnUse();
+						taptap.cursor = cast cursor;
 					}
 				}
 			case ForThumbSpace:

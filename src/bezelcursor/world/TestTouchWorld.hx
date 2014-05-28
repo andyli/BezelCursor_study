@@ -81,6 +81,7 @@ class TestTouchWorld extends GameWorld implements IStruct {
 		this.verticalScrollDirection = verticalScrollDirection;
 		
 		startBtn = new OverlayButton("Start");
+		startBtn.alpha = 0.5;
 		startBtn.onClickSignaler.bindVoid(function(){
 			log("startBtn-click", {
 				x: startBtn.x,
@@ -405,7 +406,6 @@ class TestTouchWorld extends GameWorld implements IStruct {
 		
 		if (cm.inputMethod.requireOverlayButton){
 			add(startBtn);
-			startBtn.tween(0.5, {alpha:0.5}).reflect(true).repeat(-1);
 		}
 
 		if (cm.inputMethod.forThumbSpace != null) {
