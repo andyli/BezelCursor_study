@@ -81,7 +81,8 @@ class TestTouchWorld extends GameWorld implements IStruct {
 		this.verticalScrollDirection = verticalScrollDirection;
 		
 		startBtn = new OverlayButton("Start");
-		startBtn.alpha = 0.5;
+		startBtn.color = 0xEEEEEE;
+		startBtn.alpha = 0.8;
 		startBtn.onClickSignaler.bindVoid(function(){
 			log("startBtn-click", {
 				x: startBtn.x,
