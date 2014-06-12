@@ -285,6 +285,8 @@ class CursorManager implements IStruct {
 		}
 		
 		if (!cursorsEnabled) return;
+
+		if (cursors.count() > 0) return;
 		
 		if (!isValidStart(touch)) return;
 
